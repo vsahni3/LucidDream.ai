@@ -43,9 +43,16 @@ public class SignupPresenter implements SignupOutputBoundary {
     }
 
     @Override
-    public void prepareFailView(String error) {
+    public void prepareFailView(String errorType, String error) {
         SignupState signupState = signupViewModel.getState();
-        signupState.setUsernameError(error);
+
+        if (errorType.equals("User exists")) {
+            signupState.setUsernameError(error);
+        } else if (errorType.equals("Password mismatch")) {
+            signupState.setRepeatPasswordError(error);
+        } else {
+            signupState.setPasswordError(error);
+        }
         signupViewModel.firePropertyChanged();
     }
 }

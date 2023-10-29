@@ -16,6 +16,13 @@ public class LoginState {
     // Because of the previous copy constructor, the default constructor must be explicit.
     public LoginState() {}
 
+    public void clearState() {
+        username = "";
+        usernameError = null;
+        password = "";
+        passwordError = null;
+    }
+
     public String getUsername() {
         return username;
     }

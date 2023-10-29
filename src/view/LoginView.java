@@ -4,6 +4,7 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginState;
 import interface_adapter.login.LoginViewModel;
+import interface_adapter.signup.SignupState;
 
 import javax.swing.*;
 import java.awt.*;
@@ -79,6 +80,7 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
 
             @Override
             public void keyPressed(KeyEvent e) {
+
             }
 
             @Override
@@ -125,11 +127,21 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         LoginState state = (LoginState) evt.getNewValue();
-        setFields(state);
+
+        if (state.getUsernameError() != null) {
+            JOptionPane.showMessageDialog(this, state.getUsernameError());
+            usernameInputField.setText(null);
+            passwordInputField.setText(null);
+            state.clearState();
+
+        } else if (state.getPasswordError() != null) {
+            JOptionPane.showMessageDialog(this, state.getPasswordError());
+            state.setPassword("");
+            state.setPasswordError(null);
+            passwordInputField.setText(null);
+        }
+
     }
 
-    private void setFields(LoginState state) {
-        usernameInputField.setText(state.getUsername());
-    }
 
 }

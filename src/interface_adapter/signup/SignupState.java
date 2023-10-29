@@ -23,6 +23,15 @@ public class SignupState {
     public SignupState() {
     }
 
+    public void clearState() {
+        username = "";
+        usernameError = null;
+        password = "";
+        passwordError = null;
+        repeatPassword = "";
+        repeatPasswordError = null;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -70,11 +79,6 @@ public class SignupState {
     public void setRepeatPasswordError(String repeatPasswordError) {
         this.repeatPasswordError = repeatPasswordError;
     }
-
-
-    public String getDeletedUsers() { return this.deletedUsers; }
-
-    public void setDeletedUsers(String deletedUsers) { this.deletedUsers = deletedUsers; }
 
     @Override
     public String toString() {
