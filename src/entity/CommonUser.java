@@ -13,7 +13,7 @@ class CommonUser implements User {
      * @param name
      * @param password
      */
-    CommonUser(String name, String password, LocalDateTime creationTime) {
+    public CommonUser(String name, String password, LocalDateTime creationTime) {
         this.name = name;
         this.password = password;
         this.creationTime = creationTime;
