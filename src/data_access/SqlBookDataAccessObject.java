@@ -123,17 +123,23 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
 
 
 
-    public void addBooksToUser(String username) {
-        ArrayList<Book> relatedBooks = new ArrayList<Book>();
-        for (String title : books.keySet()) {
-            Book book = books.get(title);
-            String curName = getBookUser(title);
-            if (curName.equals(username)) {
-                relatedBooks.add(book);
+    public void addBooks(ArrayList<Book> books, String username) {
 
+        for (String title : books.keySet()) {
+
+            String curName = getBookUser(title);
+
+            String sql = "UPDATE BOOK SET UserID = ? WHERE TTILE = ?";
+            try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+                pstmt.setString(1, curName); // Set the password parameter
+                pstmt.setString(2, title); // Set the userna,e parameter
+                pstmt.executeUpdate(); // Execute the insert statement
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
             }
+
         }
-        return relatedBooks;
+
     }
 
 

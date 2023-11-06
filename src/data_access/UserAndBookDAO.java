@@ -65,11 +65,11 @@ public class UserAndBook {
         for (String username : users.keySet()) {
             User user = users.get(username);
             if (tempMap.containsKey(username)) {
-                userDAO.updateUser(user.getPassword());
+                userDAO.save(user);
                 bookDAO.addBooks(user.getBooks(), username);
 
             } else {
-                userDAO.insertUser(user);
+                userDAO.save(user);
                 bookDAO.addBooks(user.getBooks(), username);
 
 
