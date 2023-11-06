@@ -9,6 +9,7 @@ import use_case.signup.SignupUserDataAccessInterface;
 
 import java.io.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -70,16 +71,17 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
             if (tempMap.containsKey(title)) {
                 String sql = "UPDATE BOOK SET StoryText = ? WHERE TITLE = ?";
                 try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-                    pstmt.setString(1, book.getStoryText()); // Set the password parameter
+                    pstmt.setString(1, book.getStoryText()); // Set the text parameter
+                    pstmt.setString(2, title); // Set the title parameter
                     pstmt.executeUpdate(); // Execute the insert statement
                 } catch (SQLException e) {
                     System.err.println(e.getMessage());
                 }
             } else {
-                String sql = "INSERT INTO USER (USERNAME, PASSWORD) VALUES (?, ?)";
+                String sql = "INSERT INTO BOOK (TITLE, StoryText) VALUES (?, ?)";
                 try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-                    pstmt.setString(1, username); // Set the username parameter
-                    pstmt.setString(2, user.getPassword()); // Set the password parameter
+                    pstmt.setString(1, title); // Set the username parameter
+                    pstmt.setString(2, book.getStoryText()); // Set the password parameter
                     pstmt.executeUpdate(); // Execute the insert statement
 
                 } catch (SQLException e) {
@@ -99,7 +101,39 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
      */
     @Override
     public boolean existsByName(String identifier) {
-        return accounts.containsKey(identifier);
+        return books.containsKey(identifier);
+    }
+
+    public String getBookUser(String identifier) {
+        String username = "";
+        String sql = "SELECT userId FROM Book WHERE title = ?";
+        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+            pstmt.setString(1, identifier); // Set the password parameter
+            ResultSet rs = pstmt.executeQuery();
+            username = rs.getString("username");
+
+
+            pstmt.executeUpdate(); // Execute the insert statement
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return username;
+    }
+
+
+
+
+    public void addBooksToUser(String username) {
+        ArrayList<Book> relatedBooks = new ArrayList<Book>();
+        for (String title : books.keySet()) {
+            Book book = books.get(title);
+            String curName = getBookUser(title);
+            if (curName.equals(username)) {
+                relatedBooks.add(book);
+
+            }
+        }
+        return relatedBooks;
     }
 
 

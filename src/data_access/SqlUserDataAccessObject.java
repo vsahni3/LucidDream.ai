@@ -7,6 +7,7 @@ import use_case.signup.SignupUserDataAccessInterface;
 
 import java.io.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.Map;
 public class SqlUserDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface {
 
     private final Connection c;
+    private final SqlBookDataAccessObject bookDAO;
 
     private final Map<String, Integer> headers = new LinkedHashMap<>();
 
@@ -48,6 +50,11 @@ public class SqlUserDataAccessObject implements SignupUserDataAccessInterface, L
 
     }
 
+    public Map<String, User> loadALl() {
+        return accounts;
+
+    }
+
     @Override
     public void save(User user) {
         accounts.put(user.getName(), user);
@@ -69,6 +76,7 @@ public class SqlUserDataAccessObject implements SignupUserDataAccessInterface, L
                 String sql = "UPDATE USER SET PASSWORD = ? WHERE USERNAME = ?";
                 try (PreparedStatement pstmt = c.prepareStatement(sql)) {
                     pstmt.setString(1, user.getPassword()); // Set the password parameter
+                    pstmt.setString(2, username); // Set the userna,e parameter
                     pstmt.executeUpdate(); // Execute the insert statement
                 } catch (SQLException e) {
                     System.err.println(e.getMessage());
