@@ -3,37 +3,37 @@ package data_access;
 import entity.User;
 import entity.UserFactory;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UserAndBook {
+public class CombinedDAO {
     private SqlUserDataAccessObject userDAO;
     private SqlBookDataAccessObject bookDAO;
+    private SqlPageDataAccessObject pageDAO;
     private final Map<String, User> users = new HashMap<>();
-    private final Map<String, Book> books = new HashMap<>();
     private UserFactory userFactory;
     private BookFactory bookFactory;
 
-    public UserAndBook(SqlUserDataAccessObject userDAO, SqlBookDataAccessObject bookDAO, UserFactory userFactory, BookFactory bookFactory) {
+    public UserAndBook(SqlUserDataAccessObject userDAO, SqlBookDataAccessObject bookDAO, UserFactory userFactory, SqlPageDataAccessObject pageDAO) {
         this.userDAO = userDAO;
+        this.pageDAO = pageDAO;
         this.bookDAO = bookDAO;
-        this.bookFactory = bookFactory;
         this.userFactory = userFactory;
         loadData(users);
     }
 
     public void loadData(Map<String, User> map) {
         Map<String, User> tempUsers = userDAO.loadAll();
-        Map<String, Book> tempBooks = bookDAO.loadAll();
+
 
         for (String username : tempUsers.keySet()) {
             User user = tempUsers.get(username);
             ArrayList<Book> userBooks = bookDAO.getUserBooks(username);
+            for (Book book : userBooks) {
+                ArrayList<Page> bookPages = pageDAO.getBookPages(book.getTitle());
+                book.setPages(bookPages);
+            }
             user.setBooks(userBooks);
             map.put(username, user);
 
@@ -64,15 +64,10 @@ public class UserAndBook {
 
         for (String username : users.keySet()) {
             User user = users.get(username);
-            if (tempMap.containsKey(username)) {
-                userDAO.save(user);
-                bookDAO.addBooks(user.getBooks(), username);
-
-            } else {
-                userDAO.save(user);
-                bookDAO.addBooks(user.getBooks(), username);
-
-
+            userDAO.save(user);
+            bookDAO.saveBooks(user.getBooks(), username);
+            for (Book book : user.getBooks()) {
+                pageDAO.savePages(book.getPages(), book.title())
             }
         }
 
