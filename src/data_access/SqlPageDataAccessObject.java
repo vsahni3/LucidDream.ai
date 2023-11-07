@@ -24,7 +24,7 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
 
     private PageFactory pageFactory;
 
-    public SqlUserDataAccessObject(SQLiteJDBC connector, PageFactory pageFactory) throws IOException {
+    public SqlPageDataAccessObject(SQLiteJDBC connector, PageFactory pageFactory) throws IOException {
         this.pageFactory = pageFactory;
         this.c = connector.getConnection();
         connector.createBookTable();
@@ -97,43 +97,51 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
         return pages.containsKey(identifier);
     }
 
+    public void savePage(Page page, String title) {
+        if (tempMap.containsKey(title)) {
+            String sql = "UPDATE PAGE SET TextContent = ?, PageNumber = ?, BookID = ? WHERE ID = ?";
+            try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+                pstmt.setString(1, page.getTextContent()); // Set the password parameter
+                pstmt.setString(2, page.getPageNumber()); // Set the userna,e parameter
+                pstmt.setString(3, title);
+                pstmt.setString(3, book.getID());
+                pstmt.executeUpdate(); // Execute the insert statement
 
-    public int savePages(ArrayList<Page> pages, String title) {
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+        } else {
+            String sql = "INSERT INTO USER (TextContent, PageNumber, BookID) VALUES (?, ?, ?)";
+            try (PreparedStatement pstmt = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                pstmt.setString(1, page.getTextContent()); // Set the username parameter
+                pstmt.setString(2, page.getTextContent()); // Set the password parameter
+                pstmt.setString(3, title);
+                pstmt.executeUpdate(); // Execute the insert statement
+                ResultSet generatedKeys = pstmt.getGeneratedKeys();
+                int generatedId = generatedKeys.getInt(1);
+                page.setId(generatedId);
+
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+
+        }
+
+    }
+
+
+    public void savePages(ArrayList<Page> pages, String title) {
         Map<String, Page> tempMap = new HashMap<>();
+
         loadData(tempMap);
         for (Page page : pages) {
+            savePage(page);
 
-            if (tempMap.containsKey(title)) {
-                String sql = "UPDATE PAGE SET TextContent = ?, PageNumber = ?, BookID = ? WHERE ID = ?";
-                try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-                    pstmt.setString(1, page.getTextContent()); // Set the password parameter
-                    pstmt.setString(2, page.getPageNumber()); // Set the userna,e parameter
-                    pstmt.setString(3, title);
-                    pstmt.setString(3, book.getID());
-                    pstmt.executeUpdate(); // Execute the insert statement
-                    return -1;
-                } catch (SQLException e) {
-                    System.err.println(e.getMessage());
-                }
-            } else {
-                String sql = "INSERT INTO USER (TextContent, PageNumber, BookID) VALUES (?, ?, ?)";
-                try (PreparedStatement pstmt = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                    pstmt.setString(1, page.getTextContent()); // Set the username parameter
-                    pstmt.setString(2, page.getTextContent()); // Set the password parameter
-                    pstmt.setString(3, title);
-                    pstmt.executeUpdate(); // Execute the insert statement
-                    ResultSet generatedKeys = pstmt.getGeneratedKeys();
-                    int generatedId = generatedKeys.getInt(1);
-                    return generatedId;
 
-                } catch (SQLException e) {
-                    System.err.println(e.getMessage());
-                }
-
-            }
         }
         this.pages = new HashMap<Integer, Page>();
         loadData(this.pages);
+
 
 
     }

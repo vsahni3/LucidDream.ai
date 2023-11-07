@@ -62,36 +62,7 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
         return books.get(title);
     }
 
-    private void save() {
-        Map<String, Book> tempMap = new HashMap<>();
-        loadData(tempMap);
 
-        for (String title : books.keySet()) {
-            Book book = books.get(title);
-            if (tempMap.containsKey(title)) {
-                String sql = "UPDATE BOOK SET StoryText = ? WHERE TITLE = ?";
-                try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-                    pstmt.setString(1, book.getStoryText()); // Set the text parameter
-                    pstmt.setString(2, title); // Set the title parameter
-                    pstmt.executeUpdate(); // Execute the insert statement
-                } catch (SQLException e) {
-                    System.err.println(e.getMessage());
-                }
-            } else {
-                String sql = "INSERT INTO BOOK (TITLE, StoryText) VALUES (?, ?)";
-                try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-                    pstmt.setString(1, title); // Set the username parameter
-                    pstmt.setString(2, book.getStoryText()); // Set the password parameter
-                    pstmt.executeUpdate(); // Execute the insert statement
-
-                } catch (SQLException e) {
-                    System.err.println(e.getMessage());
-                }
-
-            }
-        }
-
-    }
 
 
     /**
@@ -122,6 +93,33 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
         return username;
     }
 
+    public void saveBook(Book book, String username) {
+        if (tempMap.containsKey(username)) {
+            String sql = "UPDATE BOOK SET UserID = ?, StoryText WHERE TITLE = ?";
+            try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+                pstmt.setString(1, username); // Set the password parameter
+                pstmt.setString(2, book.getStoryText()); // Set the userna,e parameter
+                pstmt.setString(3, book.getTitle());
+                pstmt.executeUpdate(); // Execute the insert statement
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+        } else {
+            String sql = "INSERT INTO USER (TITLE, StoryText, UserID) VALUES (?, ?, ?)";
+            try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+                pstmt.setString(1, book.getTitle()); // Set the username parameter
+                pstmt.setString(2, book.getStoryText()); // Set the password parameter
+                pstmt.setString(3, username);
+                pstmt.executeUpdate(); // Execute the insert statement
+
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+
+        }
+    }
+
+
 
 
 
@@ -130,29 +128,7 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
         loadData(tempMap);
         for (Book book : books) {
 
-            if (tempMap.containsKey(username)) {
-                String sql = "UPDATE BOOK SET UserID = ?, StoryText WHERE TITLE = ?";
-                try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-                    pstmt.setString(1, username); // Set the password parameter
-                    pstmt.setString(2, book.getStoryText()); // Set the userna,e parameter
-                    pstmt.setString(3, book.getTitle());
-                    pstmt.executeUpdate(); // Execute the insert statement
-                } catch (SQLException e) {
-                    System.err.println(e.getMessage());
-                }
-            } else {
-                String sql = "INSERT INTO USER (TITLE, StoryText, UserID) VALUES (?, ?, ?)";
-                try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-                    pstmt.setString(1, book.getTitle()); // Set the username parameter
-                    pstmt.setString(2, book.getStoryText()); // Set the password parameter
-                    pstmt.setString(3, username);
-                    pstmt.executeUpdate(); // Execute the insert statement
-
-                } catch (SQLException e) {
-                    System.err.println(e.getMessage());
-                }
-
-            }
+            saveBook(book);
         }
         this.books = new HashMap<String, Book>();
         loadData(this.books);
