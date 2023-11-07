@@ -12,14 +12,13 @@ public class CombinedDAO {
     private SqlBookDataAccessObject bookDAO;
     private SqlPageDataAccessObject pageDAO;
     private final Map<String, User> users = new HashMap<>();
-    private UserFactory userFactory;
-    private BookFactory bookFactory;
 
-    public UserAndBook(SqlUserDataAccessObject userDAO, SqlBookDataAccessObject bookDAO, UserFactory userFactory, SqlPageDataAccessObject pageDAO) {
+
+    public UserAndBook(SqlUserDataAccessObject userDAO, SqlBookDataAccessObject bookDAO, SqlPageDataAccessObject pageDAO) {
         this.userDAO = userDAO;
         this.pageDAO = pageDAO;
         this.bookDAO = bookDAO;
-        this.userFactory = userFactory;
+
         loadData(users);
     }
 
@@ -49,13 +48,48 @@ public class CombinedDAO {
     }
 
     @Override
-    public User get(String username) {
+    public User getUser(String username) {
         return users.get(username);
     }
 
     @Override
-    public boolean existsByName(String identifier) {
-        return accounts.containsKey(identifier);
+    public Book getBook(String title) {
+        for (String username : users.keySet()) {
+            User user = users.get(username);
+            for (Book book : user.getBooks()) {
+                if (book.getTitle().equals(title)) {
+                    return book;
+                }
+            }
+        }
+    }
+
+    @Override
+    public Page getPage(Integer id) {
+        for (String username : users.keySet()) {
+            User user = users.get(username);
+            for (Book book : user.getBooks()) {
+                for (Page page : book.getPages())
+                    if (page.getId().equals(id)) {
+                        return page;
+                    }
+            }
+        }
+    }
+
+    @Override
+    public boolean existsUser(String identifier) {
+        return users.containsKey(identifier);
+    }
+
+    @Override
+    public boolean existsBook(String identifier) {
+        return bookDAO.existsBook(identifier);
+    }
+
+    @Override
+    public boolean existsPage(String identifier) {
+        return pageDAO.existsPage(identifier);
     }
 
     private void save() {
@@ -67,7 +101,7 @@ public class CombinedDAO {
             userDAO.save(user);
             bookDAO.saveBooks(user.getBooks(), username);
             for (Book book : user.getBooks()) {
-                pageDAO.savePages(book.getPages(), book.title())
+                pageDAO.savePages(book.getPages(), book.title());
             }
         }
 

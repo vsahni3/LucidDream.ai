@@ -100,9 +100,11 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
      * @return whether a user exists with username identifier
      */
     @Override
-    public boolean existsByName(String identifier) {
+    public boolean existsBook(String identifier) {
         return books.containsKey(identifier);
     }
+
+
 
     public String getBookUser(String identifier) {
         String username = "";
@@ -152,8 +154,11 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
 
             }
         }
+        this.books = new HashMap<String, Book>();
+        loadData(this.books);
 
-        }
+
+    }
 
     }
 

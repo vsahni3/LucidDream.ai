@@ -20,7 +20,7 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
 
     private final Map<String, Integer> headers = new LinkedHashMap<>();
 
-    private final Map<String, Page> pages = new HashMap<>();
+    private final Map<Integer, Page> pages = new HashMap<>();
 
     private PageFactory pageFactory;
 
@@ -33,7 +33,7 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
 
     }
 
-    public void loadData(Map<String, User> map) {
+    public void loadData(Map<Integer, Page> map) {
         String sql = "SELECT TextContent, PageNumber FROM BOOK";
 
         try (Statement stmt = c.createStatement();
@@ -52,16 +52,7 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
 
     }
 
-    @Override
-    public void save(Book book) {
-        books.put(book.getTitle(), book);
-        this.save();
-    }
 
-    @Override
-    public Book get(String title) {
-        return books.get(title);
-    }
 
     private void save() {
         Map<String, Page> tempMap = new HashMap<>();
@@ -100,63 +91,12 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
      * @param identifier the username to check.
      * @return whether a user exists with username identifier
      */
+
     @Override
-    public boolean existsByName(String identifier) {
-        return books.containsKey(identifier);
+    public boolean existsPage(String identifier) {
+        return pages.containsKey(identifier);
     }
 
-    public String getPageBook(Integer id) {
-        String title = "";
-        String sql = "SELECT BookID FROM Book WHERE title = ?";
-        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-            pstmt.setString(1, identifier); // Set the password parameter
-            ResultSet rs = pstmt.executeQuery();
-            username = rs.getString("username");
-
-
-            pstmt.executeUpdate(); // Execute the insert statement
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-        return username;
-    }
-
-
-
-
-    public void addBooks(ArrayList<Book> books, String username) {
-
-        for (String title : books.keySet()) {
-
-            String curName = getBookUser(title);
-
-            String sql = "UPDATE BOOK SET UserID = ? WHERE TTILE = ?";
-            try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-                pstmt.setString(1, curName); // Set the password parameter
-                pstmt.setString(2, title); // Set the userna,e parameter
-                pstmt.executeUpdate(); // Execute the insert statement
-            } catch (SQLException e) {
-                System.err.println(e.getMessage());
-            }
-
-        }
-
-    }
-
-    public void insertBook(Page page, String title) {
-
-        String sql = "INSERT INTO PAGE (TextContent, PageNumber, BookID) VALUES (?, ?, ?)";
-        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-            pstmt.setString(1, page.getContent()); // Set the username parameter
-            pstmt.setString(2, page.getPageNumber()); // Set the password parameter
-            pstmt.setString(3, title);
-            pstmt.executeUpdate(); // Execute the insert statement
-
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-
-    }
 
     public int savePages(ArrayList<Page> pages, String title) {
         Map<String, Page> tempMap = new HashMap<>();
@@ -192,6 +132,8 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
 
             }
         }
+        this.pages = new HashMap<Integer, Page>();
+        loadData(this.pages);
 
 
     }
