@@ -9,7 +9,7 @@ public class PageFactory {
      * @return
      */
 
-    public Page create(String textContents, Integer pageNumber, Image image) {
-        return new Page(textContents, pageNumber, image);
+    public Page create(String textContents, Integer pageNumber, Integer pageID, Image image) {
+        return new Page(textContents, pageNumber, pageID, image);
     }
 }

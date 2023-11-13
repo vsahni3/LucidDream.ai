@@ -2,7 +2,7 @@ package entity;
 
 public class ImageFactory {
 
-    public Image create(String caption) {
-        return new Image(caption);
+    public Image create(byte[] contents) {
+        return new Image(contents);
     }
 }

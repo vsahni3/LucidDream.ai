@@ -4,24 +4,24 @@ import java.time.LocalDateTime;
 
 class CommonUser implements User {
 
-    private final String name;
+    private final String userName;
     private final String password;
     private final LocalDateTime creationTime;
 
     /**
      * Requires: password is valid.
-     * @param name
+     * @param userName
      * @param password
      */
-    public CommonUser(String name, String password, LocalDateTime creationTime) {
-        this.name = name;
+    public CommonUser(String userName, String password, LocalDateTime creationTime) {
+        this.userName = userName;
         this.password = password;
         this.creationTime = creationTime;
     }
 
     @Override
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
     @Override
