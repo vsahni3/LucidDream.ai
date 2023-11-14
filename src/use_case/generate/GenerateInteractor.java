@@ -1,35 +1,42 @@
 package use_case.generate;
 
+import entity.StoryBook;
+import entity.StoryBookFactory;
 import entity.User;
+
+import java.util.List;
 
 public class GenerateInteractor implements GenerateInputBoundary {
     final GenerateUserDataAccessInterface userDataAccessObject;
-    final GenerateOutputBoundary loginPresenter;
+    final GenerateOutputBoundary generatePresenter;
+    final StoryBookFactory storyBookFactory;
 
     public GenerateInteractor(GenerateUserDataAccessInterface userDataAccessInterface,
-                              GenerateOutputBoundary generateOutputBoundary) {
+                              GenerateOutputBoundary generateOutputBoundary, StoryBookFactory storyBookFactory) {
         this.userDataAccessObject = userDataAccessInterface;
-        this.loginPresenter = generateOutputBoundary;
+        this.generatePresenter = generateOutputBoundary;
+        this.storyBookFactory = storyBookFactory;
     }
 
 
     @Override
     public void execute(GenerateInputData generateInputData) {
-        String username = generateInputData.getPrompt();
-        String password = generateInputData.getUsername();
-        if (!userDataAccessObject.existsByName(username)) {
-            loginPresenter.prepareFailView("username error", username + ": Account does not exist.");
-        } else {
-            String pwd = userDataAccessObject.get(username).getPassword();
-            if (!password.equals(pwd)) {
-                loginPresenter.prepareFailView("password error", "Incorrect password for " + username + ".");
-            } else {
 
-                User user = userDataAccessObject.get(generateInputData.getPrompt());
 
-                GenerateOutputData generateOutputData = new GenerateOutputData(user.getName(), false);
-                loginPresenter.prepareSuccessView(generateOutputData);
-            }
-        }
+        String username = generateInputData.getUsername();
+        String prompt = generateInputData.getPrompt();
+
+
+        User user = userDataAccessObject.get(username);
+        StoryBook outputStoryBook = storyBookFactory.create(prompt);
+        List<StoryBook> userStories = user.getStories();
+
+        userStories.add(outputStoryBook);
+        userDataAccessObject.save(user);
+
+        GenerateOutputData generateOutputData = new GenerateOutputData(outputStoryBook);
+        generatePresenter.prepareSuccessView(generateOutputData);
+
+
     }
 }

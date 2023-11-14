@@ -14,7 +14,13 @@ public class StoryBookFactory {
 
 
     public StoryBook create(String prompt) {
-        String storyText = generateText(prompt);
+        String entireText = generateText(prompt);
+
+        int split = entireText.indexOf("Story:") + 6;
+
+        String title = entireText.substring(6, split).strip();
+
+        String storyText = entireText.substring(split).strip();
 
         List<String> pagesText = getPagesText(storyText);
 
@@ -26,7 +32,10 @@ public class StoryBookFactory {
             pages.add(pageFactory.create(pageText, i + 1, image));
         }
 
-        return new StoryBook(title, pages);
+        Page[] pageArray = new Page[pages.size()];
+        pages.toArray(pageArray);
+
+        return new StoryBook(title, pageArray);
     }
 
     private static List<String> getPagesText(String storyText) {
