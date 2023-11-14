@@ -12,23 +12,11 @@ public class StoryBookFactory {
         this.pageFactory = pageFactory;
     }
 
-    /* TODO: change for loop to while loop, create prompt*/
+
     public StoryBook create(String prompt) {
         String storyText = generateText(prompt);
 
-        int charLimit = 250;
-        int storyChars = storyText.length();
-
-        List<String> pagesText = new ArrayList<>();
-
-        for (int i=0; i < storyChars; i += charLimit) {
-            try {
-                pagesText.add(storyText.substring(i, i + charLimit));
-            }
-            catch (StringIndexOutOfBoundsException e) {
-                pagesText.add(storyText.substring(i));
-            }
-        }
+        List<String> pagesText = getPagesText(storyText);
 
         List<Page> pages = new ArrayList<>();
 
@@ -41,11 +29,34 @@ public class StoryBookFactory {
         return new StoryBook(title, pages);
     }
 
-    private String generateText(String prompt) {
+    private static List<String> getPagesText(String storyText) {
+        int charLimit = 250;
+        int storyChars = storyText.length();
+
+        List<String> pagesText = new ArrayList<>();
+
+        int i = 0;
+
+        while (i < storyChars) {
+            if (i + charLimit >= storyChars) {
+                pagesText.add(storyText.substring(i));
+            }
+            else {
+                int nextSentenceIndex = storyText.substring(i + charLimit).indexOf(".");
+                pagesText.add(storyText.substring(i, i + charLimit + nextSentenceIndex));
+            }
+
+            i += charLimit;
+
+        }
+        return pagesText;
+    }
+
+    private static String generateText(String prompt) {
         ...
     }
 
-    private Blob generateImage(String pageText) {
+    private static Blob generateImage(String pageText) {
         ...
     }
 }
