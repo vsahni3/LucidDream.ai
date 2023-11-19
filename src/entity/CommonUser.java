@@ -1,27 +1,33 @@
 package entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 class CommonUser implements User {
 
-    private final String name;
+    private final String userName;
     private final String password;
     private final LocalDateTime creationTime;
 
+    private final ArrayList<StoryBook> storybooks;
+
     /**
      * Requires: password is valid.
-     * @param name
+     *
+     * @param userName
      * @param password
+     * @param storybooks
      */
-    public CommonUser(String name, String password, LocalDateTime creationTime) {
-        this.name = name;
+    public CommonUser(String userName, String password, LocalDateTime creationTime, ArrayList<StoryBook> storybooks) {
+        this.userName = userName;
         this.password = password;
         this.creationTime = creationTime;
+        this.storybooks = storybooks;
     }
 
     @Override
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
     @Override
@@ -33,4 +39,7 @@ class CommonUser implements User {
     public LocalDateTime getCreationTime() {
         return creationTime;
     }
+
+    @Override
+    public ArrayList<StoryBook> getStoryBooks() { return storybooks; }
 }

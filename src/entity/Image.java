@@ -2,9 +2,9 @@ package entity;
 
 public class Image {
 
-    private final String caption;
+    private final byte[] contents;
 
-    Image(String caption) {
-        this.caption = caption;
+    Image(byte[] contents) {
+        this.contents = contents;
     }
 }
