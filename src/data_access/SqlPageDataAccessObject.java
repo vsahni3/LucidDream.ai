@@ -1,11 +1,16 @@
 package data_access;
 import java.sql.*;
+
+import entity.PageFactory;
+import entity.StoryBook;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
 import entity.Page;
 import java.io.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class SqlPageDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface {
@@ -44,6 +49,28 @@ public class SqlPageDataAccessObject implements SignupUserDataAccessInterface, L
 
     }
 
+    public ArrayList<Page> getBookPages(String title) {
+        ArrayList<Page> curPages = new ArrayList<>();
+        String sql = "SELECT pageID FROM Page WHERE title = ?";
+        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+            pstmt.setString(1, title); // Set the password parameter
+            ResultSet rs = pstmt.executeQuery();
+
+            // Iterate through the result set to get all titles
+            while (rs.next()) {
+                String pageID = rs.getString("pageID");
+                // Now you have the title, and you can do something with it,
+                curPages.add(pages.get(title));
+            }
+
+
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return curPages;
+    }
+
 
 
     /**
@@ -57,7 +84,7 @@ public class SqlPageDataAccessObject implements SignupUserDataAccessInterface, L
         return pages.containsKey(identifier);
     }
 
-    public void savePage(Page page, String title) {
+    public void savePage(Page page, String title, Map<String, Page> tempMap) {
         if (tempMap.containsKey(title)) {
             String sql = "UPDATE PAGE SET pageContents = ?, pageNumber = ?, image = ?, bookID = ? WHERE ID = ?";
             try (PreparedStatement pstmt = c.prepareStatement(sql)) {
@@ -97,7 +124,7 @@ public class SqlPageDataAccessObject implements SignupUserDataAccessInterface, L
 
         loadData(tempMap);
         for (Page page : pages) {
-            savePage(page);
+            savePage(page, title, tempMap);
 
 
         }

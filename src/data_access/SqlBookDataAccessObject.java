@@ -62,7 +62,27 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
      * @return whether a user exists with username identifier
      */
 
+    public ArrayList<StoryBook> getUserBooks(String userName) {
+        ArrayList<StoryBook> books = new ArrayList<>();
+        String sql = "SELECT title FROM Book WHERE userName = ?";
+        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+            pstmt.setString(1, userName); // Set the password parameter
+            ResultSet rs = pstmt.executeQuery();
 
+            // Iterate through the result set to get all titles
+            while (rs.next()) {
+                String title = rs.getString("title");
+                // Now you have the title, and you can do something with it,
+                books.add(storyBooks.get(title));
+            }
+
+
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return books;
+    }
 
 
     public String getBookUser(String identifier) {

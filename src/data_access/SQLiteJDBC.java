@@ -54,7 +54,7 @@ public class SQLiteJDBC {
         try {
             stmt = c.createStatement();
             String sql = "CREATE TABLE IF NOT EXISTS PAGE " +
-                    "(ID INTEGER PRIMARY KEY     NOT NULL," +
+                    "(pageID INTEGER PRIMARY KEY     NOT NULL," +
                     "pageContents           TEXT    NOT NULL, " +
                     "pageNumber     INTEGER NOT NULL, " +
                     "image     BLOB NOT NULL, " +
