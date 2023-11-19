@@ -1,24 +1,16 @@
 package data_access;
 import java.sql.*;
-
-import data_access.SQLiteJDBC;
-import entity.User;
-import entity.UserFactory;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
-
+import entity.Page;
 import java.io.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
-public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface {
+import java.util.HashMap;
+
+
+public class SqlPageDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface {
 
     private final Connection c;
-
-    private final Map<String, Integer> headers = new LinkedHashMap<>();
 
     private final Map<Integer, Page> pages = new HashMap<>();
 
@@ -34,16 +26,16 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
     }
 
     public void loadData(Map<Integer, Page> map) {
-        String sql = "SELECT TextContent, PageNumber FROM BOOK";
+        String sql = "SELECT pageContents, pageNumber FROM BOOK";
 
         try (Statement stmt = c.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 Integer id = rs.getInt("ID");
-                String content = rs.getString("TextContent");
-                String pageNumber = rs.getString("PageNumber");
-                Page page = pageFactory.create(id, content, pageNumber);
+                String pageContents = rs.getString("pageContents");
+                String pageNumber = rs.getString("pageNumber");
+                Page page = pageFactory.create(id, pageContents, pageNumber);
                 map.put(id, page);
             }
         } catch (SQLException e) {
@@ -54,38 +46,6 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
 
 
 
-    private void save() {
-        Map<String, Page> tempMap = new HashMap<>();
-        loadData(tempMap);
-
-        for (Integer id : pages.keySet()) {
-            Page page = books.get(id);
-            if (tempMap.containsKey(id)) {
-                String sql = "UPDATE BOOK SET StoryText = ? WHERE TITLE = ?";
-                try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-                    pstmt.setString(1, book.getStoryText()); // Set the text parameter
-                    pstmt.setString(2, title); // Set the title parameter
-                    pstmt.executeUpdate(); // Execute the insert statement
-                } catch (SQLException e) {
-                    System.err.println(e.getMessage());
-                }
-            } else {
-                String sql = "INSERT INTO BOOK (TITLE, StoryText) VALUES (?, ?)";
-                try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-                    pstmt.setString(1, title); // Set the username parameter
-                    pstmt.setString(2, book.getStoryText()); // Set the password parameter
-                    pstmt.executeUpdate(); // Execute the insert statement
-
-                } catch (SQLException e) {
-                    System.err.println(e.getMessage());
-                }
-
-            }
-        }
-
-    }
-
-
     /**
      * Return whether a user exists with username identifier.
      * @param identifier the username to check.
@@ -93,29 +53,31 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
      */
 
     @Override
-    public boolean existsPage(String identifier) {
+    public boolean existsPage(Integer identifier) {
         return pages.containsKey(identifier);
     }
 
     public void savePage(Page page, String title) {
         if (tempMap.containsKey(title)) {
-            String sql = "UPDATE PAGE SET TextContent = ?, PageNumber = ?, BookID = ? WHERE ID = ?";
+            String sql = "UPDATE PAGE SET pageContents = ?, pageNumber = ?, image = ?, bookID = ? WHERE ID = ?";
             try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-                pstmt.setString(1, page.getTextContent()); // Set the password parameter
+                pstmt.setString(1, page.getPageContents()); // Set the password parameter
                 pstmt.setString(2, page.getPageNumber()); // Set the userna,e parameter
-                pstmt.setString(3, title);
-                pstmt.setString(3, book.getID());
+                pstmt.setString(3, page.getImage());
+                pstmt.setString(4, title);
+                pstmt.setString(5, book.getID());
                 pstmt.executeUpdate(); // Execute the insert statement
 
             } catch (SQLException e) {
                 System.err.println(e.getMessage());
             }
         } else {
-            String sql = "INSERT INTO USER (TextContent, PageNumber, BookID) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO USER (pageContents, pageNumber, image, bookID) VALUES (?, ?, ?, ?)";
             try (PreparedStatement pstmt = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                pstmt.setString(1, page.getTextContent()); // Set the username parameter
-                pstmt.setString(2, page.getTextContent()); // Set the password parameter
-                pstmt.setString(3, title);
+                pstmt.setString(1, page.getPageContents()); // Set the username parameter
+                pstmt.setString(2, page.getPageNumber()); // Set the password parameter
+                pstmt.setString(3, page.getImage());
+                pstmt.setString(4, title);
                 pstmt.executeUpdate(); // Execute the insert statement
                 ResultSet generatedKeys = pstmt.getGeneratedKeys();
                 int generatedId = generatedKeys.getInt(1);

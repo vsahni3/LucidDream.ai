@@ -1,11 +1,9 @@
 package data_access;
-
+import entity.Page;
 import entity.User;
-import entity.UserFactory;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import entity.StoryBook;
 
 public class CombinedDAO {
     private SqlUserDataAccessObject userDAO;
@@ -26,15 +24,15 @@ public class CombinedDAO {
         Map<String, User> tempUsers = userDAO.loadAll();
 
 
-        for (String username : tempUsers.keySet()) {
-            User user = tempUsers.get(username);
-            ArrayList<Book> userBooks = bookDAO.getUserBooks(username);
-            for (Book book : userBooks) {
+        for (String userName : tempUsers.keySet()) {
+            User user = tempUsers.get(userName);
+            ArrayList<StoryBook> userBooks = bookDAO.getUserBooks(userName);
+            for (StoryBook book : userBooks) {
                 ArrayList<Page> bookPages = pageDAO.getBookPages(book.getTitle());
                 book.setPages(bookPages);
             }
             user.setBooks(userBooks);
-            map.put(username, user);
+            map.put(userName, user);
 
 
         }
@@ -43,20 +41,20 @@ public class CombinedDAO {
 
     @Override
     public void save(User user) {
-        users.put(user.getName(), user);
+        users.put(user.getUserName(), user);
         this.save();
     }
 
     @Override
-    public User getUser(String username) {
-        return users.get(username);
+    public User getUser(String userName) {
+        return users.get(userName);
     }
 
     @Override
-    public Book getBook(String title) {
-        for (String username : users.keySet()) {
-            User user = users.get(username);
-            for (Book book : user.getBooks()) {
+    public StoryBook getBook(String title) {
+        for (String userName : users.keySet()) {
+            User user = users.get(userName);
+            for (StoryBook book : user.getBooks()) {
                 if (book.getTitle().equals(title)) {
                     return book;
                 }
@@ -66,9 +64,11 @@ public class CombinedDAO {
 
     @Override
     public Page getPage(Integer id) {
-        for (String username : users.keySet()) {
-            User user = users.get(username);
-            for (Book book : user.getBooks()) {
+
+        // you could also implement a getPage for the pageDAO as the page doesn't have any extra info about other entities
+        for (String userName : users.keySet()) {
+            User user = users.get(userName);
+            for (StoryBook book : user.getBooks()) {
                 for (Page page : book.getPages())
                     if (page.getId().equals(id)) {
                         return page;
@@ -88,7 +88,7 @@ public class CombinedDAO {
     }
 
     @Override
-    public boolean existsPage(String identifier) {
+    public boolean existsPage(Integer identifier) {
         return pageDAO.existsPage(identifier);
     }
 
@@ -98,10 +98,10 @@ public class CombinedDAO {
 
         for (String username : users.keySet()) {
             User user = users.get(username);
-            userDAO.save(user);
+            userDAO.saveUser(user);
             bookDAO.saveBooks(user.getBooks(), username);
-            for (Book book : user.getBooks()) {
-                pageDAO.savePages(book.getPages(), book.title());
+            for (StoryBook book : user.getBooks()) {
+                pageDAO.savePages(book.getPages(), book.getTitle());
             }
         }
 

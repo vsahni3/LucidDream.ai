@@ -4,10 +4,9 @@ import entity.User;
 import entity.UserFactory;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
-
+import entity.User;
 import java.io.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -33,19 +32,19 @@ public class SqlUserDataAccessObject implements SignupUserDataAccessInterface, L
     }
 
     public void loadData(Map<String, User> map) {
-        String sql = "SELECT USERNAME, PASSWORD FROM USER";
+        String sql = "SELECT userName, password FROM USER";
 
         try (Statement stmt = c.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                String username = rs.getString("USERNAME");
-                String password = rs.getString("PASSWORD");
-                User user = userFactory.create(username, password);
-                map.put(username, user);
+                String userName = rs.getString("userName");
+                String password = rs.getString("password");
+                User user = userFactory.create(userName, password);
+                map.put(userName, user);
             }
         } catch (SQLException e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.err.println(e.getClass().getUserName() + ": " + e.getMessage());
         }
 
     }
@@ -56,35 +55,35 @@ public class SqlUserDataAccessObject implements SignupUserDataAccessInterface, L
     }
 
     @Override
-    public void save(User user) {
-        accounts.put(user.getName(), user);
-        this.save();
+    public void saveUser(User user) {
+        accounts.put(user.geUserName(), user);
+        this.saveUser();
     }
 
     @Override
-    public User get(String username) {
-        return accounts.get(username);
+    public User get(String userName) {
+        return accounts.get(userName);
     }
 
-    private void save() {
+    private void saveUser() {
         Map<String, User> tempMap = new HashMap<>();
         loadData(tempMap);
 
-        for (String username : accounts.keySet()) {
-            User user = accounts.get(username);
-            if (tempMap.containsKey(username)) {
-                String sql = "UPDATE USER SET PASSWORD = ? WHERE USERNAME = ?";
+        for (String name : accounts.keySet()) {
+            User user = accounts.get(name);
+            if (tempMap.containsKey(name)) {
+                String sql = "UPDATE USER SET password = ? WHERE userName = ?";
                 try (PreparedStatement pstmt = c.prepareStatement(sql)) {
                     pstmt.setString(1, user.getPassword()); // Set the password parameter
-                    pstmt.setString(2, username); // Set the userna,e parameter
+                    pstmt.setString(2, userName); // Set the userna,e parameter
                     pstmt.executeUpdate(); // Execute the insert statement
                 } catch (SQLException e) {
                     System.err.println(e.getMessage());
                 }
             } else {
-                String sql = "INSERT INTO USER (USERNAME, PASSWORD) VALUES (?, ?)";
+                String sql = "INSERT INTO USER (userName, password) VALUES (?, ?)";
                 try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-                    pstmt.setString(1, username); // Set the username parameter
+                    pstmt.setString(1, userName); // Set the username parameter
                     pstmt.setString(2, user.getPassword()); // Set the password parameter
                     pstmt.executeUpdate(); // Execute the insert statement
 
