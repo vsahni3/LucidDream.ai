@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import entity.StoryBook;
 import java.util.ArrayList;
-public class CombinedDAO {
+public class CombinedDAO implements CombinedDataAcessInterface {
     private SqlUserDataAccessObject userDAO;
     private SqlBookDataAccessObject bookDAO;
     private SqlPageDataAccessObject pageDAO;
