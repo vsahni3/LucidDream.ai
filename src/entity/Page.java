@@ -1,17 +1,15 @@
 package entity;
 
-import java.sql.Blob;
-
 public class Page {
 
     private final String pageContents;
 
     private final Integer pageNumber;
 
-    private final Blob image;
+    private final byte[] image;
 
 
-    public Page(String textContents, Integer pageNumber, Blob image) {
+    public Page(String textContents, Integer pageNumber, byte[] image) {
         this.pageContents = textContents;
         this.pageNumber = pageNumber;
         this.image = image;
@@ -21,5 +19,5 @@ public class Page {
 
     public Integer getpageNumber() { return pageNumber; }
 
-    public Blob getImage() { return image; }
+    public byte[] getImage() { return image; }
 }

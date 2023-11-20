@@ -1,18 +1,30 @@
 package entity;
 
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
 import java.util.List;
 import java.util.ArrayList;
-import java.sql.Blob;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.intellijava.core.controller.RemoteImageModel;
 import com.intellijava.core.model.input.ImageModelInput;
 import okhttp3.*;
 
+/**
+ * StoryBookFactory is responsible for creating StoryBook objects.
+ * It uses input prompts and a PageFactory to generate and assemble the pages of a StoryBook.
+ */
 public class StoryBookFactory {
 
-
+    /**
+     * Creates a StoryBook based on the given prompt and using the specified PageFactory.
+     * It generates text for the story, splits it into pages, and then uses the PageFactory to create each page.
+     * It also handles image generation for each page of the storybook.
+     *
+     * @param prompt       The prompt used as the basis for generating the story text.
+     * @param pageFactory  The factory used for creating individual pages of the storybook.
+     * @return             A new StoryBook object containing the generated story and pages.
+     */
     public StoryBook create(String prompt, PageFactory pageFactory) {
         String entireText = generateText(prompt);
 
@@ -28,7 +40,7 @@ public class StoryBookFactory {
 
         for (int i = 0; i < pagesText.size(); i++) {
             String pageText = pagesText.get(i);
-            Blob image = null;
+            byte[] image;
             try {
                 image = generateImage(pageText);
             } catch (IOException e) {
@@ -103,13 +115,22 @@ public class StoryBookFactory {
             throw new RuntimeException(e);
         }
 
-
     }
 
-    private static Blob generateImage(String pageText) throws IOException {
-        imageLink = generateImageLink(pageText);
-//        TODO: convert image link to image
-        ...
+    private static byte[] generateImage(String pageText) throws IOException {
+        String imageLink = generateImageLink(pageText);
+        URL url = new URL(imageLink);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        try (InputStream in = url.openStream()) {
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = in.read(buffer)) != -1) {
+                baos.write(buffer, 0, bytesRead);
+            }
+        }
+
+        return baos.toByteArray();
     }
 
     private static String generateImageLink(String pageText) throws IOException {
@@ -119,7 +140,7 @@ public class StoryBookFactory {
         RemoteImageModel imageModel = new RemoteImageModel(apiKey, "openai");
 
         // prepare the input parameters
-        ImageModelInput imageInput = new ImageModelInput.Builder(prompt)
+        ImageModelInput imageInput = new ImageModelInput.Builder(pageText)
                 .setNumberOfImages(imageNumber).setImageSize("1024x1024").build();
 
         // call the model

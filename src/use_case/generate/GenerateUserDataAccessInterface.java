@@ -6,5 +6,5 @@ public interface GenerateUserDataAccessInterface {
 
     void save(User user);
 
-    User get(String username);
+    User getUser(String username);
 }

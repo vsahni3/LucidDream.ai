@@ -1,7 +1,5 @@
 package entity;
 
-import java.sql.Blob;
-
 public class PageFactory {
     /**
      * Requires: password is valid.
@@ -11,7 +9,7 @@ public class PageFactory {
      * @return
      */
 
-    public Page create(String textContents, Integer pageNumber, Blob image) {
+    public Page create(String textContents, Integer pageNumber, byte[] image) {
         return new Page(textContents, pageNumber, image);
     }
 }
