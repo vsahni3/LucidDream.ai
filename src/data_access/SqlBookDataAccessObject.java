@@ -1,49 +1,69 @@
 package data_access;
 import java.sql.*;
 
-import data_access.SQLiteJDBC;
+import entity.StoryBook;
 import entity.User;
-import entity.UserFactory;
+
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
 
 import java.io.*;
-import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * The SqlBookDataAccessObject class is responsible for handling all database operations related to StoryBook entities.
+ * It implements the SignupUserDataAccessInterface and LoginUserDataAccessInterface, providing specific functionalities
+ * for book-related operations in the context of user signup and login.
+ *
+ * This class manages a collection of StoryBook objects, offering methods to load, retrieve, and save book data. It
+ * interacts with a SQL database through a provided SQLiteJDBC connector and utilizes a StoryBookFactory for creating
+ * StoryBook instances.
+ *
+ * Key functionalities include retrieving books associated with a specific user, getting the user associated with a book,
+ * and saving individual books or a collection of books in the database. The class ensures proper management and persistence
+ * of book data, aligning with the requirements of the system's business logic.
+ */
 public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface {
 
     private final Connection c;
 
     private final Map<String, Integer> headers = new LinkedHashMap<>();
 
-    private final Map<String, Book> books = new HashMap<>();
+    private Map<String, StoryBook> storyBooks = new HashMap<>();
 
-    private BookFactory bookFactory;
+    private StoryBookFactory bookFactory;
 
-    public SqlUserDataAccessObject(SQLiteJDBC connector, BookFactory bookFactory) throws IOException {
-        this.bookFactory = bookFactory;
+
+    /**
+     * Constructs a new SqlBookDataAccessObject with a given SQLiteJDBC connector and StoryBookFactory.
+     * @param connector the SQLiteJDBC connector to establish a connection with the database.
+     * @param storyBookFactory the factory to create StoryBook objects.
+     * @throws IOException if an I/O error occurs.
+     */
+    public SqlUserDataAccessObject(SQLiteJDBC connector, StoryBookFactory storyBookFactory) throws IOException {
+        this.storyBookFactory = storyBookFactory;
         this.c = connector.getConnection();
         connector.createBookTable();
 
-        loadData(books);
+        loadData(storyBooks);
 
     }
 
-    public void loadData(Map<String, User> map) {
-        String sql = "SELECT USERNAME, PASSWORD FROM BOOK";
+    private void loadData(Map<String, StoryBook> map) {
+        String sql = "SELECT title FROM BOOK";
 
         try (Statement stmt = c.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                String title = rs.getString("TITLE");
-                String storyText = rs.getString("StoryText");
-                Book book = bookFactory.create(title, storyText);
-                map.put(title, book);
+                String title = rs.getString("title");
+
+                StoryBook storyBook = storyBookFactory.create(title);
+                map.put(title, storyBook);
             }
         } catch (SQLException e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -51,65 +71,78 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
 
     }
 
-    @Override
-    public void save(Book book) {
-        books.put(book.getTitle(), book);
-        this.save();
+    /**
+     * Retrieves a list of StoryBook objects associated with a given user.
+     * @param userName the username for which the books are to be retrieved.
+     * @return an ArrayList of StoryBook objects belonging to the specified user.
+     */
+    public ArrayList<StoryBook> getUserBooks(String userName) {
+        ArrayList<StoryBook> books = new ArrayList<>();
+        String sql = "SELECT title FROM Book WHERE userName = ?";
+        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+            pstmt.setString(1, userName); // Set the password parameter
+            ResultSet rs = pstmt.executeQuery();
+
+            // Iterate through the result set to get all titles
+            while (rs.next()) {
+                String title = rs.getString("title");
+                // Now you have the title, and you can do something with it,
+                books.add(storyBooks.get(title));
+            }
+
+
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return books;
     }
-
-    @Override
-    public Book get(String title) {
-        return books.get(title);
-    }
-
-
-
 
     /**
-     * Return whether a user exists with username identifier.
-     * @param identifier the username to check.
-     * @return whether a user exists with username identifier
+     * Retrieves the username associated with a given book identifier.
+     * @param identifier the title of the book.
+     * @return the username of the user associated with the book.
      */
-    @Override
-    public boolean existsBook(String identifier) {
-        return books.containsKey(identifier);
-    }
-
-
-
     public String getBookUser(String identifier) {
-        String username = "";
+        String userName = "";
         String sql = "SELECT userId FROM Book WHERE title = ?";
         try (PreparedStatement pstmt = c.prepareStatement(sql)) {
             pstmt.setString(1, identifier); // Set the password parameter
             ResultSet rs = pstmt.executeQuery();
-            username = rs.getString("username");
+            userName = rs.getString("userName");
 
 
             pstmt.executeUpdate(); // Execute the insert statement
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
-        return username;
+        return userName;
     }
 
-    public void saveBook(Book book, String username) {
-        if (tempMap.containsKey(username)) {
-            String sql = "UPDATE BOOK SET UserID = ?, StoryText WHERE TITLE = ?";
+
+    /**
+     * Saves a story book in the database with the given user's name and updates the provided temporary map.
+     * @param storyBook the StoryBook object to be saved.
+     * @param userName the username to associate with the story book.
+     * @param tempMap a temporary map to be updated with the new story book data.
+     */
+    public void saveStoryBook(StoryBook storyBook, String userName, Map<String, StoryBook> tempMap) {
+        if (tempMap.containsKey(userName)) {
+            String sql = "UPDATE BOOK SET userID = ? WHERE title = ?";
             try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-                pstmt.setString(1, username); // Set the password parameter
-                pstmt.setString(2, book.getStoryText()); // Set the userna,e parameter
-                pstmt.setString(3, book.getTitle());
+                pstmt.setString(1, userName); // Set the password parameter
+                 // Set the userna,e parameter
+                pstmt.setString(2, storyBook.getTitle());
                 pstmt.executeUpdate(); // Execute the insert statement
             } catch (SQLException e) {
                 System.err.println(e.getMessage());
             }
         } else {
-            String sql = "INSERT INTO USER (TITLE, StoryText, UserID) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO USER (title, userID) VALUES (?, ?)";
             try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-                pstmt.setString(1, book.getTitle()); // Set the username parameter
-                pstmt.setString(2, book.getStoryText()); // Set the password parameter
-                pstmt.setString(3, username);
+                pstmt.setString(1, storyBook.getTitle()); // Set the username parameter
+                // Set the password parameter
+                pstmt.setString(2, userName);
                 pstmt.executeUpdate(); // Execute the insert statement
 
             } catch (SQLException e) {
@@ -119,24 +152,25 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
         }
     }
 
-
-
-
-
-    public void saveBooks(ArrayList<Book> books, String username) {
-        Map<String, Book> tempMap = new HashMap<>();
+    /**
+     * Saves a list of StoryBook objects in the database associated with a given user.
+     * @param books the ArrayList of StoryBook objects to be saved.
+     * @param userName the username to associate with the story books.
+     */
+    public void saveStoryBooks(ArrayList<StoryBook> books, String userName) {
+        Map<String, StoryBook> tempMap = new HashMap<>();
         loadData(tempMap);
-        for (Book book : books) {
+        for (StoryBook storyBook : books) {
 
-            saveBook(book);
+            saveStoryBook(storyBook, userName, tempMap);
         }
-        this.books = new HashMap<String, Book>();
-        loadData(this.books);
+        this.storyBooks = new HashMap<String, StoryBook>();
+        loadData(this.storyBooks);
 
 
     }
 
     }
-
-
 }
+
+
