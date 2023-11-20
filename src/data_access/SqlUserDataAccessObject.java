@@ -11,6 +11,18 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * The SqlUserDataAccessObject class is responsible for handling all database operations related to User entities.
+ * It implements both the SignupUserDataAccessInterface and LoginUserDataAccessInterface, enabling functionalities
+ * for user-related operations in the context of signup and login processes.
+ *
+ * This class manages a collection of User objects, offering methods to load, retrieve, and save user data. It utilizes
+ * a SQL database connection through a provided SQLiteJDBC connector and a UserFactory for creating User instances.
+ *
+ * Key functionalities include loading all user data from the database, saving individual users or updating their information,
+ * and internally managing a collection of users for quick access. The class ensures efficient and consistent management
+ * of user data, aligning with the system's authentication and user management requirements.
+ */
 public class SqlUserDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface {
 
     private final Connection c;

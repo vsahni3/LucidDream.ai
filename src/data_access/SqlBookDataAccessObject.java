@@ -14,6 +14,19 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * The SqlBookDataAccessObject class is responsible for handling all database operations related to StoryBook entities.
+ * It implements the SignupUserDataAccessInterface and LoginUserDataAccessInterface, providing specific functionalities
+ * for book-related operations in the context of user signup and login.
+ *
+ * This class manages a collection of StoryBook objects, offering methods to load, retrieve, and save book data. It
+ * interacts with a SQL database through a provided SQLiteJDBC connector and utilizes a StoryBookFactory for creating
+ * StoryBook instances.
+ *
+ * Key functionalities include retrieving books associated with a specific user, getting the user associated with a book,
+ * and saving individual books or a collection of books in the database. The class ensures proper management and persistence
+ * of book data, aligning with the requirements of the system's business logic.
+ */
 public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface {
 
     private final Connection c;

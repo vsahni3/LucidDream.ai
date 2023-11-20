@@ -5,6 +5,21 @@ import java.util.HashMap;
 import java.util.Map;
 import entity.StoryBook;
 import java.util.ArrayList;
+
+/**
+ * CombinedDAO is a data access object class that integrates the operations of user, book, and page data.
+ * It utilizes individual data access objects (DAOs) for users, books, and pages to perform complex
+ * operations that involve multiple entities. This class serves as a unified interface to handle
+ * user-related, book-related, and page-related data transactions in a cohesive manner.
+ *
+ * It acts as an aggregator of SqlUserDataAccessObject, SqlBookDataAccessObject, and SqlPageDataAccessObject,
+ * facilitating operations that span across these entities, such as loading and saving users along with their
+ * associated books and pages. The class ensures that the data integrity is maintained across these different
+ * entities in the database.
+ *
+ * Usage of this class simplifies interactions with the database for operations involving complex relationships
+ * between users, books, and pages.
+ */
 public class CombinedDAO implements CombinedDataAcessInterface {
     private SqlUserDataAccessObject userDAO;
     private SqlBookDataAccessObject bookDAO;
