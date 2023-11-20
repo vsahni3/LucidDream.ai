@@ -22,6 +22,13 @@ public class SqlUserDataAccessObject implements SignupUserDataAccessInterface, L
 
     private UserFactory userFactory;
 
+
+    /**
+     * Constructs a new SqlUserDataAccessObject with a given SQLiteJDBC connector and UserFactory.
+     * @param connector the SQLiteJDBC connector to establish a connection with the database.
+     * @param userFactory the factory to create User objects.
+     * @throws IOException if an I/O error occurs.
+     */
     public SqlUserDataAccessObject(SQLiteJDBC connector, UserFactory userFactory) throws IOException {
         this.userFactory = userFactory;
         this.c = connector.getConnection();
@@ -31,7 +38,7 @@ public class SqlUserDataAccessObject implements SignupUserDataAccessInterface, L
 
     }
 
-    public void loadData(Map<String, User> map) {
+    private void loadData(Map<String, User> map) {
         String sql = "SELECT userName, password FROM USER";
 
         try (Statement stmt = c.createStatement();
@@ -49,29 +56,34 @@ public class SqlUserDataAccessObject implements SignupUserDataAccessInterface, L
 
     }
 
+    /**
+     * Loads all user data from the database.
+     * @return a Map containing username as key and User object as value.
+     */
     public Map<String, User> loadALl() {
         return accounts;
 
     }
 
-    @Override
+     /**
+     * Saves a user to the database. If the user already exists, updates their information.
+     * @param user the User object to be saved or updated.
+     */
     public void saveUser(User user) {
         accounts.put(user.geUserName(), user);
         this.saveUser();
     }
 
-    @Override
-    public User get(String userName) {
-        return accounts.get(userName);
-    }
+
+
 
     private void saveUser() {
         Map<String, User> tempMap = new HashMap<>();
         loadData(tempMap);
 
-        for (String name : accounts.keySet()) {
-            User user = accounts.get(name);
-            if (tempMap.containsKey(name)) {
+        for (String userName : accounts.keySet()) {
+            User user = accounts.get(userName);
+            if (tempMap.containsKey(userName)) {
                 String sql = "UPDATE USER SET password = ? WHERE userName = ?";
                 try (PreparedStatement pstmt = c.prepareStatement(sql)) {
                     pstmt.setString(1, user.getPassword()); // Set the password parameter
@@ -95,17 +107,4 @@ public class SqlUserDataAccessObject implements SignupUserDataAccessInterface, L
         }
 
     }
-
-
-    /**
-     * Return whether a user exists with username identifier.
-     * @param identifier the username to check.
-     * @return whether a user exists with username identifier
-     */
-    @Override
-    public boolean existsByName(String identifier) {
-        return accounts.containsKey(identifier);
-    }
-
-
 }

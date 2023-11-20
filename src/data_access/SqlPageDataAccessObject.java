@@ -21,6 +21,13 @@ public class SqlPageDataAccessObject implements SignupUserDataAccessInterface, L
 
     private PageFactory pageFactory;
 
+
+    /**
+     * Constructs a new SqlPageDataAccessObject with a given SQLiteJDBC connector and PageFactory.
+     * @param connector the SQLiteJDBC connector to establish a connection with the database.
+     * @param pageFactory the factory to create Page objects.
+     * @throws IOException if an I/O error occurs.
+     */
     public SqlPageDataAccessObject(SQLiteJDBC connector, PageFactory pageFactory) throws IOException {
         this.pageFactory = pageFactory;
         this.c = connector.getConnection();
@@ -30,7 +37,7 @@ public class SqlPageDataAccessObject implements SignupUserDataAccessInterface, L
 
     }
 
-    public void loadData(Map<Integer, Page> map) {
+    private void loadData(Map<Integer, Page> map) {
         String sql = "SELECT pageContents, pageNumber FROM BOOK";
 
         try (Statement stmt = c.createStatement();
@@ -49,6 +56,11 @@ public class SqlPageDataAccessObject implements SignupUserDataAccessInterface, L
 
     }
 
+    /**
+     * Retrieves a list of Page objects associated with a given book title.
+     * @param title the title of the book for which the pages are to be retrieved.
+     * @return an ArrayList of Page objects for the specified book.
+     */
     public ArrayList<Page> getBookPages(String title) {
         ArrayList<Page> curPages = new ArrayList<>();
         String sql = "SELECT pageID FROM Page WHERE title = ?";
@@ -72,18 +84,12 @@ public class SqlPageDataAccessObject implements SignupUserDataAccessInterface, L
     }
 
 
-
     /**
-     * Return whether a user exists with username identifier.
-     * @param identifier the username to check.
-     * @return whether a user exists with username identifier
+     * Saves a Page object to the database associated with a given book title and updates the provided temporary map.
+     * @param page the Page object to be saved or updated.
+     * @param title the title of the book to which the page belongs.
+     * @param tempMap a temporary map to be updated with the new page data.
      */
-
-    @Override
-    public boolean existsPage(Integer identifier) {
-        return pages.containsKey(identifier);
-    }
-
     public void savePage(Page page, String title, Map<String, Page> tempMap) {
         if (tempMap.containsKey(title)) {
             String sql = "UPDATE PAGE SET pageContents = ?, pageNumber = ?, image = ?, bookID = ? WHERE ID = ?";
@@ -118,7 +124,11 @@ public class SqlPageDataAccessObject implements SignupUserDataAccessInterface, L
 
     }
 
-
+    /**
+     * Saves a list of Page objects in the database associated with a given book title.
+     * @param pages the ArrayList of Page objects to be saved.
+     * @param title the title of the book to which these pages belong.
+     */
     public void savePages(ArrayList<Page> pages, String title) {
         Map<String, Page> tempMap = new HashMap<>();
 

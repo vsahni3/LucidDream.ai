@@ -11,8 +11,13 @@ public class CombinedDAO implements CombinedDataAcessInterface {
     private SqlPageDataAccessObject pageDAO;
     private final Map<String, User> users = new HashMap<>();
 
-
-    public UserAndBook(SqlUserDataAccessObject userDAO, SqlBookDataAccessObject bookDAO, SqlPageDataAccessObject pageDAO) {
+    /**
+     * Constructs a new CombinedDAO with given data access objects for users, books, and pages.
+     * @param userDAO the data access object for user-related operations.
+     * @param bookDAO the data access object for book-related operations.
+     * @param pageDAO the data access object for page-related operations.
+     */
+    public CombinedDAO(SqlUserDataAccessObject userDAO, SqlBookDataAccessObject bookDAO, SqlPageDataAccessObject pageDAO) {
         this.userDAO = userDAO;
         this.pageDAO = pageDAO;
         this.bookDAO = bookDAO;
@@ -20,7 +25,7 @@ public class CombinedDAO implements CombinedDataAcessInterface {
         loadData(users);
     }
 
-    public void loadData(Map<String, User> map) {
+    private void loadData(Map<String, User> map) {
         Map<String, User> tempUsers = userDAO.loadAll();
 
 
@@ -39,17 +44,32 @@ public class CombinedDAO implements CombinedDataAcessInterface {
 
     }
 
+    /**
+     * Saves a user and their associated books and pages to the database.
+     * @param user the User object to be saved.
+     */
     @Override
     public void save(User user) {
         users.put(user.getUserName(), user);
         this.save();
     }
 
+    /**
+     * Retrieves a User object based on a given username.
+     * @param userName the username to search for.
+     * @return the User object associated with the given username.
+     */
     @Override
     public User getUser(String userName) {
         return users.get(userName);
     }
 
+
+    /**
+     * Retrieves a StoryBook object based on a given book title.
+     * @param title the title of the book to search for.
+     * @return the StoryBook object associated with the given title.
+     */
     @Override
     public StoryBook getBook(String title) {
         for (String userName : users.keySet()) {
@@ -62,6 +82,13 @@ public class CombinedDAO implements CombinedDataAcessInterface {
         }
     }
 
+
+
+    /**
+     * Retrieves a Page object based on a given page ID.
+     * @param id the ID of the page to search for.
+     * @return the Page object associated with the given ID.
+     */
     @Override
     public Page getPage(Integer id) {
 
@@ -77,16 +104,33 @@ public class CombinedDAO implements CombinedDataAcessInterface {
         }
     }
 
+    /**
+     * Checks whether a user exists in the database based on a username identifier.
+     * @param identifier the username to check for existence.
+     * @return true if the user exists, false otherwise.
+     */
     @Override
     public boolean existsUser(String identifier) {
         return users.containsKey(identifier);
     }
 
+
+    /**
+     * Checks whether a book exists in the database based on a book identifier.
+     * @param identifier the book title to check for existence.
+     * @return true if the book exists, false otherwise.
+     */
     @Override
     public boolean existsBook(String identifier) {
         return bookDAO.existsBook(identifier);
     }
 
+
+    /**
+     * Checks whether a page exists in the database based on a page identifier.
+     * @param identifier the page ID to check for existence.
+     * @return true if the page exists, false otherwise.
+     */
     @Override
     public boolean existsPage(Integer identifier) {
         return pageDAO.existsPage(identifier);
@@ -106,10 +150,5 @@ public class CombinedDAO implements CombinedDataAcessInterface {
         }
 
     }
-
-
-
-
-
 
 }
