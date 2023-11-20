@@ -5,5 +5,5 @@ import java.util.ArrayList;
 
 public interface UserFactory {
     /** Requires: password is valid. */
-    User create(String userName, String password, ArrayList<StoryBook> storybooks);
+    User create(String userName, String password);
 }

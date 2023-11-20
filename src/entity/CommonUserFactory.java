@@ -12,7 +12,7 @@ public class CommonUserFactory implements UserFactory {
      */
 
     @Override
-    public User create(String userName, String password, ArrayList<StoryBook> storybooks) {
-        return new CommonUser(userName, password, storybooks);
+    public User create(String userName, String password) {
+        return new CommonUser(userName, password);
     }
 }

@@ -2,7 +2,7 @@ package entity;
 
 public class Page {
 
-    private final String pageContents;
+    private String pageContents;
 
     private final Integer pageNumber;
 
@@ -22,4 +22,5 @@ public class Page {
 
     public Integer getPageID() { return pageID; }
 
+    public void setTextContents(String newTextContents) { pageContents = newTextContents; }
 }

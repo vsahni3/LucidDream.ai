@@ -5,21 +5,20 @@ import java.util.ArrayList;
 
 class CommonUser implements User {
 
-    private final String userName;
-    private final String password;
-    private final ArrayList<StoryBook> storybooks;
+    private String userName;
+    private String password;
+    private ArrayList<StoryBook> storybooks;
 
     /**
      * Requires: password is valid.
      *
      * @param userName
      * @param password
-     * @param storybooks
      */
-    public CommonUser(String userName, String password, ArrayList<StoryBook> storybooks) {
+    public CommonUser(String userName, String password) {
         this.userName = userName;
         this.password = password;
-        this.storybooks = storybooks;
+        this.storybooks = new ArrayList<StoryBook>();
     }
 
     @Override
@@ -34,4 +33,23 @@ class CommonUser implements User {
 
     @Override
     public ArrayList<StoryBook> getStoryBooks() { return storybooks; }
+
+    @Override
+    public void setUserName(String newUserName) { userName = newUserName; }
+
+    @Override
+    public void setPassword(String newPassword) { password = newPassword; }
+
+    @Override
+    public void setStoryBooks(ArrayList<StoryBook> newStoryBooks) { storybooks = newStoryBooks; }
+
+    @Override
+    public void addStoryBook(StoryBook newStoryBook) { storybooks.add(newStoryBook); }
+
+    @Override
+    public void deleteStoryBook(StoryBook deletedStoryBook) {
+        for (StoryBook book : storybooks) {
+            if ( book == deletedStoryBook) { storybooks.remove(book); }
+        }
+    }
 }
