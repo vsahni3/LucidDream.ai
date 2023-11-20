@@ -7,8 +7,6 @@ class CommonUser implements User {
 
     private final String userName;
     private final String password;
-    private final LocalDateTime creationTime;
-
     private final ArrayList<StoryBook> storybooks;
 
     /**
@@ -18,10 +16,9 @@ class CommonUser implements User {
      * @param password
      * @param storybooks
      */
-    public CommonUser(String userName, String password, LocalDateTime creationTime, ArrayList<StoryBook> storybooks) {
+    public CommonUser(String userName, String password, ArrayList<StoryBook> storybooks) {
         this.userName = userName;
         this.password = password;
-        this.creationTime = creationTime;
         this.storybooks = storybooks;
     }
 
@@ -33,11 +30,6 @@ class CommonUser implements User {
     @Override
     public String getPassword() {
         return password;
-    }
-
-    @Override
-    public LocalDateTime getCreationTime() {
-        return creationTime;
     }
 
     @Override
