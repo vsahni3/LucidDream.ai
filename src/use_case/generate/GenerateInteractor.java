@@ -1,5 +1,6 @@
 package use_case.generate;
 
+import entity.PageFactory;
 import entity.StoryBook;
 import entity.StoryBookFactory;
 import entity.User;
@@ -11,11 +12,15 @@ public class GenerateInteractor implements GenerateInputBoundary {
     final GenerateOutputBoundary generatePresenter;
     final StoryBookFactory storyBookFactory;
 
+    final PageFactory pageFactory;
+
     public GenerateInteractor(GenerateUserDataAccessInterface userDataAccessInterface,
-                              GenerateOutputBoundary generateOutputBoundary, StoryBookFactory storyBookFactory) {
+                              GenerateOutputBoundary generateOutputBoundary, StoryBookFactory storyBookFactory,
+                              PageFactory pageFactory) {
         this.userDataAccessObject = userDataAccessInterface;
         this.generatePresenter = generateOutputBoundary;
         this.storyBookFactory = storyBookFactory;
+        this.pageFactory = pageFactory;
     }
 
 
@@ -28,7 +33,7 @@ public class GenerateInteractor implements GenerateInputBoundary {
 
 
         User user = userDataAccessObject.get(username);
-        StoryBook outputStoryBook = storyBookFactory.create(prompt);
+        StoryBook outputStoryBook = storyBookFactory.create(prompt, pageFactory);
         List<StoryBook> userStories = user.getStories();
 
         userStories.add(outputStoryBook);
