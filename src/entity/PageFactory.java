@@ -5,11 +5,12 @@ public class PageFactory {
      * Requires: password is valid.
      * @param textContents
      * @param pageNumber
-     * @param image
+     * @param pageID
      * @return
      */
 
-    public Page create(String textContents, Integer pageNumber, byte[] image) {
-        return new Page(textContents, pageNumber, image);
+    public Page create(String textContents, Integer pageNumber, byte[] image, Integer pageID) {
+        return new Page(textContents, pageNumber, image, pageID);
+
     }
 }

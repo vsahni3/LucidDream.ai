@@ -1,6 +1,6 @@
 package app;
 
-import data_access.FileUserDataAccessObject;
+import data_access.SqlUserDataAccessObject;
 import entity.CommonUserFactory;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.logged_in.LoggedInViewModel;
@@ -39,9 +39,9 @@ public class Main {
         LoggedInViewModel loggedInViewModel = new LoggedInViewModel();
         SignupViewModel signupViewModel = new SignupViewModel();
 
-        FileUserDataAccessObject userDataAccessObject;
+        SqlUserDataAccessObject userDataAccessObject;
         try {
-            userDataAccessObject = new FileUserDataAccessObject("./users.csv", new CommonUserFactory());
+            userDataAccessObject = new SqlUserDataAccessObject("./users.csv", new CommonUserFactory());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

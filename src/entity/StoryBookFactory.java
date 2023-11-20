@@ -147,5 +147,9 @@ public class StoryBookFactory {
         List<String> images = imageModel.generateImages(imageInput);
 
         return images.get(0);
+
+    public StoryBook create(String title, Page[] pages) {
+        return new StoryBook(title, pages);
+
     }
 }
