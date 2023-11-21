@@ -38,6 +38,8 @@ public class Page {
 
     /**
      * Set new text content for page
+     *
+     * @param newTextContents
      */
     public void setTextContents(String newTextContents) { pageContents = newTextContents; }
 }
