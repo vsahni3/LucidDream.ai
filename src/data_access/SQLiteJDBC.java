@@ -1,8 +1,18 @@
 package data_access;
 import java.sql.*;
 
+/**
+ * The SQLiteJDBC class provides functionality for managing a SQLite database.
+ * It allows the creation of connections and tables within the database.
+ */
 public class SQLiteJDBC {
     private Connection c;
+
+    /**
+     * Constructor for SQLiteJDBC.
+     * It initializes the JDBC driver and establishes a connection to the SQLite database.
+     * On failure, it prints the error message and exits the application.
+     */
     public SQLiteJDBC() {
 
 
@@ -16,16 +26,25 @@ public class SQLiteJDBC {
         System.out.println("Opened database successfully");
     }
 
+    /**
+     * Retrieves the current database connection.
+     * @return The current Connection object.
+     */
     public Connection getConnection() {
         return this.c;
     }
+
+    /**
+     * Creates a new table for users in the database if it does not already exist.
+     * The table includes columns for username and password.
+     */
     public void createUserTable() {
         Statement stmt = null;
         try {
             stmt = c.createStatement();
             String sql = "CREATE TABLE IF NOT EXISTS USER " +
-                    "(USERNAME TEXT PRIMARY KEY     NOT NULL," +
-                    " PASSWORD           TEXT    NOT NULL, )";
+                    "(userName TEXT PRIMARY KEY     NOT NULL," +
+                    " password           TEXT    NOT NULL, )";
             stmt.executeUpdate(sql);
             stmt.close();
             System.out.println("Table created successfully");
@@ -34,14 +53,17 @@ public class SQLiteJDBC {
         }
     }
 
+    /**
+     * Creates a new table for books in the database if it does not already exist.
+     * The table includes columns for the title and a foreign key reference to the User table.
+     */
     public void createBookTable() {
         Statement stmt = null;
         try {
             stmt = c.createStatement();
             String sql = "CREATE TABLE IF NOT EXISTS BOOK " +
-                    "(TITLE TEXT PRIMARY KEY     NOT NULL," +
-                    "StoryText           TEXT    NOT NULL, " +
-                    "FOREIGN KEY (UserID) REFERENCES User(ID)";
+                    "(title TEXT PRIMARY KEY     NOT NULL," +
+                    "FOREIGN KEY (userID) REFERENCES User(ID)";
             stmt.executeUpdate(sql);
             stmt.close();
             System.out.println("Table created successfully");
@@ -50,15 +72,22 @@ public class SQLiteJDBC {
         }
     }
 
+
+    /**
+     * Creates a new table for pages in the database if it does not already exist.
+     * The table includes columns for page ID, contents, number, image,
+     * and a foreign key reference to the Book table.
+     */
     public void createPageTable() {
         Statement stmt = null;
         try {
             stmt = c.createStatement();
             String sql = "CREATE TABLE IF NOT EXISTS PAGE " +
-                    "(ID INTEGER PRIMARY KEY     NOT NULL," +
-                    "TextContent           TEXT    NOT NULL, " +
-                    "PageNumber     INTEGER NOT NULL, " +
-                    "FOREIGN KEY (BookID) REFERENCES BOOK(TITLE)";
+                    "(pageID INTEGER PRIMARY KEY     NOT NULL," +
+                    "pageContents           TEXT    NOT NULL, " +
+                    "pageNumber     INTEGER NOT NULL, " +
+                    "image     BLOB NOT NULL, " +
+                    "FOREIGN KEY (bookID) REFERENCES BOOK(TITLE)";
             stmt.executeUpdate(sql);
             stmt.close();
             System.out.println("Table created successfully");

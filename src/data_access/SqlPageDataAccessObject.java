@@ -1,29 +1,33 @@
 package data_access;
 import java.sql.*;
 
-import data_access.SQLiteJDBC;
-import entity.User;
-import entity.UserFactory;
+import entity.PageFactory;
+import entity.StoryBook;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
-
+import entity.Page;
 import java.io.*;
-import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface {
+
+public class SqlPageDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface {
 
     private final Connection c;
-
-    private final Map<String, Integer> headers = new LinkedHashMap<>();
 
     private final Map<Integer, Page> pages = new HashMap<>();
 
     private PageFactory pageFactory;
 
+
+    /**
+     * Constructs a new SqlPageDataAccessObject with a given SQLiteJDBC connector and PageFactory.
+     * @param connector the SQLiteJDBC connector to establish a connection with the database.
+     * @param pageFactory the factory to create Page objects.
+     * @throws IOException if an I/O error occurs.
+     */
     public SqlPageDataAccessObject(SQLiteJDBC connector, PageFactory pageFactory) throws IOException {
         this.pageFactory = pageFactory;
         this.c = connector.getConnection();
@@ -33,17 +37,17 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
 
     }
 
-    public void loadData(Map<Integer, Page> map) {
-        String sql = "SELECT TextContent, PageNumber FROM BOOK";
+    private void loadData(Map<Integer, Page> map) {
+        String sql = "SELECT pageContents, pageNumber FROM BOOK";
 
         try (Statement stmt = c.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 Integer id = rs.getInt("ID");
-                String content = rs.getString("TextContent");
-                String pageNumber = rs.getString("PageNumber");
-                Page page = pageFactory.create(id, content, pageNumber);
+                String pageContents = rs.getString("pageContents");
+                String pageNumber = rs.getString("pageNumber");
+                Page page = pageFactory.create(id, pageContents, pageNumber);
                 map.put(id, page);
             }
         } catch (SQLException e) {
@@ -52,70 +56,61 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
 
     }
 
+    /**
+     * Retrieves a list of Page objects associated with a given book title.
+     * @param title the title of the book for which the pages are to be retrieved.
+     * @return an ArrayList of Page objects for the specified book.
+     */
+    public ArrayList<Page> getBookPages(String title) {
+        ArrayList<Page> curPages = new ArrayList<>();
+        String sql = "SELECT pageID FROM Page WHERE title = ?";
+        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+            pstmt.setString(1, title); // Set the password parameter
+            ResultSet rs = pstmt.executeQuery();
 
-
-    private void save() {
-        Map<String, Page> tempMap = new HashMap<>();
-        loadData(tempMap);
-
-        for (Integer id : pages.keySet()) {
-            Page page = books.get(id);
-            if (tempMap.containsKey(id)) {
-                String sql = "UPDATE BOOK SET StoryText = ? WHERE TITLE = ?";
-                try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-                    pstmt.setString(1, book.getStoryText()); // Set the text parameter
-                    pstmt.setString(2, title); // Set the title parameter
-                    pstmt.executeUpdate(); // Execute the insert statement
-                } catch (SQLException e) {
-                    System.err.println(e.getMessage());
-                }
-            } else {
-                String sql = "INSERT INTO BOOK (TITLE, StoryText) VALUES (?, ?)";
-                try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-                    pstmt.setString(1, title); // Set the username parameter
-                    pstmt.setString(2, book.getStoryText()); // Set the password parameter
-                    pstmt.executeUpdate(); // Execute the insert statement
-
-                } catch (SQLException e) {
-                    System.err.println(e.getMessage());
-                }
-
+            // Iterate through the result set to get all titles
+            while (rs.next()) {
+                String pageID = rs.getString("pageID");
+                // Now you have the title, and you can do something with it,
+                curPages.add(pages.get(title));
             }
-        }
 
+
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return curPages;
     }
 
 
     /**
-     * Return whether a user exists with username identifier.
-     * @param identifier the username to check.
-     * @return whether a user exists with username identifier
+     * Saves a Page object to the database associated with a given book title and updates the provided temporary map.
+     * @param page the Page object to be saved or updated.
+     * @param title the title of the book to which the page belongs.
+     * @param tempMap a temporary map to be updated with the new page data.
      */
-
-    @Override
-    public boolean existsPage(String identifier) {
-        return pages.containsKey(identifier);
-    }
-
-    public void savePage(Page page, String title) {
+    public void savePage(Page page, String title, Map<String, Page> tempMap) {
         if (tempMap.containsKey(title)) {
-            String sql = "UPDATE PAGE SET TextContent = ?, PageNumber = ?, BookID = ? WHERE ID = ?";
+            String sql = "UPDATE PAGE SET pageContents = ?, pageNumber = ?, image = ?, bookID = ? WHERE ID = ?";
             try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-                pstmt.setString(1, page.getTextContent()); // Set the password parameter
+                pstmt.setString(1, page.getPageContents()); // Set the password parameter
                 pstmt.setString(2, page.getPageNumber()); // Set the userna,e parameter
-                pstmt.setString(3, title);
-                pstmt.setString(3, book.getID());
+                pstmt.setString(3, page.getImage());
+                pstmt.setString(4, title);
+                pstmt.setString(5, book.getID());
                 pstmt.executeUpdate(); // Execute the insert statement
 
             } catch (SQLException e) {
                 System.err.println(e.getMessage());
             }
         } else {
-            String sql = "INSERT INTO USER (TextContent, PageNumber, BookID) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO USER (pageContents, pageNumber, image, bookID) VALUES (?, ?, ?, ?)";
             try (PreparedStatement pstmt = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                pstmt.setString(1, page.getTextContent()); // Set the username parameter
-                pstmt.setString(2, page.getTextContent()); // Set the password parameter
-                pstmt.setString(3, title);
+                pstmt.setString(1, page.getPageContents()); // Set the username parameter
+                pstmt.setString(2, page.getPageNumber()); // Set the password parameter
+                pstmt.setString(3, page.getImage());
+                pstmt.setString(4, title);
                 pstmt.executeUpdate(); // Execute the insert statement
                 ResultSet generatedKeys = pstmt.getGeneratedKeys();
                 int generatedId = generatedKeys.getInt(1);
@@ -129,13 +124,17 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
 
     }
 
-
+    /**
+     * Saves a list of Page objects in the database associated with a given book title.
+     * @param pages the ArrayList of Page objects to be saved.
+     * @param title the title of the book to which these pages belong.
+     */
     public void savePages(ArrayList<Page> pages, String title) {
         Map<String, Page> tempMap = new HashMap<>();
 
         loadData(tempMap);
         for (Page page : pages) {
-            savePage(page);
+            savePage(page, title, tempMap);
 
 
         }

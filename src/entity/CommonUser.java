@@ -5,41 +5,76 @@ import java.util.ArrayList;
 
 class CommonUser implements User {
 
-    private final String userName;
-    private final String password;
-    private final LocalDateTime creationTime;
-
-    private final ArrayList<StoryBook> storybooks;
+    private String userName;
+    private String password;
+    private ArrayList<StoryBook> storybooks;
 
     /**
+     * Constructs a new CommonUser entity
      * Requires: password is valid.
      *
      * @param userName
      * @param password
-     * @param storybooks
      */
-    public CommonUser(String userName, String password, LocalDateTime creationTime, ArrayList<StoryBook> storybooks) {
+    public CommonUser(String userName, String password) {
         this.userName = userName;
         this.password = password;
-        this.creationTime = creationTime;
-        this.storybooks = storybooks;
+        this.storybooks = new ArrayList<StoryBook>();
     }
 
+    /**
+     * Returns user's Username
+     */
     @Override
     public String getUserName() {
         return userName;
     }
 
+    /**
+     * Returns user's password
+     */
     @Override
     public String getPassword() {
         return password;
     }
 
-    @Override
-    public LocalDateTime getCreationTime() {
-        return creationTime;
-    }
-
+    /**
+     * Returns all storybooks created by user
+     */
     @Override
     public ArrayList<StoryBook> getStoryBooks() { return storybooks; }
+
+    /**
+     * Set a new username for a user
+     */
+    @Override
+    public void setUserName(String newUserName) { userName = newUserName; }
+
+    /**
+     * Set a new password for a user
+     */
+    @Override
+    public void setPassword(String newPassword) { password = newPassword; }
+
+    /**
+     * Set a new collection of Storybooks for a user
+     */
+    @Override
+    public void setStoryBooks(ArrayList<StoryBook> newStoryBooks) { storybooks = newStoryBooks; }
+
+    /**
+     * Add a newly generated storybook to a user's collection
+     */
+    @Override
+    public void addStoryBook(StoryBook newStoryBook) { storybooks.add(newStoryBook); }
+
+    /**
+     * Delete a storybook from a user's collection
+     */
+    @Override
+    public void deleteStoryBook(StoryBook deletedStoryBook) {
+        for (StoryBook book : storybooks) {
+            if ( book == deletedStoryBook) { storybooks.remove(book); }
+        }
+    }
 }

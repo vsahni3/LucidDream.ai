@@ -15,6 +15,10 @@ import okhttp3.*;
  * It uses input prompts and a PageFactory to generate and assemble the pages of a StoryBook.
  */
 public class StoryBookFactory {
+  
+    public StoryBook create(String title, ArrayList<Page> pages) {
+        return new StoryBook(title, pages);
+    }
 
     /**
      * Creates a StoryBook based on the given prompt and using the specified PageFactory.
@@ -148,8 +152,4 @@ public class StoryBookFactory {
 
         return images.get(0);
 
-    public StoryBook create(String title, Page[] pages) {
-        return new StoryBook(title, pages);
-
-    }
 }
