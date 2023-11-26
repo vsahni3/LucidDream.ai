@@ -95,5 +95,6 @@ public class SQLiteJDBC {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
     }
+
 }
 

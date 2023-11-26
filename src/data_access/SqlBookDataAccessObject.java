@@ -1,11 +1,9 @@
 package data_access;
 import java.sql.*;
 
+import entity.Page;
 import entity.StoryBook;
-import entity.User;
-
-import use_case.login.LoginUserDataAccessInterface;
-import use_case.signup.SignupUserDataAccessInterface;
+import entity.StoryBookFactory;
 
 import java.io.*;
 
@@ -27,15 +25,15 @@ import java.util.Map;
  * and saving individual books or a collection of books in the database. The class ensures proper management and persistence
  * of book data, aligning with the requirements of the system's business logic.
  */
-public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface {
+public class SqlBookDataAccessObject {
 
-    private final Connection c;
+    private Connection c;
 
     private final Map<String, Integer> headers = new LinkedHashMap<>();
 
     private Map<String, StoryBook> storyBooks = new HashMap<>();
 
-    private StoryBookFactory bookFactory;
+    private StoryBookFactory storyBookFactory;
 
 
     /**
@@ -44,7 +42,7 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
      * @param storyBookFactory the factory to create StoryBook objects.
      * @throws IOException if an I/O error occurs.
      */
-    public SqlUserDataAccessObject(SQLiteJDBC connector, StoryBookFactory storyBookFactory) throws IOException {
+    public SqlBookDataAccessObject(SQLiteJDBC connector, StoryBookFactory storyBookFactory) throws IOException {
         this.storyBookFactory = storyBookFactory;
         this.c = connector.getConnection();
         connector.createBookTable();
@@ -62,7 +60,7 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
             while (rs.next()) {
                 String title = rs.getString("title");
 
-                StoryBook storyBook = storyBookFactory.create(title);
+                StoryBook storyBook = storyBookFactory.create(title, new ArrayList<Page>());
                 map.put(title, storyBook);
             }
         } catch (SQLException e) {
@@ -170,6 +168,8 @@ public class SqlBookDataAccessObject implements SignupUserDataAccessInterface, L
 
     }
 
+    public boolean existsBook(String identifier) {
+        return this.storyBooks.containsKey(identifier);
     }
 }
 
