@@ -24,11 +24,11 @@ import java.util.Map;
  * or a collection of pages in the database. It ensures efficient and effective management of page data in alignment
  * with the system's requirements for content management and presentation.
  */
-public class SqlPageDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface {
+public class SqlPageDataAccessObject {
 
     private final Connection c;
 
-    private final Map<Integer, Page> pages = new HashMap<>();
+    private Map<Integer, Page> pages = new HashMap<>();
 
     private PageFactory pageFactory;
 
@@ -57,11 +57,11 @@ public class SqlPageDataAccessObject implements SignupUserDataAccessInterface, L
             while (rs.next()) {
                 Integer id = rs.getInt("ID");
                 String pageContents = rs.getString("pageContents");
-                String pageNumber = rs.getString("pageNumber");
+                Integer pageNumber = rs.getInt("pageNumber");
                 Blob imageBlob = rs.getBlob("image");
                 byte[] image = imageBlob.getBytes(1, (int) imageBlob.length());
                 imageBlob.free(); // Free the blob resource
-                Page page = pageFactory.create(id, pageContents, pageNumber, image);
+                Page page = pageFactory.create(pageContents, pageNumber, image, id);
                 map.put(id, page);
             }
         } catch (SQLException e) {
@@ -104,15 +104,15 @@ public class SqlPageDataAccessObject implements SignupUserDataAccessInterface, L
      * @param title the title of the book to which the page belongs.
      * @param tempMap a temporary map to be updated with the new page data.
      */
-    public void savePage(Page page, String title, Map<String, Page> tempMap) {
+    public void savePage(Page page, String title, Map<Integer, Page> tempMap) {
         if (tempMap.containsKey(title)) {
             String sql = "UPDATE PAGE SET pageContents = ?, pageNumber = ?, image = ?, bookID = ? WHERE ID = ?";
             try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-                pstmt.setString(1, page.getPageContents()); // Set the password parameter
-                pstmt.setString(2, page.getPageNumber()); // Set the userna,e parameter
+                pstmt.setString(1, page.getTextContents());
+                pstmt.setInt(2, page.getPageNumber());
                 pstmt.setBytes(3, page.getImage());
                 pstmt.setString(4, title);
-                pstmt.setString(5, book.getID());
+                pstmt.setInt(5, page.getPageID());
                 pstmt.executeUpdate(); // Execute the insert statement
 
             } catch (SQLException e) {
@@ -121,8 +121,8 @@ public class SqlPageDataAccessObject implements SignupUserDataAccessInterface, L
         } else {
             String sql = "INSERT INTO USER (pageContents, pageNumber, image, bookID) VALUES (?, ?, ?, ?)";
             try (PreparedStatement pstmt = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                pstmt.setString(1, page.getPageContents()); // Set the username parameter
-                pstmt.setString(2, page.getPageNumber()); // Set the password parameter
+                pstmt.setString(1, page.getTextContents()); // Set the username parameter
+                pstmt.setInt(2, page.getPageNumber()); // Set the password parameter
                 pstmt.setBytes(3, page.getImage());
                 pstmt.setString(4, title);
                 pstmt.executeUpdate(); // Execute the insert statement
@@ -144,7 +144,7 @@ public class SqlPageDataAccessObject implements SignupUserDataAccessInterface, L
      * @param title the title of the book to which these pages belong.
      */
     public void savePages(ArrayList<Page> pages, String title) {
-        Map<String, Page> tempMap = new HashMap<>();
+        Map<Integer, Page> tempMap = new HashMap<>();
 
         loadData(tempMap);
         for (Page page : pages) {
