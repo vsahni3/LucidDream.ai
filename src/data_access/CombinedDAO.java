@@ -51,7 +51,7 @@ public class CombinedDAO implements CombinedDataAcessInterface {
                 ArrayList<Page> bookPages = pageDAO.getBookPages(book.getTitle());
                 book.setPages(bookPages);
             }
-            user.setBooks(userBooks);
+            user.setStoryBooks(userBooks);
             map.put(userName, user);
 
 
@@ -89,7 +89,7 @@ public class CombinedDAO implements CombinedDataAcessInterface {
     public StoryBook getBook(String title) {
         for (String userName : users.keySet()) {
             User user = users.get(userName);
-            for (StoryBook book : user.getBooks()) {
+            for (StoryBook book : user.getStoryBooks()) {
                 if (book.getTitle().equals(title)) {
                     return book;
                 }
@@ -110,7 +110,7 @@ public class CombinedDAO implements CombinedDataAcessInterface {
         // you could also implement a getPage for the pageDAO as the page doesn't have any extra info about other entities
         for (String userName : users.keySet()) {
             User user = users.get(userName);
-            for (StoryBook book : user.getBooks()) {
+            for (StoryBook book : user.getStoryBooks()) {
                 for (Page page : book.getPages())
                     if (page.getId().equals(id)) {
                         return page;
@@ -158,8 +158,8 @@ public class CombinedDAO implements CombinedDataAcessInterface {
         for (String username : users.keySet()) {
             User user = users.get(username);
             userDAO.saveUser(user);
-            bookDAO.saveBooks(user.getBooks(), username);
-            for (StoryBook book : user.getBooks()) {
+            bookDAO.saveStoryBooks(user.getStoryBooks(), username);
+            for (StoryBook book : user.getStoryBooks()) {
                 pageDAO.savePages(book.getPages(), book.getTitle());
             }
         }

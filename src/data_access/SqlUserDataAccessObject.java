@@ -2,9 +2,7 @@ package data_access;
 import java.sql.*;
 import entity.User;
 import entity.UserFactory;
-import use_case.login.LoginUserDataAccessInterface;
-import use_case.signup.SignupUserDataAccessInterface;
-import entity.User;
+
 import java.io.*;
 
 import java.util.HashMap;
@@ -23,10 +21,10 @@ import java.util.Map;
  * and internally managing a collection of users for quick access. The class ensures efficient and consistent management
  * of user data, aligning with the system's authentication and user management requirements.
  */
-public class SqlUserDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface {
+public class SqlUserDataAccessObject {
 
     private final Connection c;
-    private final SqlBookDataAccessObject bookDAO;
+
 
     private final Map<String, Integer> headers = new LinkedHashMap<>();
 
@@ -63,7 +61,7 @@ public class SqlUserDataAccessObject implements SignupUserDataAccessInterface, L
                 map.put(userName, user);
             }
         } catch (SQLException e) {
-            System.err.println(e.getClass().getUserName() + ": " + e.getMessage());
+            System.err.println(e.getClass() + ": " + e.getMessage());
         }
 
     }
@@ -72,7 +70,7 @@ public class SqlUserDataAccessObject implements SignupUserDataAccessInterface, L
      * Loads all user data from the database.
      * @return a Map containing username as key and User object as value.
      */
-    public Map<String, User> loadALl() {
+    public Map<String, User> loadAll() {
         return accounts;
 
     }
@@ -82,7 +80,7 @@ public class SqlUserDataAccessObject implements SignupUserDataAccessInterface, L
      * @param user the User object to be saved or updated.
      */
     public void saveUser(User user) {
-        accounts.put(user.geUserName(), user);
+        accounts.put(user.getUserName(), user);
         this.saveUser();
     }
 

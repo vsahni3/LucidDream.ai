@@ -64,12 +64,16 @@ class CommonUser implements User {
 
     /**
      * Add a newly generated storybook to a user's collection
+     *
+     * @param newStoryBook
      */
     @Override
     public void addStoryBook(StoryBook newStoryBook) { storybooks.add(newStoryBook); }
 
     /**
      * Delete a storybook from a user's collection
+     *
+     * @param deletedStoryBook
      */
     @Override
     public void deleteStoryBook(StoryBook deletedStoryBook) {

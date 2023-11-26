@@ -158,6 +158,9 @@ public class SqlPageDataAccessObject implements SignupUserDataAccessInterface, L
 
 
     }
+    public boolean existsPage(Integer identifier) {
+        return this.pages.containsKey(identifier);
+    }
 
 
 }

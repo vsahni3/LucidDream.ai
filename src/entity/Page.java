@@ -6,8 +6,12 @@ public class Page {
 
     private final Integer pageNumber;
 
+    private final byte[] image;
+    
     private final Integer pageID;
 
+
+    public Page(String textContents, Integer pageNumber, byte[] image, Integer pageID) {
     /**
      * Constructs a new Page entity
      *
@@ -15,9 +19,9 @@ public class Page {
      * @param pageNumber
      * @param pageID
      */
-    public Page(String textContents, Integer pageNumber, Integer pageID) {
         this.pageContents = textContents;
         this.pageNumber = pageNumber;
+        this.image = image;
         this.pageID = pageID;
     }
 
@@ -36,8 +40,14 @@ public class Page {
      */
     public Integer getPageID() { return pageID; }
 
+  
+    public byte[] getImage() { return image; }
+
     /**
      * Set new text content for page
+     *
+     * @param newTextContents
      */
     public void setTextContents(String newTextContents) { pageContents = newTextContents; }
+
 }
