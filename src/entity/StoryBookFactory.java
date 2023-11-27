@@ -50,7 +50,7 @@ public class StoryBookFactory {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            pages.add(pageFactory.create(pageText, i + 1, image, 0));
+            pages.add(pageFactory.create(pageText, i + 1, image, -1));
         }
 
 
