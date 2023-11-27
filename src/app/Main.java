@@ -1,5 +1,6 @@
 package app;
 
+import data_access.SQLiteJDBC;
 import data_access.SqlUserDataAccessObject;
 import entity.CommonUserFactory;
 import interface_adapter.login.LoginViewModel;
@@ -41,7 +42,8 @@ public class Main {
 
         SqlUserDataAccessObject userDataAccessObject;
         try {
-            userDataAccessObject = new SqlUserDataAccessObject("./users.csv", new CommonUserFactory());
+            SQLiteJDBC sqlJDBC = new SQLiteJDBC();
+            userDataAccessObject = new SqlUserDataAccessObject(sqlJDBC, new CommonUserFactory());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

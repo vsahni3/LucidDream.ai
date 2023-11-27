@@ -8,7 +8,7 @@ public class Page {
 
     private final byte[] image;
     
-    private final Integer pageID;
+    private Integer pageID;
 
 
     public Page(String textContents, Integer pageNumber, byte[] image, Integer pageID) {
@@ -40,6 +40,12 @@ public class Page {
      */
     public Integer getPageID() { return pageID; }
 
+    /**
+     * Sets a new page id number
+     *
+     * @param newPageID
+     */
+    public void setPageID(int newPageID) { pageID = newPageID; }
   
     public byte[] getImage() { return image; }
 
