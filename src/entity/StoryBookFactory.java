@@ -15,7 +15,7 @@ import okhttp3.*;
  * It uses input prompts and a PageFactory to generate and assemble the pages of a StoryBook.
  */
 public class StoryBookFactory {
-  
+
     public StoryBook create(String title, ArrayList<Page> pages) {
         return new StoryBook(title, pages);
     }
@@ -25,9 +25,9 @@ public class StoryBookFactory {
      * It generates text for the story, splits it into pages, and then uses the PageFactory to create each page.
      * It also handles image generation for each page of the storybook.
      *
-     * @param prompt       The prompt used as the basis for generating the story text.
-     * @param pageFactory  The factory used for creating individual pages of the storybook.
-     * @return             A new StoryBook object containing the generated story and pages.
+     * @param prompt      The prompt used as the basis for generating the story text.
+     * @param pageFactory The factory used for creating individual pages of the storybook.
+     * @return A new StoryBook object containing the generated story and pages.
      */
     public StoryBook create(String prompt, PageFactory pageFactory) {
         String entireText = generateText(prompt);
@@ -40,7 +40,7 @@ public class StoryBookFactory {
 
         List<String> pagesText = getPagesText(storyText);
 
-        List<Page> pages = new ArrayList<>();
+        ArrayList<Page> pages = new ArrayList<>();
 
         for (int i = 0; i < pagesText.size(); i++) {
             String pageText = pagesText.get(i);
@@ -50,13 +50,11 @@ public class StoryBookFactory {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            pages.add(pageFactory.create(pageText, i + 1, image));
+            pages.add(pageFactory.create(pageText, i + 1, image, -1));
         }
 
-        Page[] pageArray = new Page[pages.size()];
-        pages.toArray(pageArray);
 
-        return new StoryBook(title, pageArray);
+        return new StoryBook(title, pages);
     }
 
     private static List<String> getPagesText(String storyText) {
@@ -70,8 +68,7 @@ public class StoryBookFactory {
         while (i < storyChars) {
             if (i + charLimit >= storyChars) {
                 pagesText.add(storyText.substring(i));
-            }
-            else {
+            } else {
                 int nextSentenceIndex = storyText.substring(i + charLimit).indexOf(".");
                 pagesText.add(storyText.substring(i, i + charLimit + nextSentenceIndex));
             }
@@ -152,4 +149,5 @@ public class StoryBookFactory {
 
         return images.get(0);
 
+    }
 }
