@@ -3,9 +3,9 @@ package use_case.login;
 import entity.User;
 
 public interface LoginUserDataAccessInterface {
-    boolean existsByName(String username);
+    boolean existsUser(String username);
 
     void save(User user);
 
-    User get(String username);
+    User getUser(String username);
 }
