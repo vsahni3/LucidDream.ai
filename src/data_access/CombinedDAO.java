@@ -112,7 +112,7 @@ public class CombinedDAO implements CombinedDataAcessInterface {
             User user = users.get(userName);
             for (StoryBook book : user.getStoryBooks()) {
                 for (Page page : book.getPages())
-                    if (page.getId().equals(id)) {
+                    if (page.getPageID().equals(id)) {
                         return page;
                     }
             }
