@@ -4,6 +4,10 @@ import entity.User;
 import java.util.HashMap;
 import java.util.Map;
 import entity.StoryBook;
+import use_case.generate.GenerateUserDataAccessInterface;
+import use_case.login.LoginUserDataAccessInterface;
+import use_case.signup.SignupUserDataAccessInterface;
+
 import java.util.ArrayList;
 
 /**
@@ -20,7 +24,7 @@ import java.util.ArrayList;
  * Usage of this class simplifies interactions with the database for operations involving complex relationships
  * between users, books, and pages.
  */
-public class CombinedDAO implements CombinedDataAcessInterface {
+public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDataAcessInterface, LoginUserDataAccessInterface, SignupUserDataAccessInterface {
     private SqlUserDataAccessObject userDAO;
     private SqlBookDataAccessObject bookDAO;
     private SqlPageDataAccessObject pageDAO;
@@ -87,14 +91,17 @@ public class CombinedDAO implements CombinedDataAcessInterface {
      */
     @Override
     public StoryBook getBook(String title) {
+        StoryBook chosenBook = null;
         for (String userName : users.keySet()) {
             User user = users.get(userName);
             for (StoryBook book : user.getStoryBooks()) {
                 if (book.getTitle().equals(title)) {
-                    return book;
+                    chosenBook = book;
                 }
             }
         }
+        return chosenBook;
+
     }
 
 
@@ -106,6 +113,7 @@ public class CombinedDAO implements CombinedDataAcessInterface {
      */
     @Override
     public Page getPage(Integer id) {
+        Page chosenPage = null;
 
         // you could also implement a getPage for the pageDAO as the page doesn't have any extra info about other entities
         for (String userName : users.keySet()) {
@@ -113,10 +121,14 @@ public class CombinedDAO implements CombinedDataAcessInterface {
             for (StoryBook book : user.getStoryBooks()) {
                 for (Page page : book.getPages())
                     if (page.getPageID().equals(id)) {
-                        return page;
+
+
+                        chosenPage = page;
+
                     }
             }
         }
+        return chosenPage;
     }
 
     /**
