@@ -52,7 +52,7 @@ public class GenerateInteractor implements GenerateInputBoundary {
 
         User user = userDataAccessObject.getUser(username);
         StoryBook outputStoryBook = storyBookFactory.create(prompt, pageFactory);
-        List<StoryBook> userStories = user.getStories();
+        List<StoryBook> userStories = user.getStoryBooks();
 
         userStories.add(outputStoryBook);
         userDataAccessObject.save(user);

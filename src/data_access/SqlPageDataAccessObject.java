@@ -128,7 +128,7 @@ public class SqlPageDataAccessObject {
                 pstmt.executeUpdate(); // Execute the insert statement
                 ResultSet generatedKeys = pstmt.getGeneratedKeys();
                 int generatedId = generatedKeys.getInt(1);
-                page.setId(generatedId);
+                page.setPageID(generatedId);
 
             } catch (SQLException e) {
                 System.err.println(e.getMessage());
