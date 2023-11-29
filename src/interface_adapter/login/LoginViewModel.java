@@ -20,6 +20,10 @@ public class LoginViewModel extends ViewModel {
         super("log in");
     }
 
+    public LoginState getState() {
+        return state;
+    }
+
     public void setState(LoginState state) {
         this.state = state;
     }
@@ -34,9 +38,5 @@ public class LoginViewModel extends ViewModel {
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         support.addPropertyChangeListener(listener);
-    }
-
-    public LoginState getState() {
-        return state;
     }
 }
