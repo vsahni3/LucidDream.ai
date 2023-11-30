@@ -47,24 +47,24 @@ public class Main {
         SqlBookDataAccessObject bookDAO;
         SQLiteJDBC connector;
 
-//        try {
-//            connector = new SQLiteJDBC();
-//            userDAO = new SqlUserDataAccessObject(connector, new CommonUserFactory());
-//            bookDAO = new SqlBookDataAccessObject(connector, new StoryBookFactory());
-//            pageDAO = new SqlPageDataAccessObject(connector, new PageFactory());
-//            mainDAO = new CombinedDAO(userDAO, bookDAO, pageDAO);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
+        try {
+            connector = new SQLiteJDBC();
+            userDAO = new SqlUserDataAccessObject(connector, new CommonUserFactory());
+            bookDAO = new SqlBookDataAccessObject(connector, new StoryBookFactory());
+            pageDAO = new SqlPageDataAccessObject(connector, new PageFactory());
+            mainDAO = new CombinedDAO(userDAO, bookDAO, pageDAO);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         LandingView landingView = new LandingView(signupViewModel, loginViewModel, viewManagerModel);
         views.add(landingView, landingView.viewName);
 
-//        SignupView signupView = SignupUseCaseFactory.create(viewManagerModel, loggedInViewModel, signupViewModel, mainDAO);
-//        views.add(signupView, signupView.viewName);
-//
-//        LoginView loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, loggedInViewModel, mainDAO);
-//        views.add(loginView, loginView.viewName);
+        SignupView signupView = SignupUseCaseFactory.create(viewManagerModel, loggedInViewModel, signupViewModel, mainDAO);
+        views.add(signupView, signupView.viewName);
+
+        LoginView loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, loggedInViewModel, mainDAO);
+        views.add(loginView, loginView.viewName);
 
         LoggedInView loggedInView = new LoggedInView(loggedInViewModel, viewManagerModel);
         views.add(loggedInView, loggedInView.viewName);
