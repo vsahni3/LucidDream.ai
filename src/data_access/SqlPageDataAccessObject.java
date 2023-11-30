@@ -42,7 +42,7 @@ public class SqlPageDataAccessObject {
     public SqlPageDataAccessObject(SQLiteJDBC connector, PageFactory pageFactory) throws IOException {
         this.pageFactory = pageFactory;
         this.c = connector.getConnection();
-        connector.createBookTable();
+        connector.createPageTable();
 
         loadData(pages);
 

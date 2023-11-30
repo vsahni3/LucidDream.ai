@@ -44,7 +44,7 @@ public class SQLiteJDBC {
             stmt = c.createStatement();
             String sql = "CREATE TABLE IF NOT EXISTS USER " +
                     "(userName TEXT PRIMARY KEY     NOT NULL," +
-                    " password           TEXT    NOT NULL, )";
+                    " password           TEXT    NOT NULL)";
             stmt.executeUpdate(sql);
             stmt.close();
             System.out.println("Table created successfully");
@@ -62,8 +62,9 @@ public class SQLiteJDBC {
         try {
             stmt = c.createStatement();
             String sql = "CREATE TABLE IF NOT EXISTS BOOK " +
-                    "(title TEXT PRIMARY KEY     NOT NULL," +
-                    "FOREIGN KEY (userID) REFERENCES User(ID)";
+                    "(title TEXT PRIMARY KEY NOT NULL," +
+                    " userID TEXT NOT NULL," + // Add this line
+                    " FOREIGN KEY (userID) REFERENCES USER(userName))";
             stmt.executeUpdate(sql);
             stmt.close();
             System.out.println("Table created successfully");
@@ -87,7 +88,8 @@ public class SQLiteJDBC {
                     "pageContents           TEXT    NOT NULL, " +
                     "pageNumber     INTEGER NOT NULL, " +
                     "image     BLOB NOT NULL, " +
-                    "FOREIGN KEY (bookID) REFERENCES BOOK(TITLE)";
+                    "bookID TEXT NOT NULL," + // Add this line
+                    "FOREIGN KEY (bookID) REFERENCES Book(title))";
             stmt.executeUpdate(sql);
             stmt.close();
             System.out.println("Table created successfully");
