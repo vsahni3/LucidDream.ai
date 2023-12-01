@@ -16,7 +16,7 @@ package entity;
 
 public class PageFactory {
     /**
-     * Requires: password is valid.
+     * Requires:  is valid.
      * @param textContents
      * @param pageNumber
      * @param pageID

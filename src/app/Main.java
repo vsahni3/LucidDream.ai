@@ -48,7 +48,7 @@ public class Main {
         SQLiteJDBC connector;
 
         try {
-            connector = new SQLiteJDBC();
+            connector = new SQLiteJDBC("jdbc:sqlite:dream.db");
             userDAO = new SqlUserDataAccessObject(connector, new CommonUserFactory());
             bookDAO = new SqlBookDataAccessObject(connector, new StoryBookFactory());
             pageDAO = new SqlPageDataAccessObject(connector, new PageFactory());

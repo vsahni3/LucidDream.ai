@@ -26,7 +26,6 @@ public class SqlUserDataAccessObject {
     private final Connection c;
 
 
-    private final Map<String, Integer> headers = new LinkedHashMap<>();
 
     private final Map<String, User> accounts = new HashMap<>();
 
@@ -57,6 +56,7 @@ public class SqlUserDataAccessObject {
             while (rs.next()) {
                 String userName = rs.getString("userName");
                 String password = rs.getString("password");
+
                 User user = userFactory.create(userName, password);
                 map.put(userName, user);
             }
@@ -82,6 +82,18 @@ public class SqlUserDataAccessObject {
     public void saveUser(User user) {
         accounts.put(user.getUserName(), user);
         this.saveUser();
+    }
+
+    public void deleteAll() {
+        String sql = "DELETE FROM USER";
+        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+
+            pstmt.executeUpdate(); // Execute the insert statement
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        this.accounts.clear();
+
     }
 
 

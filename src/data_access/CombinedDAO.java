@@ -42,10 +42,13 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
         this.bookDAO = bookDAO;
 
         loadData(users);
+
     }
 
     private void loadData(Map<String, User> map) {
+
         Map<String, User> tempUsers = userDAO.loadAll();
+
 
 
         for (String userName : tempUsers.keySet()) {
@@ -60,6 +63,7 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
 
 
         }
+
 
     }
 
@@ -163,15 +167,27 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
         return pageDAO.existsPage(identifier);
     }
 
+    public void deleteAll() {
+        userDAO.deleteAll();
+        bookDAO.deleteAll();
+        pageDAO.deleteAll();
+        this.users.clear();
+    }
+
     private void save() {
         Map<String, User> tempMap = new HashMap<>();
         loadData(tempMap);
 
         for (String username : users.keySet()) {
             User user = users.get(username);
+            System.out.println(user.getUserName());
+
             userDAO.saveUser(user);
             bookDAO.saveStoryBooks(user.getStoryBooks(), username);
             for (StoryBook book : user.getStoryBooks()) {
+                System.out.println(book.getTitle());
+//                System.out.println(book.getPages().get(0).getPageID());
+
                 pageDAO.savePages(book.getPages(), book.getTitle());
             }
         }
