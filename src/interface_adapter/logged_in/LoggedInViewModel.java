@@ -8,9 +8,12 @@ import java.beans.PropertyChangeSupport;
 
 public class LoggedInViewModel extends ViewModel {
     public final String TITLE_LABEL = "Logged In View";
+    public final String PROMPT_LABEL = "Write a story about...";
 
     private LoggedInState state = new LoggedInState();
 
+    public static final String CREATE_BUTTON_LABEL = "CREATE";
+    public static final String VIEW_STORIES_BUTTON_LABEL = "VIEW STORIES";
     public static final String LOGOUT_BUTTON_LABEL = "Log out";
     private String loggedInUser;
 
