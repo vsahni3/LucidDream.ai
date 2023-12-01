@@ -1,6 +1,7 @@
 package view;
 
 import interface_adapter.ViewManagerModel;
+import interface_adapter.generate_story.GenerateStoryController;
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginState;
@@ -18,17 +19,21 @@ public class LoggedInView extends JPanel implements ActionListener, PropertyChan
     private final LoggedInViewModel loggedInViewModel;
     final JTextField promptInputField = new JTextField(40);
     private final ViewManagerModel viewManagerModel;
+    private final GenerateStoryController generateStoryController;
     JLabel username;
     final JButton create;
     final JButton viewStories;
     final JButton logOut;
 
+
     /**
      * A window with a title and a JButton.
      */
-    public LoggedInView(LoggedInViewModel loggedInViewModel, ViewManagerModel viewManagerModel) {
+    public LoggedInView(LoggedInViewModel loggedInViewModel, ViewManagerModel viewManagerModel, GenerateStoryController generateStoryController) {
         this.viewManagerModel = viewManagerModel;
         this.loggedInViewModel = loggedInViewModel;
+        this.generateStoryController = generateStoryController;
+
         this.loggedInViewModel.addPropertyChangeListener(this);
 
         JLabel title = new JLabel("LucidDream A.I.");
