@@ -11,8 +11,10 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-public class LandingView extends JPanel implements ActionListener, PropertyChangeListener {
-
+/** A JPanel extension representing the Landing View for Lucid Dream AI.
+ * @author Eugene Cho
+ */
+public class LandingView extends JPanel {
 
     private final SignupViewModel signupViewModel;
     private final LoginViewModel loginViewModel;
@@ -25,6 +27,12 @@ public class LandingView extends JPanel implements ActionListener, PropertyChang
 
     final JButton signUp;
 
+    /**
+     * Constructs a Landing View.
+     * @param signupViewModel View model for the Sign Up use case.
+     * @param loginViewModel View model for the Login use case.
+     * @param viewManagerModel
+     */
     public LandingView(SignupViewModel signupViewModel, LoginViewModel loginViewModel, ViewManagerModel viewManagerModel) {
 
         this.signupViewModel = signupViewModel;
@@ -45,6 +53,7 @@ public class LandingView extends JPanel implements ActionListener, PropertyChang
 
         // Create button JPanel
         JPanel buttons = new JPanel();
+
 
         // Style Login button
         logIn = new JButton("Login");
@@ -91,31 +100,13 @@ public class LandingView extends JPanel implements ActionListener, PropertyChang
                     @Override
                     public void actionPerformed(ActionEvent evt) {
                         if (evt.getSource().equals(signUp)) {
-                            System.out.println("Clicked Sign up");
                             viewManagerModel.setActiveView(signupViewModel.getViewName());
                             viewManagerModel.firePropertyChanged();
 
                         }
-
                     }
                 }
         );
-
-    }
-
-    // Must modify
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        System.out.println("YUH");
-
-    }
-
-
-    // Must modify
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        System.out.println("HAHA");
-
     }
 }
 
