@@ -10,13 +10,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /** A JPanel extension representing the ReadStory View for Lucid Dream AI.
  * @author Eugene Cho
  */
-public class ReadStoryView extends JPanel {
+public class ReadStoryView extends JPanel implements ActionListener, PropertyChangeListener {
     public final String viewName = "read story";
-    private JLabel imageLabel;
+    private JLabel imageLabel, title;
     private JButton leftButton, rightButton, downloadButton, narrateButton, backButton, dictionaryButton;
     private JTextArea pageText;
 
@@ -45,8 +47,11 @@ public class ReadStoryView extends JPanel {
         this.downloadController = downloadController;
 
 
+        readStoryViewModel.addPropertyChangeListener(this);
+        ImageIcon placeholderImage = new ImageIcon("narrate_icon.png");
+
         // Set up the page image display
-        imageLabel = new JLabel(readStoryViewModel.getState().getPageImage(currentIndex));
+        imageLabel = new JLabel(placeholderImage);
         imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         imageLabel.setMaximumSize(new Dimension(500, 500));
 
@@ -64,8 +69,7 @@ public class ReadStoryView extends JPanel {
 
 
         // Book title header
-        String storyTitle = "Stupidly Long Book Title";
-        JLabel title = new JLabel(storyTitle);
+        JLabel title = new JLabel("placeholder title");
         title.setFont(new Font("SansSerif", Font.BOLD, 30));
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -86,7 +90,7 @@ public class ReadStoryView extends JPanel {
 
 
         // Page text
-        this.pageText = new JTextArea(readStoryViewModel.getState().getPageText(currentIndex));
+        this.pageText = new JTextArea("place holder text");
         pageText.setMargin(new Insets(30,40,30,40));
         pageText.setFont(new Font("SansSerif", Font.PLAIN, 20));
         pageText.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -242,5 +246,17 @@ public class ReadStoryView extends JPanel {
         Image image = icon.getImage();
         Image resizedImage = image.getScaledInstance(width, height,  java.awt.Image.SCALE_SMOOTH);
         return new ImageIcon(resizedImage);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        viewManagerModel.setActiveView("logged in");
+        viewManagerModel.firePropertyChanged();
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        imageLabel.setIcon(readStoryViewModel.getState().getPageImage(currentIndex));
+        pageText.setText(readStoryViewModel.getState().getPageText(currentIndex));
     }
 }
