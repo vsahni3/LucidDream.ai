@@ -1,7 +1,6 @@
-package interface_adapter.read_story.;
+package interface_adapter.read_story;
 
 import interface_adapter.ViewModel;
-import interface_adapter.login.LoginState;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
