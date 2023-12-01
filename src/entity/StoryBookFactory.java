@@ -34,10 +34,10 @@ public class StoryBookFactory {
      */
     public StoryBook create(String prompt, PageFactory pageFactory) throws IOException, JSONException {
         String entireText = generateText(prompt);
-
+//        Should be in the form Title: title \n Story: story..fixe
         int split = entireText.indexOf("Story:") + 6;
-
-        String title = entireText.substring(6, split).strip();
+//        Exclude the 'Title:' and 'Story:' strings
+        String title = entireText.substring(6, split - 6).strip();
 
         String storyText = entireText.substring(split).strip();
 
