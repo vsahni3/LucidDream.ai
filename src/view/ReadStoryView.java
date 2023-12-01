@@ -2,6 +2,7 @@ package view;
 
 import interface_adapter.ViewManagerModel;
 import interface_adapter.download_story.DownloadController;
+import interface_adapter.lookup.LookupController;
 import interface_adapter.narrate_story.NarrateController;
 import interface_adapter.read_story.ReadStoryViewModel;
 
