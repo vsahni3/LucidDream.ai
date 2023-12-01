@@ -4,8 +4,11 @@ import java.io.*;
 import java.net.URL;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONArray;
 import com.intellijava.core.controller.RemoteImageModel;
 import com.intellijava.core.model.input.ImageModelInput;
 import okhttp3.*;
@@ -29,7 +32,7 @@ public class StoryBookFactory {
      * @param pageFactory The factory used for creating individual pages of the storybook.
      * @return A new StoryBook object containing the generated story and pages.
      */
-    public StoryBook create(String prompt, PageFactory pageFactory) {
+    public StoryBook create(String prompt, PageFactory pageFactory) throws IOException, JSONException {
         String entireText = generateText(prompt);
 
         int split = entireText.indexOf("Story:") + 6;
@@ -45,11 +48,8 @@ public class StoryBookFactory {
         for (int i = 0; i < pagesText.size(); i++) {
             String pageText = pagesText.get(i);
             byte[] image;
-            try {
-                image = generateImage(pageText);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            image = generateImage(pageText);
+
             pages.add(pageFactory.create(pageText, i + 1, image, -1));
         }
 
@@ -67,10 +67,10 @@ public class StoryBookFactory {
 
         while (i < storyChars) {
             if (i + charLimit >= storyChars) {
-                pagesText.add(storyText.substring(i));
+                pagesText.add(storyText.substring(i).strip());
             } else {
                 int nextSentenceIndex = storyText.substring(i + charLimit).indexOf(".");
-                pagesText.add(storyText.substring(i, i + charLimit + nextSentenceIndex));
+                pagesText.add(storyText.substring(i, i + charLimit + nextSentenceIndex).strip());
             }
 
             i += charLimit;
@@ -79,43 +79,52 @@ public class StoryBookFactory {
         return pagesText;
     }
 
-    private static String generateText(String prompt) {
-        String apiURL = "https://api.cohere.ai/v1/generate";
-        String apiToken = System.getenv("cohere_key");
+    private static String generateText(String prompt) throws JSONException, IOException {
+        String apiURL = "https://api.openai.com/v1/chat/completions";
+        String apiToken = System.getenv("openai_key");
 
         String newPrompt = "Write the script for a storybook using the given prompt. Use the format of \nTitle:\nStory:\n\nHere is the prompt: " + prompt;
 
-        OkHttpClient client = new OkHttpClient().newBuilder()
-                .build();
+        JSONObject jsonBodyObj = new JSONObject();
+        jsonBodyObj.put("model", "gpt-4");
 
-        String jsonBody = "{\n" +
-                "  \"max_tokens\": 20,\n" +
-                "  \"truncate\": \"END\",\n" +
-                "  \"return_likelihoods\": \"NONE\",\n" +
-                "  \"prompt\": \"" + newPrompt + "\"\n" +
-                "}";
+        JSONArray messages = new JSONArray();
+
+        JSONObject systemMessage = new JSONObject();
+        systemMessage.put("role", "system");
+        systemMessage.put("content", "You are a storybook generator.");
+        messages.put(systemMessage);
+
+        JSONObject userMessage = new JSONObject();
+        userMessage.put("role", "user");
+        userMessage.put("content", newPrompt);
+        messages.put(userMessage);
+
+        jsonBodyObj.put("messages", messages);
+        String jsonBody = jsonBodyObj.toString();
 
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonBody);
 
         Request request = new Request.Builder()
                 .url(apiURL)
                 .addHeader("authorization", "Bearer " + apiToken)
-                .addHeader("accept", "application/json")
                 .addHeader("content-type", "application/json")
                 .post(body)
                 .build();
 
-        try {
-            Response response = client.newCall(request).execute();
-            System.out.println(response);
-            JSONObject responseBody = new JSONObject(response.body().string());
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .connectTimeout(30, TimeUnit.SECONDS) // Increase connect timeout
+                .readTimeout(30, TimeUnit.SECONDS)    // Increase read timeout
+                .writeTimeout(30, TimeUnit.SECONDS)   // Increase write timeout
+                .build();
 
-            return responseBody.getJSONArray("generations").getJSONObject(0).get("text").toString();
+        Response response = client.newCall(request).execute();
 
-        } catch (IOException | JSONException e) {
-            throw new RuntimeException(e);
-        }
+        JSONObject responseObject = new JSONObject(response.body().string());
 
+        JSONArray completions = responseObject.getJSONArray("choices");
+
+        return completions.getJSONObject(0).getJSONObject("message").getString("content");
     }
 
     private static byte[] generateImage(String pageText) throws IOException {

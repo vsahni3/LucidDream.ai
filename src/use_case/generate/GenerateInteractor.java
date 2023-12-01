@@ -4,7 +4,9 @@ import entity.PageFactory;
 import entity.StoryBook;
 import entity.StoryBookFactory;
 import entity.User;
+import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -51,7 +53,12 @@ public class GenerateInteractor implements GenerateInputBoundary {
 
 
         User user = userDataAccessObject.getUser(username);
-        StoryBook outputStoryBook = storyBookFactory.create(prompt, pageFactory);
+        StoryBook outputStoryBook;
+        try {
+            outputStoryBook = storyBookFactory.create(prompt, pageFactory);
+        } catch (IOException | JSONException e) {
+            throw new RuntimeException(e);
+        }
         List<StoryBook> userStories = user.getStoryBooks();
 
         userStories.add(outputStoryBook);
