@@ -10,6 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -58,16 +60,24 @@ public class LoggedInView extends JPanel implements ActionListener, PropertyChan
                 new JLabel(loggedInViewModel.PROMPT_LABEL), promptInputField);
         create = new JButton(loggedInViewModel.CREATE_BUTTON_LABEL);
         create.setPreferredSize(new Dimension(120, 50));
-        create.setFont(new Font("Arial", Font.PLAIN, 16));
+        create.setFont(new Font("Arial", Font.BOLD, 16));
+        create.setBackground(new Color(0xDDAF37));
+        create.setForeground(Color.WHITE);
         createPanel.add(storyPrompt);
         createPanel.add(create);
         createPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Butttons panel for external navigation
+        // Buttons panel for external navigation
         JPanel buttons = new JPanel();
         viewStories = new JButton(loggedInViewModel.VIEW_STORIES_BUTTON_LABEL);
+        viewStories.setPreferredSize(new Dimension(120, 38));
+        viewStories.setForeground(Color.WHITE);
+        viewStories.setBackground(Color.GRAY);
         buttons.add(viewStories);
         logOut = new JButton(loggedInViewModel.LOGOUT_BUTTON_LABEL);
+        logOut.setPreferredSize(new Dimension(120, 38));
+        logOut.setForeground(Color.WHITE);
+        logOut.setBackground(Color.GRAY);
         buttons.add(logOut);
         logOut.addActionListener(this);
 
@@ -82,6 +92,41 @@ public class LoggedInView extends JPanel implements ActionListener, PropertyChan
 
         // Add flexible space that expands or contracts to fill the available vertical space within its container.
         this.add(Box.createVerticalGlue());
+
+        // Listens for updates to the story prompt input field and updates the state of the logged in view model
+        promptInputField.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                LoggedInState currentState = loggedInViewModel.getState();
+                currentState.setStoryPrompt(promptInputField.getText() + e.getKeyChar());
+                loggedInViewModel.setState(currentState);
+                System.out.println("Set prompt to: " + currentState.getStoryPrompt());
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
+
+        // Listen for button clicks to the Create story Button to start the use case
+        create.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (e.getSource().equals(create)) {
+                            LoggedInState currentState = loggedInViewModel.getState();
+
+                            generateStoryController.execute(currentState.getStoryPrompt(), currentState.getUsername());
+                        }
+                    }
+                }
+        );
     }
 
     /**
