@@ -6,8 +6,10 @@ import entity.PageFactory;
 import entity.StoryBookFactory;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.logged_in.LoggedInViewModel;
+import interface_adapter.read_story.ReadStoryViewModel;
 import interface_adapter.signup.SignupViewModel;
 import interface_adapter.ViewManagerModel;
+import use_case.generate.GenerateUserDataAccessInterface;
 import view.*;
 
 import javax.swing.*;
@@ -40,6 +42,7 @@ public class Main {
         LoginViewModel loginViewModel = new LoginViewModel();
         LoggedInViewModel loggedInViewModel = new LoggedInViewModel();
         SignupViewModel signupViewModel = new SignupViewModel();
+        ReadStoryViewModel readStoryViewModel = new ReadStoryViewModel();
 
         SqlUserDataAccessObject userDAO;
         CombinedDAO mainDAO;
@@ -66,7 +69,7 @@ public class Main {
         LoginView loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, loggedInViewModel, mainDAO);
         views.add(loginView, loginView.viewName);
 
-        LoggedInView loggedInView = new LoggedInView(loggedInViewModel, viewManagerModel);
+        LoggedInView loggedInView = GenerateStoryUseCaseFactory.create(viewManagerModel, readStoryViewModel, loggedInViewModel, mainDAO);
         views.add(loggedInView, loggedInView.viewName);
 
         viewManagerModel.setActiveView(landingView.viewName);
