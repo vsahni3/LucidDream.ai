@@ -34,10 +34,10 @@ public class StoryBookFactory {
      */
     public StoryBook create(String prompt, PageFactory pageFactory) throws IOException, JSONException {
         String entireText = generateText(prompt);
-
+//        Should be in the form Title: title \n Story: story..fixe
         int split = entireText.indexOf("Story:") + 6;
-
-        String title = entireText.substring(6, split).strip();
+//        Exclude the 'Title:' and 'Story:' strings
+        String title = entireText.substring(6, split - 6).strip();
 
         String storyText = entireText.substring(split).strip();
 
@@ -66,14 +66,17 @@ public class StoryBookFactory {
         int i = 0;
 
         while (i < storyChars) {
+            int nextSentenceIndex = 0;
+
             if (i + charLimit >= storyChars) {
                 pagesText.add(storyText.substring(i).strip());
             } else {
-                int nextSentenceIndex = storyText.substring(i + charLimit).indexOf(".");
-                pagesText.add(storyText.substring(i, i + charLimit + nextSentenceIndex).strip());
+                nextSentenceIndex = storyText.substring(i + charLimit).indexOf(".");
+                // add 1 to include the period
+                pagesText.add(storyText.substring(i, i + charLimit + nextSentenceIndex + 1).strip());
             }
 
-            i += charLimit;
+            i += charLimit + nextSentenceIndex + 1;
 
         }
         return pagesText;
@@ -83,7 +86,7 @@ public class StoryBookFactory {
         String apiURL = "https://api.openai.com/v1/chat/completions";
         String apiToken = System.getenv("openai_key");
 
-        String newPrompt = "Write the script for a storybook using the given prompt. Use the format of \nTitle:\nStory:\n\nHere is the prompt: " + prompt;
+        String newPrompt = "Write the script for a storybook using the prompt:" + prompt + "\n\nUse the format of \nTitle:\nStory:\n\nDo not include page numbers;";
 
         JSONObject jsonBodyObj = new JSONObject();
         jsonBodyObj.put("model", "gpt-4");
