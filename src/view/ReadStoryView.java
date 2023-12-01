@@ -11,7 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/** A JPanel extension representing the Login View for Lucid Dream AI.
+/** A JPanel extension representing the ReadStory View for Lucid Dream AI.
  * @author Eugene Cho
  */
 public class ReadStoryView extends JPanel {
@@ -28,6 +28,14 @@ public class ReadStoryView extends JPanel {
     private final LookupController lookupController;
     private final DownloadController downloadController;
 
+    /**
+     * Constructs a ReadStory View.
+     * @param viewManagerModel
+     * @param readStoryViewModel
+     * @param narrateController
+     * @param downloadController
+     * @param lookupController
+     */
     public ReadStoryView(ViewManagerModel viewManagerModel, ReadStoryViewModel readStoryViewModel, NarrateController narrateController, LookupController lookupController, DownloadController downloadController) {
 
         this.viewManagerModel = viewManagerModel;
@@ -235,5 +243,4 @@ public class ReadStoryView extends JPanel {
         Image resizedImage = image.getScaledInstance(width, height,  java.awt.Image.SCALE_SMOOTH);
         return new ImageIcon(resizedImage);
     }
-
 }
