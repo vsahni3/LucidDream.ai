@@ -76,6 +76,12 @@ public class Main {
         viewManagerModel.firePropertyChanged();
 
         application.pack();
+        // Disable window resizing
+        application.setResizable(false);
+
+        // Maximizes the screen
+        application.setExtendedState(JFrame.MAXIMIZED_BOTH);
+
         application.setVisible(true);
 
     }
