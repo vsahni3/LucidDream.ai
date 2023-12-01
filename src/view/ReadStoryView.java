@@ -36,13 +36,6 @@ public class ReadStoryView extends JPanel {
         this.downloadController = downloadController;
 
 
-
-        // Resizes the images
-//        for (int i = 0; i < images.length; i++) {
-//            images[i] = resizeImageIcon(images[i], 900, 500);
-//        }
-
-
         // Set up the page image display
         imageLabel = new JLabel(readStoryViewModel.getState().getPageImage(currentIndex));
         imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
