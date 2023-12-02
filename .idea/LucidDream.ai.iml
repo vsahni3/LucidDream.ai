@@ -12,6 +12,7 @@
     <orderEntry type="library" name="sqlite-jdbc-3.43.2.2" level="project" />
     <orderEntry type="library" name="lib" level="project" />
     <orderEntry type="library" name="lib" level="project" />
+<<<<<<< HEAD
     <orderEntry type="module-library">
       <library name="JUnit4">
         <CLASSES>
@@ -48,5 +49,9 @@
         <SOURCES />
       </library>
     </orderEntry>
+=======
+    <orderEntry type="library" name="lib" level="project" />
+    <orderEntry type="library" name="lib" level="project" />
+>>>>>>> ed016f17f8c813ee5c751a3ed951c51f04633ecb
   </component>
 </module>

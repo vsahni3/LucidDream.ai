@@ -1,27 +1,22 @@
-package interface_adapter.logged_in;
+package interface_adapter.read_story;
 
 import interface_adapter.ViewModel;
-import interface_adapter.login.LoginState;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-public class LoggedInViewModel extends ViewModel {
-    public final String TITLE_LABEL = "Logged In View";
-    public final String PROMPT_LABEL = "Write a story about...";
+public class ReadStoryViewModel extends ViewModel {
+    public final String TITLE_LABEL = "Read Story View";
 
-    private LoggedInState state = new LoggedInState();
+    private ReadStoryState state = new ReadStoryState();
 
-    public static final String CREATE_BUTTON_LABEL = "CREATE";
-    public static final String VIEW_STORIES_BUTTON_LABEL = "MY STORIES";
-    public static final String LOGOUT_BUTTON_LABEL = "LOG OUT";
     private String loggedInUser;
 
-    public LoggedInViewModel() {
-        super("logged in");
+    public ReadStoryViewModel() {
+        super("read story");
     }
 
-    public void setState(LoggedInState state) {
+    public void setState(ReadStoryState state) {
         this.state = state;
     }
 
@@ -37,7 +32,7 @@ public class LoggedInViewModel extends ViewModel {
         support.addPropertyChangeListener(listener);
     }
 
-    public LoggedInState getState() {
+    public ReadStoryState getState() {
         return state;
     }
 
