@@ -69,6 +69,18 @@ public class SqlBookDataAccessObject {
 
     }
 
+    public void deleteAll() {
+        String sql = "DELETE FROM BOOK";
+        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+
+            pstmt.executeUpdate(); // Execute the insert statement
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        this.storyBooks.clear();
+
+    }
+
     /**
      * Retrieves a list of StoryBook objects associated with a given user.
      * @param userName the username for which the books are to be retrieved.
@@ -76,7 +88,7 @@ public class SqlBookDataAccessObject {
      */
     public ArrayList<StoryBook> getUserBooks(String userName) {
         ArrayList<StoryBook> books = new ArrayList<>();
-        String sql = "SELECT title FROM Book WHERE userName = ?";
+        String sql = "SELECT title FROM Book WHERE userId = ?";
         try (PreparedStatement pstmt = c.prepareStatement(sql)) {
             pstmt.setString(1, userName); // Set the password parameter
             ResultSet rs = pstmt.executeQuery();
@@ -136,7 +148,7 @@ public class SqlBookDataAccessObject {
                 System.err.println(e.getMessage());
             }
         } else {
-            String sql = "INSERT INTO USER (title, userID) VALUES (?, ?)";
+            String sql = "INSERT INTO BOOK (title, userID) VALUES (?, ?)";
             try (PreparedStatement pstmt = c.prepareStatement(sql)) {
                 pstmt.setString(1, storyBook.getTitle()); // Set the username parameter
                 // Set the password parameter
@@ -156,11 +168,10 @@ public class SqlBookDataAccessObject {
      * @param userName the username to associate with the story books.
      */
     public void saveStoryBooks(ArrayList<StoryBook> books, String userName) {
-        Map<String, StoryBook> tempMap = new HashMap<>();
-        loadData(tempMap);
+
         for (StoryBook storyBook : books) {
 
-            saveStoryBook(storyBook, userName, tempMap);
+            saveStoryBook(storyBook, userName, this.storyBooks);
         }
         this.storyBooks = new HashMap<String, StoryBook>();
         loadData(this.storyBooks);

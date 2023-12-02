@@ -13,12 +13,13 @@ public class SQLiteJDBC {
      * It initializes the JDBC driver and establishes a connection to the SQLite database.
      * On failure, it prints the error message and exits the application.
      */
-    public SQLiteJDBC() {
+    String dbPath;
+    public SQLiteJDBC(String dbPath) {
 
 
         try {
             Class.forName("org.sqlite.JDBC");
-            this.c = DriverManager.getConnection("jdbc:sqlite:test.db");
+            this.c = DriverManager.getConnection(dbPath);
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
             System.exit(0);
@@ -47,7 +48,7 @@ public class SQLiteJDBC {
                     " password           TEXT    NOT NULL)";
             stmt.executeUpdate(sql);
             stmt.close();
-            System.out.println("Table created successfully");
+//            System.out.println("Table created successfully");
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
@@ -67,7 +68,7 @@ public class SQLiteJDBC {
                     " FOREIGN KEY (userID) REFERENCES USER(userName))";
             stmt.executeUpdate(sql);
             stmt.close();
-            System.out.println("Table created successfully");
+//            System.out.println("Table created successfully");
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
@@ -92,7 +93,7 @@ public class SQLiteJDBC {
                     "FOREIGN KEY (bookID) REFERENCES Book(title))";
             stmt.executeUpdate(sql);
             stmt.close();
-            System.out.println("Table created successfully");
+//            System.out.println("Table created successfully");
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
