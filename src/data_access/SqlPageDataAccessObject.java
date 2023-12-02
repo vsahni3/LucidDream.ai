@@ -59,10 +59,8 @@ public class SqlPageDataAccessObject {
                 Integer id = rs.getInt("pageID");
                 String pageContents = rs.getString("pageContents");
                 Integer pageNumber = rs.getInt("pageNumber");
-//                Blob imageBlob = rs.getBlob("image");
-//                byte[] image = imageBlob.getBytes(1, (int) imageBlob.length());
-//                imageBlob.free(); // Free the blob resource
-                byte[] image = new byte[0];
+                byte[] image = rs.getBytes("image");
+
                 Page page = pageFactory.create(pageContents, pageNumber, image, id);
                 System.out.println("loading");
                 System.out.println(page.getPageID());
