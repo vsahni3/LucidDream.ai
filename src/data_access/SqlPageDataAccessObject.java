@@ -55,15 +55,15 @@ public class SqlPageDataAccessObject {
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                System.out.println("loading0");
+
                 Integer id = rs.getInt("pageID");
                 String pageContents = rs.getString("pageContents");
                 Integer pageNumber = rs.getInt("pageNumber");
                 byte[] image = rs.getBytes("image");
 
                 Page page = pageFactory.create(pageContents, pageNumber, image, id);
-                System.out.println("loading");
-                System.out.println(page.getPageID());
+
+
                 map.put(id, page);
             }
         } catch (SQLException e) {
@@ -122,7 +122,7 @@ public class SqlPageDataAccessObject {
                 System.err.println(e.getMessage());
             }
         } else {
-            System.out.println("good");
+
             String sql = "INSERT INTO PAGE (pageContents, pageNumber, image, bookID) VALUES (?, ?, ?, ?)";
             try (PreparedStatement pstmt = c.prepareStatement(sql)) {
                 pstmt.setString(1, page.getTextContents()); // Set the username parameter
@@ -134,8 +134,7 @@ public class SqlPageDataAccessObject {
                     ResultSet rs = stmt.executeQuery("SELECT last_insert_rowid()");
                     if (rs.next()) {
                         int generatedId = rs.getInt(1);
-                        System.out.println(generatedId);
-                        System.out.println("LETS GO");
+
                         page.setPageID(generatedId);
                     }
                 }
@@ -165,9 +164,7 @@ public class SqlPageDataAccessObject {
      * @param title the title of the book to which these pages belong.
      */
     public void savePages(ArrayList<Page> pages, String title) {
-        if (pages.size() > 0) {
-            System.out.println(pages.get(0).getPageID());
-        }
+
 
         for (Page page : pages) {
             savePage(page, title, this.pages);
@@ -176,7 +173,7 @@ public class SqlPageDataAccessObject {
         }
         this.pages = new HashMap<Integer, Page>();
         loadData(this.pages);
-//        System.out.println(this.pages.get(0).getPageID());
+;
 
 
 

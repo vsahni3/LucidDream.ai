@@ -181,13 +181,11 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
 
         for (String username : users.keySet()) {
             User user = users.get(username);
-            System.out.println(user.getUserName());
+
 
             userDAO.saveUser(user);
             bookDAO.saveStoryBooks(user.getStoryBooks(), username);
             for (StoryBook book : user.getStoryBooks()) {
-                System.out.println(book.getTitle());
-//                System.out.println(book.getPages().get(0).getPageID());
 
                 pageDAO.savePages(book.getPages(), book.getTitle());
             }
