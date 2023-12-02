@@ -1,10 +1,10 @@
 package data_access;
 
 import entity.*;
-import org.junit.Rule;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.ExpectedException;
+
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -14,8 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 class CombinedDAOTest {
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();
+
 
     private SQLiteJDBC connector;
     private CombinedDAO combinedDAO;
@@ -49,33 +48,37 @@ class CombinedDAOTest {
     void setUp() {
         // Assuming you have methods to create instances of your factories.
         combinedDAO.deleteAll();
-        System.out.println("deleted");
+
     }
 
     @Test
     public void testSQLiteJDBCConstructorException() {
 
-        exception.expect(SQLException.class);
-        new SQLiteJDBC("jdbc:sqlite:invalid_path.db");
 
+        // This should throw a RuntimeException when trying to connect with an invalid path
+        RuntimeException thrown = assertThrows(RuntimeException.class, () -> {
+            new SQLiteJDBC("invalid_path.db");
+        }, "A RuntimeException was expected to be thrown when the database connection fails");
+
+        // You can further check that the cause of the RuntimeException is an SQLException
+        assertTrue(thrown.getCause() instanceof SQLException, "The cause of the RuntimeException should be an SQLException");
     }
 
     @Test
-    public void testTableCreationExceptions() throws SQLException, ClassNotFoundException {
+    public void testTableCreationExceptions() {
         // Create an instance with a valid path
         SQLiteJDBC sqliteJDBC = new SQLiteJDBC("jdbc:sqlite:memory:");
+        RuntimeException thrown = assertThrows(RuntimeException.class, () -> {
+            sqliteJDBC.getConnection().close();
 
-        // Close the database connection to simulate the failure condition
-        sqliteJDBC.getConnection().close();
-
-        // Set up the expectation for an SQLException
-        exception.expect(SQLException.class);
-
-        // Call each table creation method. These should fail due to the closed connection.
-        sqliteJDBC.createUserTable();
-        sqliteJDBC.createBookTable();
-        sqliteJDBC.createPageTable();
+            // Call each table creation method. These should fail due to the closed connection.
+            sqliteJDBC.createUserTable();
+            sqliteJDBC.createBookTable();
+            sqliteJDBC.createPageTable();
+        }, "A RuntimeException was expected to be thrown when the database connection fails");
+        assertTrue(thrown.getCause() instanceof SQLException, "The cause of the RuntimeException should be an SQLException");
     }
+
 
     @Test
     void testPageCreationAndRetrieval() {

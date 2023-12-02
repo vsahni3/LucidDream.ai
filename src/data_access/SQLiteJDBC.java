@@ -21,8 +21,8 @@ public class SQLiteJDBC {
             Class.forName("org.sqlite.JDBC");
             this.c = DriverManager.getConnection(dbPath);
         } catch ( Exception e ) {
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
+            throw new RuntimeException(e);
+
         }
         System.out.println("Opened database successfully");
     }
@@ -50,7 +50,7 @@ public class SQLiteJDBC {
             stmt.close();
 //            System.out.println("Table created successfully");
         } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
@@ -70,7 +70,7 @@ public class SQLiteJDBC {
             stmt.close();
 //            System.out.println("Table created successfully");
         } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
@@ -95,7 +95,7 @@ public class SQLiteJDBC {
             stmt.close();
 //            System.out.println("Table created successfully");
         } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
