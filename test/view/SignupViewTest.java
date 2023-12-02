@@ -8,15 +8,12 @@ import entity.UserFactory;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.generate_story.GenerateStoryController;
 import interface_adapter.logged_in.LoggedInViewModel;
-import interface_adapter.login.LoginState;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupState;
 import interface_adapter.signup.SignupViewModel;
 import use_case.generate.GenerateInputBoundary;
-import use_case.login.LoginOutputBoundary;
-import use_case.login.LoginOutputData;
 import use_case.signup.*;
 
 import javax.swing.*;

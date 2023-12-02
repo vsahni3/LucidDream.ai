@@ -1,6 +1,5 @@
 package view;
 
-import app.SignupUseCaseFactory;
 import data_access.InMemoryUserDataAccessObject;
 import entity.CommonUserFactory;
 import entity.User;
@@ -12,12 +11,9 @@ import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginPresenter;
 import interface_adapter.login.LoginState;
 import interface_adapter.login.LoginViewModel;
-import interface_adapter.signup.SignupController;
-import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
 import use_case.generate.GenerateInputBoundary;
 import use_case.login.*;
-import use_case.signup.*;
 
 import javax.swing.*;
 import java.awt.*;
