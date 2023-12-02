@@ -45,6 +45,8 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
         this.signupViewModel = signupViewModel;
         this.viewManagerModel = viewManagerModel;
 
+        signupViewModel.addPropertyChangeListener(this);
+
         // Create and style Title component
         JLabel title = new JLabel("Lucid Dream AI");
         title.setFont(new Font("SansSerif", Font.BOLD, 70));
@@ -198,6 +200,10 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
      */
     @Override
     public void actionPerformed(ActionEvent evt) {
+        usernameInputField.setText(null);
+        passwordInputField.setText(null);
+        repeatPasswordInputField.setText(null);
+
         viewManagerModel.setActiveView("landing page");
         viewManagerModel.firePropertyChanged();
     }
@@ -237,6 +243,11 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
             passwordInputField.setText(null);
             repeatPasswordInputField.setText(null);
 
+        } else {
+            usernameInputField.setText(null);
+            passwordInputField.setText(null);
+            repeatPasswordInputField.setText(null);
+            state.clearState();
         }
     }
 }

@@ -49,7 +49,6 @@ public class GenerateStoryPresenter implements GenerateOutputBoundary {
         ReadStoryState readStoryState = readStoryViewModel.getState();
 
         String title = book.getStoryBook().getTitle();
-
         ArrayList<Page> pages = book.getStoryBook().getPages();
         ArrayList<String> tempPageTexts = new ArrayList<>();
         ArrayList<ImageIcon> tempPageImages = new ArrayList<>();

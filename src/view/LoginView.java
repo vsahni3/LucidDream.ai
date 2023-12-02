@@ -49,6 +49,8 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         this.loginController = controller;
         this.viewManagerModel = viewManagerModel;
 
+        loginViewModel.addPropertyChangeListener(this);
+
 
         // Create and style the header label
         JLabel title = new JLabel("Lucid Dream AI");
@@ -94,6 +96,7 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         cancel.addActionListener(this);
 
 
+
         // Add the buttons to the buttons container
         buttons.add(logIn);
         // White space between the buttons
@@ -109,7 +112,6 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         this.add(Box.createRigidArea(new Dimension(0, 50)));
         this.add(buttons);
         this.add(Box.createVerticalGlue());
-
 
         // Listens for button clicks to the Login Button to start the use case
         logIn.addActionListener(
@@ -171,9 +173,10 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
      */
     @Override
     public void actionPerformed(ActionEvent evt) {
+        usernameInputField.setText(null);
+        passwordInputField.setText(null);
         viewManagerModel.setActiveView("landing page");
         viewManagerModel.firePropertyChanged();
-
     }
 
 
@@ -195,6 +198,10 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
             state.setPassword("");
             state.setPasswordError(null);
             passwordInputField.setText(null);
+        } else {
+            usernameInputField.setText(null);
+            passwordInputField.setText(null);
+            state.clearState();
         }
     }
 }

@@ -5,8 +5,8 @@ import javax.swing.*;
 public class ReadStoryState {
 
     private String title;
-    private ImageIcon[] pageImages;
-    private String[] pageTexts;
+    private ImageIcon[] pageImages = null;
+    private String[] pageTexts = null;
 
     public ReadStoryState(ReadStoryState copy) {
         title = copy.title;
@@ -16,6 +16,20 @@ public class ReadStoryState {
 
     // Because of the previous copy constructor, the default constructor must be explicit.
     public ReadStoryState() {}
+
+
+    public void clearState() {
+        title = "";
+        pageImages = null;
+        pageTexts = null;
+    }
+
+    /**
+     * Returns whether the state is currently active.
+     */
+    public boolean isActive() {
+        return pageTexts != null;
+    }
 
     /**
      * Return the story title
@@ -62,5 +76,7 @@ public class ReadStoryState {
     public void setPageTexts(String[] pageTexts) {
         this.pageTexts = pageTexts;
     }
+
+
 
 }
