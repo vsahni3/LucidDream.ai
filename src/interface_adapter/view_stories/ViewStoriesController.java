@@ -1,6 +1,7 @@
 package interface_adapter.view_stories;
 
 import use_case.view_stories.ViewStoriesInputBoundary;
+import use_case.view_stories.ViewStoriesInputData;
 
 public class ViewStoriesController {
 
@@ -10,7 +11,9 @@ public class ViewStoriesController {
         this.viewStoriesUseCaseInteractor = viewStoriesUseCaseInteractor;
     }
 
-    public void execute() {
+    public void execute(String username) {
+        ViewStoriesInputData viewStoriesInputData = new ViewStoriesInputData(username);
 
+        viewStoriesUseCaseInteractor.execute(viewStoriesInputData);
     }
 }

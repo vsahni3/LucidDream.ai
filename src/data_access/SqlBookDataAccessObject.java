@@ -108,27 +108,6 @@ public class SqlBookDataAccessObject {
         return books;
     }
 
-    /**
-     * Retrieves the username associated with a given book identifier.
-     * @param identifier the title of the book.
-     * @return the username of the user associated with the book.
-     */
-    public String getBookUser(String identifier) {
-        String userName = "";
-        String sql = "SELECT userId FROM Book WHERE title = ?";
-        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-            pstmt.setString(1, identifier); // Set the password parameter
-            ResultSet rs = pstmt.executeQuery();
-            userName = rs.getString("userName");
-
-
-            pstmt.executeUpdate(); // Execute the insert statement
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-        return userName;
-    }
-
 
     /**
      * Saves a story book in the database with the given user's name and updates the provided temporary map.
@@ -137,7 +116,7 @@ public class SqlBookDataAccessObject {
      * @param tempMap a temporary map to be updated with the new story book data.
      */
     public void saveStoryBook(StoryBook storyBook, String userName, Map<String, StoryBook> tempMap) {
-        if (tempMap.containsKey(userName)) {
+        if (tempMap.containsKey(storyBook.getTitle())) {
             String sql = "UPDATE BOOK SET userID = ? WHERE title = ?";
             try (PreparedStatement pstmt = c.prepareStatement(sql)) {
                 pstmt.setString(1, userName); // Set the password parameter
@@ -148,6 +127,7 @@ public class SqlBookDataAccessObject {
                 System.err.println(e.getMessage());
             }
         } else {
+
             String sql = "INSERT INTO BOOK (title, userID) VALUES (?, ?)";
             try (PreparedStatement pstmt = c.prepareStatement(sql)) {
                 pstmt.setString(1, storyBook.getTitle()); // Set the username parameter
