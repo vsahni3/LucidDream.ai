@@ -5,6 +5,7 @@ import interface_adapter.generate_story.GenerateStoryController;
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginState;
+import interface_adapter.view_stories.ViewStoriesController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,6 +23,7 @@ public class LoggedInView extends JPanel implements ActionListener, PropertyChan
     final JTextField promptInputField = new JTextField(40);
     private final ViewManagerModel viewManagerModel;
     private final GenerateStoryController generateStoryController;
+    private final ViewStoriesController viewStoriesController;
     JLabel username;
     final JButton create;
     final JButton viewStories;
@@ -31,10 +33,11 @@ public class LoggedInView extends JPanel implements ActionListener, PropertyChan
     /**
      * A window with a title and a JButton.
      */
-    public LoggedInView(LoggedInViewModel loggedInViewModel, ViewManagerModel viewManagerModel, GenerateStoryController generateStoryController) {
+    public LoggedInView(LoggedInViewModel loggedInViewModel, ViewManagerModel viewManagerModel, GenerateStoryController generateStoryController, ViewStoriesController viewStoriesController) {
         this.viewManagerModel = viewManagerModel;
         this.loggedInViewModel = loggedInViewModel;
         this.generateStoryController = generateStoryController;
+        this.viewStoriesController = viewStoriesController;
 
         this.loggedInViewModel.addPropertyChangeListener(this);
 
@@ -100,7 +103,6 @@ public class LoggedInView extends JPanel implements ActionListener, PropertyChan
                 LoggedInState currentState = loggedInViewModel.getState();
                 currentState.setStoryPrompt(promptInputField.getText() + e.getKeyChar());
                 loggedInViewModel.setState(currentState);
-                System.out.println("Set prompt to: " + currentState.getStoryPrompt());
             }
 
             @Override
@@ -124,6 +126,20 @@ public class LoggedInView extends JPanel implements ActionListener, PropertyChan
                             promptInputField.setText(null);
                             generateStoryController.execute(currentState.getStoryPrompt(), currentState.getUsername());
 
+                        }
+                    }
+                }
+        );
+
+        viewStories.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (e.getSource().equals(viewStories)) {
+                            LoggedInState currentState = loggedInViewModel.getState();
+                            viewStoriesController.execute(currentState.getUsername());
+//                            viewManagerModel.setActiveView("view stories");
+//                            viewManagerModel.firePropertyChanged();
                         }
                     }
                 }
