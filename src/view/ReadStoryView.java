@@ -22,6 +22,7 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
     private JButton leftButton, rightButton, downloadButton, narrateButton, backButton, dictionaryButton;
     private JTextArea pageText;
 
+    private int numLoaded = 0;
     private int currentIndex = 0;
     private final ViewManagerModel viewManagerModel;
     private final ReadStoryViewModel readStoryViewModel;
@@ -69,7 +70,7 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
 
 
         // Book title header
-        JLabel title = new JLabel("placeholder title");
+        this.title = new JLabel("placeholder title");
         title.setFont(new Font("SansSerif", Font.BOLD, 30));
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -79,7 +80,7 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
         this.backButton = new JButton(resizeImageIcon(backIcon, 40, 40));
         backButton.setBackground(Color.LIGHT_GRAY);
         backButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-
+        backButton.addActionListener(this);
 
         // Create header container and add back button and title
         JPanel header = new JPanel();
@@ -92,7 +93,7 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
         // Page text
         this.pageText = new JTextArea("place holder text");
         pageText.setMargin(new Insets(30,40,30,40));
-        pageText.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        pageText.setFont(new Font("SansSerif", Font.PLAIN, 18));
         pageText.setAlignmentX(Component.CENTER_ALIGNMENT);
         pageText.setLineWrap(true);
         pageText.setWrapStyleWord(true);
@@ -141,7 +142,7 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(Box.createRigidArea(new Dimension(0, 30)));
         this.add(header);
-        this.add(Box.createRigidArea(new Dimension(0, 50)));
+        this.add(Box.createRigidArea(new Dimension(0, 40)));
         this.add(book);
         this.add(pageText);
         this.add(Box.createRigidArea(new Dimension(0, 30)));
@@ -201,16 +202,6 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
         );
 
 
-        // Listens for clicks on the back button to navigate back to the LoggedIn view
-        backButton.addActionListener(
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        if (evt.getSource().equals(backButton)) {
-                            System.out.println("Clicked back");
-                        }
-                    }
-                }
-        );
 
 
         // Listens for clicks on the Dictionary button to start the word lookup use case.
@@ -250,13 +241,19 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        readStoryViewModel.getState().clearState();
         viewManagerModel.setActiveView("logged in");
         viewManagerModel.firePropertyChanged();
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        imageLabel.setIcon(readStoryViewModel.getState().getPageImage(currentIndex));
-        pageText.setText(readStoryViewModel.getState().getPageText(currentIndex));
+
+        if (readStoryViewModel.getState().isActive()) {
+            imageLabel.setIcon(readStoryViewModel.getState().getPageImage(currentIndex));
+            pageText.setText(readStoryViewModel.getState().getPageText(currentIndex));
+            title.setText(readStoryViewModel.getState().getTitle());
+        }
+
     }
 }

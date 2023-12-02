@@ -121,8 +121,9 @@ public class LoggedInView extends JPanel implements ActionListener, PropertyChan
                     public void actionPerformed(ActionEvent e) {
                         if (e.getSource().equals(create)) {
                             LoggedInState currentState = loggedInViewModel.getState();
-
+                            promptInputField.setText(null);
                             generateStoryController.execute(currentState.getStoryPrompt(), currentState.getUsername());
+
                         }
                     }
                 }
