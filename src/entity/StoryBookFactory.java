@@ -34,7 +34,7 @@ public class StoryBookFactory {
      */
     public StoryBook create(String prompt, PageFactory pageFactory) throws IOException, JSONException {
         String entireText = generateText(prompt);
-//        Should be in the form Title: title \n Story: story..fixe
+//        Should be in the form Title: title \n Story: story..
         int split = entireText.indexOf("Story:") + 6;
 //        Exclude the 'Title:' and 'Story:' strings
         String title = entireText.substring(6, split - 6).strip();
@@ -116,9 +116,9 @@ public class StoryBookFactory {
                 .build();
 
         OkHttpClient client = new OkHttpClient().newBuilder()
-                .connectTimeout(30, TimeUnit.SECONDS) // Increase connect timeout
-                .readTimeout(30, TimeUnit.SECONDS)    // Increase read timeout
-                .writeTimeout(30, TimeUnit.SECONDS)   // Increase write timeout
+                .connectTimeout(60, TimeUnit.SECONDS) // Increase connect timeout
+                .readTimeout(60, TimeUnit.SECONDS)    // Increase read timeout
+                .writeTimeout(60, TimeUnit.SECONDS)   // Increase write timeout
                 .build();
 
         Response response = client.newCall(request).execute();

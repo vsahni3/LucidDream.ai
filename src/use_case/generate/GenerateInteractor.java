@@ -54,11 +54,8 @@ public class GenerateInteractor implements GenerateInputBoundary {
 
         User user = userDataAccessObject.getUser(username);
         StoryBook outputStoryBook;
-        try {
-            outputStoryBook = storyBookFactory.create(prompt, pageFactory);
-        } catch (IOException | JSONException e) {
-            throw new RuntimeException(e);
-        }
+        outputStoryBook = storyBookFactory.create(prompt, pageFactory);
+
         List<StoryBook> userStories = user.getStoryBooks();
 
         userStories.add(outputStoryBook);

@@ -11,7 +11,7 @@ public interface GenerateOutputBoundary {
      * This method is called when the story generation process has completed successfully,
      * and the output data is ready to be displayed or processed further.
      *
-     * @param user The GenerateOutputData object containing the generated story and associated data.
+     * @param story The GenerateOutputData object containing the generated story and associated data.
      */
-    void prepareSuccessView(GenerateOutputData user);
+    void prepareSuccessView(GenerateOutputData story);
 }
