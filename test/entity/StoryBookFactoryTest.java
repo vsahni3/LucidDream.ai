@@ -1,6 +1,6 @@
 package entity;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 
 public class StoryBookFactoryTest {
@@ -10,9 +10,10 @@ public class StoryBookFactoryTest {
         StoryBookFactory factory = new StoryBookFactory();
         StoryBook storyBook = factory.create("", new ArrayList<>());
 
-        assertNotNull("StoryBook should not be null", storyBook);
-        assertEquals("Title should be empty", "", storyBook.getTitle());
-        assertTrue("Pages list should be empty", storyBook.getPages().isEmpty());
+        assertNotNull(storyBook, "StoryBook should not be null");
+        assertEquals("", storyBook.getTitle());
+        assertTrue(storyBook.getPages().isEmpty(), "Pages list should be empty");
+
     }
 
     @Test
@@ -20,9 +21,9 @@ public class StoryBookFactoryTest {
         StoryBookFactory factory = new StoryBookFactory();
         StoryBook storyBook = factory.create("My Story Book", new ArrayList<>());
 
-        assertNotNull("StoryBook should not be null", storyBook);
-        assertEquals("Title should be 'My Story Book'", "My Story Book", storyBook.getTitle());
-        assertTrue("Pages list should be empty", storyBook.getPages().isEmpty());
+        assertNotNull(storyBook, "StoryBook should not be null");
+        assertEquals("My Story Book", storyBook.getTitle());
+        assertTrue(storyBook.getPages().isEmpty(), "Pages list should be empty");
     }
 
     @Test
@@ -33,10 +34,10 @@ public class StoryBookFactoryTest {
 
         StoryBook storyBook = factory.create("Adventure Story", pages);
 
-        assertNotNull("StoryBook should not be null", storyBook);
-        assertEquals("Title should be 'Adventure Story'", "Adventure Story", storyBook.getTitle());
-        assertFalse("Pages list should not be empty", storyBook.getPages().isEmpty());
-        assertEquals("Pages list should have 1 page", 1, storyBook.getPages().size());
+        assertNotNull(storyBook, "StoryBook should not be null");
+        assertEquals("Adventure Story", storyBook.getTitle());
+        assertFalse(storyBook.getPages().isEmpty(), "Pages list should not be empty");
+        assertEquals(1, storyBook.getPages().size(), "Pages list should have 1 page");
     }
 
 }
