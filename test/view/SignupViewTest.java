@@ -14,6 +14,7 @@ import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupState;
 import interface_adapter.signup.SignupViewModel;
+import interface_adapter.view_stories.ViewStoriesController;
 import use_case.generate.GenerateInputBoundary;
 import use_case.login.LoginOutputBoundary;
 import use_case.login.LoginOutputData;
@@ -24,6 +25,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 
 import org.junit.jupiter.api.Test;
+import use_case.view_stories.ViewStoriesInputBoundary;
 
 import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.*;
@@ -179,7 +181,12 @@ class SignupViewTest {
 
         GenerateInputBoundary gib = null;
         GenerateStoryController generateStoryController = new GenerateStoryController(gib);
-        LoggedInView loggedInView = new LoggedInView(loggedInViewModel, viewManagerModel, generateStoryController);
+
+
+        ViewStoriesInputBoundary vib = null;
+        ViewStoriesController viewStoriesController = new ViewStoriesController(vib);
+
+        LoggedInView loggedInView = new LoggedInView(loggedInViewModel, viewManagerModel, generateStoryController, viewStoriesController);
 
         JFrame app = new JFrame();
         CardLayout cardLayout = new CardLayout();
