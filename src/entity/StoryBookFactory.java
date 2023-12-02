@@ -32,8 +32,13 @@ public class StoryBookFactory {
      * @param pageFactory The factory used for creating individual pages of the storybook.
      * @return A new StoryBook object containing the generated story and pages.
      */
-    public StoryBook create(String prompt, PageFactory pageFactory) throws IOException, JSONException {
-        String entireText = generateText(prompt);
+    public StoryBook create(String prompt, PageFactory pageFactory) {
+        String entireText;
+        try {
+            entireText = generateText(prompt);
+        } catch (JSONException | IOException e) {
+            throw new RuntimeException(e);
+        }
 //        Should be in the form Title: title \n Story: story..
         int split = entireText.indexOf("Story:") + 6;
 //        Exclude the 'Title:' and 'Story:' strings
@@ -48,7 +53,11 @@ public class StoryBookFactory {
         for (int i = 0; i < pagesText.size(); i++) {
             String pageText = pagesText.get(i);
             byte[] image;
-            image = generateImage(pageText);
+            try {
+                image = generateImage(pageText);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
             pages.add(pageFactory.create(pageText, i + 1, image, -1));
         }
