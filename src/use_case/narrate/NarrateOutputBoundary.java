@@ -1,4 +1,6 @@
 package use_case.narrate;
 
-public class NarrateOutputBoundary {
+public interface NarrateOutputBoundary {
+
+    void prepareView();
 }

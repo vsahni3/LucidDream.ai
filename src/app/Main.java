@@ -9,6 +9,7 @@ import interface_adapter.login.LoginViewModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.lookup.LookupController;
 import interface_adapter.narrate.NarrateController;
+import interface_adapter.narrate.NarrateViewModel;
 import interface_adapter.read_story.ReadStoryViewModel;
 import interface_adapter.signup.SignupViewModel;
 import interface_adapter.ViewManagerModel;
@@ -46,6 +47,7 @@ public class Main {
         LoggedInViewModel loggedInViewModel = new LoggedInViewModel();
         SignupViewModel signupViewModel = new SignupViewModel();
         ReadStoryViewModel readStoryViewModel = new ReadStoryViewModel();
+        NarrateViewModel narrateViewModel = new NarrateViewModel();
 
         SqlUserDataAccessObject userDAO;
         CombinedDAO mainDAO;
@@ -75,11 +77,7 @@ public class Main {
         LoggedInView loggedInView = GenerateStoryUseCaseFactory.create(viewManagerModel, readStoryViewModel, loggedInViewModel, mainDAO);
         views.add(loggedInView, loggedInView.viewName);
 
-
-        NarrateController narrateController = new NarrateController();
-        DownloadController downloadController = new DownloadController();
-        LookupController lookupController = new LookupController();
-        ReadStoryView readStoryView = new ReadStoryView(viewManagerModel, readStoryViewModel, narrateController, lookupController, downloadController);
+        ReadStoryView readStoryView = ReadStoryUseCaseFactory.create(viewManagerModel, readStoryViewModel, narrateViewModel);
         views.add(readStoryView, readStoryView.viewName);
 
 

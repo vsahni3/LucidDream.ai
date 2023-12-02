@@ -4,6 +4,7 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.download_story.DownloadController;
 import interface_adapter.lookup.LookupController;
 import interface_adapter.narrate.NarrateController;
+import interface_adapter.narrate.NarrateViewModel;
 import interface_adapter.read_story.ReadStoryViewModel;
 
 import javax.swing.*;
@@ -18,6 +19,7 @@ import java.beans.PropertyChangeListener;
  */
 public class ReadStoryView extends JPanel implements ActionListener, PropertyChangeListener {
     public final String viewName = "read story";
+
     private JLabel imageLabel, title;
     private JButton leftButton, rightButton, downloadButton, narrateButton, backButton, dictionaryButton;
     private JTextArea pageText;
@@ -27,6 +29,8 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
     private final ViewManagerModel viewManagerModel;
     private final ReadStoryViewModel readStoryViewModel;
 
+    private final NarrateViewModel narrateViewModel;
+
     private final NarrateController narrateController;
     private final LookupController lookupController;
     private final DownloadController downloadController;
@@ -35,20 +39,23 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
      * Constructs a ReadStory View.
      * @param viewManagerModel
      * @param readStoryViewModel
+     * @param narrateViewModel
      * @param narrateController
      * @param downloadController
      * @param lookupController
      */
-    public ReadStoryView(ViewManagerModel viewManagerModel, ReadStoryViewModel readStoryViewModel, NarrateController narrateController, LookupController lookupController, DownloadController downloadController) {
+    public ReadStoryView(ViewManagerModel viewManagerModel, ReadStoryViewModel readStoryViewModel, NarrateViewModel narrateViewModel, NarrateController narrateController, LookupController lookupController, DownloadController downloadController) {
 
         this.viewManagerModel = viewManagerModel;
         this.readStoryViewModel = readStoryViewModel;
+        this.narrateViewModel = narrateViewModel;
         this.narrateController = narrateController;
         this.lookupController = lookupController;
         this.downloadController = downloadController;
 
 
         readStoryViewModel.addPropertyChangeListener(this);
+        narrateViewModel.addPropertyChangeListener(this);
         ImageIcon placeholderImage = new ImageIcon("narrate_icon.png");
 
         // Set up the page image display
@@ -194,8 +201,9 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
         narrateButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent evt) {
+                        String text = readStoryViewModel.getState().getPageText(currentIndex);
                         if (evt.getSource().equals(narrateButton)) {
-                            narrateController.execute();
+                            narrateController.execute(text);
                         }
                     }
                 }
@@ -248,12 +256,16 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-
-        if (readStoryViewModel.getState().isActive()) {
-            imageLabel.setIcon(readStoryViewModel.getState().getPageImage(currentIndex));
-            pageText.setText(readStoryViewModel.getState().getPageText(currentIndex));
-            title.setText(readStoryViewModel.getState().getTitle());
+        if (evt.getPropertyName().equals("state")) {
+            if (readStoryViewModel.getState().isActive()) {
+                imageLabel.setIcon(readStoryViewModel.getState().getPageImage(currentIndex));
+                pageText.setText(readStoryViewModel.getState().getPageText(currentIndex));
+                title.setText(readStoryViewModel.getState().getTitle());
+            }
+        } else if (evt.getPropertyName().equals("narrate")) {
+            JOptionPane.showMessageDialog(this, "Narrating page text.");
         }
+
 
     }
 }

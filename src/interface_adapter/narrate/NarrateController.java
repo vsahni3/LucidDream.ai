@@ -1,6 +1,7 @@
 package interface_adapter.narrate;
 
 import use_case.narrate.NarrateInputBoundary;
+import use_case.narrate.NarrateInputData;
 
 public class NarrateController {
 
@@ -10,7 +11,8 @@ public class NarrateController {
     public NarrateController(NarrateInputBoundary narrateUseCaseInteractor) {
         this.narrateUseCaseInteractor = narrateUseCaseInteractor;
     }
-    public void execute() {
-        narrateUseCaseInteractor.execute();
+    public void execute(String text) {
+        NarrateInputData narrateInputData = new NarrateInputData(text);
+        narrateUseCaseInteractor.execute(narrateInputData);
     }
 }
