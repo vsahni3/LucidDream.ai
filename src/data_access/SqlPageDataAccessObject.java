@@ -42,26 +42,28 @@ public class SqlPageDataAccessObject {
     public SqlPageDataAccessObject(SQLiteJDBC connector, PageFactory pageFactory) throws IOException {
         this.pageFactory = pageFactory;
         this.c = connector.getConnection();
-        connector.createBookTable();
+        connector.createPageTable();
 
         loadData(pages);
 
     }
 
     private void loadData(Map<Integer, Page> map) {
-        String sql = "SELECT pageContents, pageNumber, image FROM PAGE";
+        String sql = "SELECT pageContents, pageNumber, image, pageID FROM PAGE";
 
         try (Statement stmt = c.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                Integer id = rs.getInt("ID");
+                System.out.println("loading0");
+                Integer id = rs.getInt("pageID");
                 String pageContents = rs.getString("pageContents");
                 Integer pageNumber = rs.getInt("pageNumber");
-                Blob imageBlob = rs.getBlob("image");
-                byte[] image = imageBlob.getBytes(1, (int) imageBlob.length());
-                imageBlob.free(); // Free the blob resource
+                byte[] image = rs.getBytes("image");
+
                 Page page = pageFactory.create(pageContents, pageNumber, image, id);
+                System.out.println("loading");
+                System.out.println(page.getPageID());
                 map.put(id, page);
             }
         } catch (SQLException e) {
@@ -77,16 +79,16 @@ public class SqlPageDataAccessObject {
      */
     public ArrayList<Page> getBookPages(String title) {
         ArrayList<Page> curPages = new ArrayList<>();
-        String sql = "SELECT pageID FROM Page WHERE title = ?";
+        String sql = "SELECT pageID FROM Page WHERE bookID = ?";
         try (PreparedStatement pstmt = c.prepareStatement(sql)) {
             pstmt.setString(1, title); // Set the password parameter
             ResultSet rs = pstmt.executeQuery();
 
             // Iterate through the result set to get all titles
             while (rs.next()) {
-                String pageID = rs.getString("pageID");
+                Integer pageID = rs.getInt("pageID");
                 // Now you have the title, and you can do something with it,
-                curPages.add(pages.get(title));
+                curPages.add(pages.get(pageID));
             }
 
 
@@ -105,8 +107,9 @@ public class SqlPageDataAccessObject {
      * @param tempMap a temporary map to be updated with the new page data.
      */
     public void savePage(Page page, String title, Map<Integer, Page> tempMap) {
-        if (tempMap.containsKey(title)) {
-            String sql = "UPDATE PAGE SET pageContents = ?, pageNumber = ?, image = ?, bookID = ? WHERE ID = ?";
+
+        if (tempMap.containsKey(page.getPageID())) {
+            String sql = "UPDATE PAGE SET pageContents = ?, pageNumber = ?, image = ?, bookID = ? WHERE pageID = ?";
             try (PreparedStatement pstmt = c.prepareStatement(sql)) {
                 pstmt.setString(1, page.getTextContents());
                 pstmt.setInt(2, page.getPageNumber());
@@ -119,22 +122,40 @@ public class SqlPageDataAccessObject {
                 System.err.println(e.getMessage());
             }
         } else {
-            String sql = "INSERT INTO USER (pageContents, pageNumber, image, bookID) VALUES (?, ?, ?, ?)";
-            try (PreparedStatement pstmt = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            System.out.println("good");
+            String sql = "INSERT INTO PAGE (pageContents, pageNumber, image, bookID) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement pstmt = c.prepareStatement(sql)) {
                 pstmt.setString(1, page.getTextContents()); // Set the username parameter
                 pstmt.setInt(2, page.getPageNumber()); // Set the password parameter
                 pstmt.setBytes(3, page.getImage());
                 pstmt.setString(4, title);
                 pstmt.executeUpdate(); // Execute the insert statement
-                ResultSet generatedKeys = pstmt.getGeneratedKeys();
-                int generatedId = generatedKeys.getInt(1);
-                page.setPageID(generatedId);
-
+                try (Statement stmt = c.createStatement()) {
+                    ResultSet rs = stmt.executeQuery("SELECT last_insert_rowid()");
+                    if (rs.next()) {
+                        int generatedId = rs.getInt(1);
+                        System.out.println(generatedId);
+                        System.out.println("LETS GO");
+                        page.setPageID(generatedId);
+                    }
+                }
             } catch (SQLException e) {
                 System.err.println(e.getMessage());
             }
 
         }
+
+    }
+
+    public void deleteAll() {
+        String sql = "DELETE FROM PAGE";
+        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+
+            pstmt.executeUpdate(); // Execute the insert statement
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        this.pages.clear();
 
     }
 
@@ -144,16 +165,19 @@ public class SqlPageDataAccessObject {
      * @param title the title of the book to which these pages belong.
      */
     public void savePages(ArrayList<Page> pages, String title) {
-        Map<Integer, Page> tempMap = new HashMap<>();
+        if (pages.size() > 0) {
+            System.out.println(pages.get(0).getPageID());
+        }
 
-        loadData(tempMap);
         for (Page page : pages) {
-            savePage(page, title, tempMap);
+            savePage(page, title, this.pages);
 
 
         }
         this.pages = new HashMap<Integer, Page>();
         loadData(this.pages);
+//        System.out.println(this.pages.get(0).getPageID());
+
 
 
 

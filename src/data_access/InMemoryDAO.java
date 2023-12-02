@@ -24,48 +24,10 @@ import java.util.ArrayList;
  * Usage of this class simplifies interactions with the database for operations involving complex relationships
  * between users, books, and pages.
  */
-public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDataAcessInterface, LoginUserDataAccessInterface, SignupUserDataAccessInterface {
-    private SqlUserDataAccessObject userDAO;
-    private SqlBookDataAccessObject bookDAO;
-    private SqlPageDataAccessObject pageDAO;
+public class InMemoryDAO implements GenerateUserDataAccessInterface, CombinedDataAcessInterface, LoginUserDataAccessInterface, SignupUserDataAccessInterface {
+
     private final Map<String, User> users = new HashMap<>();
 
-    /**
-     * Constructs a new CombinedDAO with given data access objects for users, books, and pages.
-     * @param userDAO the data access object for user-related operations.
-     * @param bookDAO the data access object for book-related operations.
-     * @param pageDAO the data access object for page-related operations.
-     */
-    public CombinedDAO(SqlUserDataAccessObject userDAO, SqlBookDataAccessObject bookDAO, SqlPageDataAccessObject pageDAO) {
-        this.userDAO = userDAO;
-        this.pageDAO = pageDAO;
-        this.bookDAO = bookDAO;
-
-        loadData(users);
-
-    }
-
-    private void loadData(Map<String, User> map) {
-
-        Map<String, User> tempUsers = userDAO.loadAll();
-
-
-
-        for (String userName : tempUsers.keySet()) {
-            User user = tempUsers.get(userName);
-            ArrayList<StoryBook> userBooks = bookDAO.getUserBooks(userName);
-            for (StoryBook book : userBooks) {
-                ArrayList<Page> bookPages = pageDAO.getBookPages(book.getTitle());
-                book.setPages(bookPages);
-            }
-            user.setStoryBooks(userBooks);
-            map.put(userName, user);
-
-
-        }
-
-
-    }
 
     /**
      * Saves a user and their associated books and pages to the database.
@@ -74,7 +36,6 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
     @Override
     public void save(User user) {
         users.put(user.getUserName(), user);
-        this.save();
     }
 
     /**
@@ -153,7 +114,24 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
      */
     @Override
     public boolean existsBook(String identifier) {
-        return bookDAO.existsBook(identifier);
+        boolean chosenBook = false;
+
+        // you could also implement a getPage for the pageDAO as the page doesn't have any extra info about other entities
+        for (String userName : users.keySet()) {
+            User user = users.get(userName);
+            for (StoryBook book : user.getStoryBooks()) {
+
+                if (book.getTitle().equals(identifier)) {
+
+
+                    chosenBook = true;
+
+                }
+
+            }
+
+        }
+        return chosenBook;
     }
 
 
@@ -164,34 +142,25 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
      */
     @Override
     public boolean existsPage(Integer identifier) {
-        return pageDAO.existsPage(identifier);
-    }
+        boolean chosenPage = false;
 
-    public void deleteAll() {
-        userDAO.deleteAll();
-        bookDAO.deleteAll();
-        pageDAO.deleteAll();
-        this.users.clear();
-    }
-
-    private void save() {
-        Map<String, User> tempMap = new HashMap<>();
-        loadData(tempMap);
-
-        for (String username : users.keySet()) {
-            User user = users.get(username);
-            System.out.println(user.getUserName());
-
-            userDAO.saveUser(user);
-            bookDAO.saveStoryBooks(user.getStoryBooks(), username);
+        // you could also implement a getPage for the pageDAO as the page doesn't have any extra info about other entities
+        for (String userName : users.keySet()) {
+            User user = users.get(userName);
             for (StoryBook book : user.getStoryBooks()) {
-                System.out.println(book.getTitle());
-//                System.out.println(book.getPages().get(0).getPageID());
+                for (Page page : book.getPages())
+                    if (page.getPageID().equals(identifier)) {
 
-                pageDAO.savePages(book.getPages(), book.getTitle());
+
+                        chosenPage = true;
+
+                    }
             }
         }
-
+        return chosenPage;
     }
 
+
+
 }
+

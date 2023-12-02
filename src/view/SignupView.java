@@ -15,6 +15,9 @@ import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+/** A JPanel extension representing the Sign-Up View for Lucid Dream AI.
+ * @author Eugene Cho
+ */
 public class SignupView extends JPanel implements ActionListener, PropertyChangeListener {
     public final String viewName = "sign up";
 
@@ -25,36 +28,95 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
     private final SignupController signupController;
 
     private final ViewManagerModel viewManagerModel;
+    private final Font textFieldFont = new Font("SansSerif", Font.PLAIN, 16);
 
     private final JButton signUp;
     private final JButton cancel;
 
+    /**
+     * Constructs a Sign-Up View.
+     * @param controller Controller for the Sign-Up use case.
+     * @param signupViewModel View model for the Sign-Up use case.
+     * @param viewManagerModel
+     */
     public SignupView(SignupController controller, SignupViewModel signupViewModel, ViewManagerModel viewManagerModel) {
-        this.viewManagerModel = viewManagerModel;
+
         this.signupController = controller;
         this.signupViewModel = signupViewModel;
+        this.viewManagerModel = viewManagerModel;
 
         signupViewModel.addPropertyChangeListener(this);
 
-        JLabel title = new JLabel(SignupViewModel.TITLE_LABEL);
+        // Create and style Title component
+        JLabel title = new JLabel("Lucid Dream AI");
+        title.setFont(new Font("SansSerif", Font.BOLD, 70));
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        LabelTextPanel usernameInfo = new LabelTextPanel(
-                new JLabel(SignupViewModel.USERNAME_LABEL), usernameInputField);
-        LabelTextPanel passwordInfo = new LabelTextPanel(
-                new JLabel(SignupViewModel.PASSWORD_LABEL), passwordInputField);
-        LabelTextPanel repeatPasswordInfo = new LabelTextPanel(
-                new JLabel(SignupViewModel.REPEAT_PASSWORD_LABEL), repeatPasswordInputField);
 
+        // Create input container for input fields
+        JPanel inputContainer = new JPanel();
+        inputContainer.setLayout(new BoxLayout(inputContainer, BoxLayout.Y_AXIS));
+        inputContainer.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        usernameInputField.setFont(textFieldFont);
+        LabelTextPanel usernameInfo = new LabelTextPanel(
+                new JLabel("Username"), usernameInputField);
+
+        passwordInputField.setFont(textFieldFont);
+        LabelTextPanel passwordInfo = new LabelTextPanel(
+                new JLabel("Password"), passwordInputField);
+
+        repeatPasswordInputField.setFont(textFieldFont);
+        LabelTextPanel repeatPasswordInfo = new LabelTextPanel(
+                new JLabel("Confirm Password"), repeatPasswordInputField);
+
+
+        // Add input fields to the input container
+        inputContainer.add(usernameInfo);
+        inputContainer.add(Box.createRigidArea(new Dimension(0, 20)));
+        inputContainer.add(passwordInfo);
+        inputContainer.add(Box.createRigidArea(new Dimension(0, 20)));
+        inputContainer.add(repeatPasswordInfo);
+
+        // Create a container for the buttons
         JPanel buttons = new JPanel();
-        signUp = new JButton(SignupViewModel.SIGNUP_BUTTON_LABEL);
+
+
+        // Sign up button creation and styling
+        signUp = new JButton("Sign Up");
+        signUp.setPreferredSize(new Dimension(150, 50));
+        signUp.setBackground(new Color(0xDDAF37));
+        signUp.setForeground(Color.WHITE);
+
+
+        // Cancel button creation and styling
+        cancel = new JButton("Cancel");
+        cancel.setPreferredSize(new Dimension(150, 50));
+        cancel.setBackground(Color.GRAY);
+        cancel.setForeground(Color.WHITE);
+        cancel.addActionListener(this);
+
+
+        // Add the buttons to the button container
         buttons.add(signUp);
-        cancel = new JButton(SignupViewModel.CANCEL_BUTTON_LABEL);
+        // White space between the buttons
+        buttons.add(Box.createRigidArea(new Dimension(50, 0)));
         buttons.add(cancel);
 
 
+        // Add all the elements to the Sign up panel
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.add(Box.createVerticalGlue());
+        this.add(title);
+        this.add(Box.createRigidArea(new Dimension(0, 50)));
+        this.add(inputContainer);
+        this.add(Box.createRigidArea(new Dimension(0, 50)));
+        this.add(buttons);
+        this.add(Box.createVerticalGlue());
+
+
+        // Listens for clicks on the signup button
         signUp.addActionListener(
-                // This creates an anonymous subclass of ActionListener and instantiates it.
                 new ActionListener() {
                     public void actionPerformed(ActionEvent evt) {
                         if (evt.getSource().equals(signUp)) {
@@ -71,12 +133,7 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
         );
 
 
-        cancel.addActionListener(this);
-
-        // This makes a new KeyListener implementing class, instantiates it, and
-        // makes it listen to keystrokes in the usernameInputField.
-        //
-        // Notice how it has access to instance variables in the enclosing class!
+        // Updates the username input state based on key presses
         usernameInputField.addKeyListener(
                 new KeyListener() {
                     @Override
@@ -96,6 +153,8 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
                     }
                 });
 
+
+        // Updates the password input state based on key presses
         passwordInputField.addKeyListener(
                 new KeyListener() {
                     @Override
@@ -107,16 +166,15 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
 
                     @Override
                     public void keyPressed(KeyEvent e) {
-
                     }
 
                     @Override
                     public void keyReleased(KeyEvent e) {
-
                     }
                 }
         );
 
+        // Updates the repeat password input state based on key presses
         repeatPasswordInputField.addKeyListener(
                 new KeyListener() {
                     @Override
@@ -128,33 +186,31 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
 
                     @Override
                     public void keyPressed(KeyEvent e) {
-
                     }
 
                     @Override
                     public void keyReleased(KeyEvent e) {
-
                     }
                 }
         );
-
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-        this.add(title);
-        this.add(usernameInfo);
-        this.add(passwordInfo);
-        this.add(repeatPasswordInfo);
-        this.add(buttons);
     }
 
     /**
-     * React to a button click that results in evt.
+     * React to a button click to Cancel that results in evt.
      */
+    @Override
     public void actionPerformed(ActionEvent evt) {
+        usernameInputField.setText(null);
+        passwordInputField.setText(null);
+        repeatPasswordInputField.setText(null);
+
         viewManagerModel.setActiveView("landing page");
         viewManagerModel.firePropertyChanged();
     }
 
+    /**
+     * React to a property change that results in evt. Runs when sign up use cases fires a property change.
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
 
@@ -187,7 +243,11 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
             passwordInputField.setText(null);
             repeatPasswordInputField.setText(null);
 
+        } else {
+            usernameInputField.setText(null);
+            passwordInputField.setText(null);
+            repeatPasswordInputField.setText(null);
+            state.clearState();
         }
-
     }
 }
