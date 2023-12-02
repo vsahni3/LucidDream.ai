@@ -8,7 +8,7 @@ import interface_adapter.download_story.DownloadController;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.lookup.LookupController;
-import interface_adapter.narrate_story.NarrateController;
+import interface_adapter.narrate.NarrateController;
 import interface_adapter.read_story.ReadStoryViewModel;
 import interface_adapter.signup.SignupViewModel;
 import interface_adapter.ViewManagerModel;
