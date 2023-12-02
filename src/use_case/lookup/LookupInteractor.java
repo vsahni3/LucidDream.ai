@@ -70,7 +70,6 @@ public class LookupInteractor implements LookupInputBoundary {
 
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                System.err.println("Request failed: " + response);
                 return;
             }
 
@@ -80,10 +79,8 @@ public class LookupInteractor implements LookupInputBoundary {
             String definition = jsonArray.getJSONObject(0).getJSONArray("meanings").getJSONObject(0).getJSONArray("definitions").getJSONObject(0).getString("definition");
             LookupOutputData lookupOutputData = new LookupOutputData(definition);
             lookupPresenter.prepareSuccessView(lookupOutputData);
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.err.println("Error during request: " + e.getMessage());
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
         }
 
 

@@ -3,10 +3,14 @@ package app;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.download_story.DownloadController;
 import interface_adapter.lookup.LookupController;
+import interface_adapter.lookup.LookupPresenter;
 import interface_adapter.narrate.NarrateController;
 import interface_adapter.narrate.NarratePresenter;
 import interface_adapter.narrate.NarrateViewModel;
 import interface_adapter.read_story.ReadStoryViewModel;
+import use_case.lookup.LookupInputBoundary;
+import use_case.lookup.LookupInteractor;
+import use_case.lookup.LookupOutputBoundary;
 import use_case.narrate.NarrateInputBoundary;
 import use_case.narrate.NarrateInteractor;
 import use_case.narrate.NarrateOutputBoundary;
@@ -29,7 +33,10 @@ public class ReadStoryUseCaseFactory {
     }
 
     private static LookupController createLookupUseCase() {
-        return null;
+        LookupOutputBoundary lookupPresenter = new LookupPresenter();
+        LookupInputBoundary lookupInteractor = new LookupInteractor(lookupPresenter);
+        return new LookupController(lookupInteractor);
+
     }
 
     private static NarrateController createNarrateUseCase(NarrateViewModel narrateViewModel) {
