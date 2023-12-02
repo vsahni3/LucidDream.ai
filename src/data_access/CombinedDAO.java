@@ -7,6 +7,7 @@ import entity.StoryBook;
 import use_case.generate.GenerateUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
+import use_case.view_stories.ViewStoriesDataAccessInterface;
 
 import java.util.ArrayList;
 
@@ -24,7 +25,7 @@ import java.util.ArrayList;
  * Usage of this class simplifies interactions with the database for operations involving complex relationships
  * between users, books, and pages.
  */
-public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDataAcessInterface, LoginUserDataAccessInterface, SignupUserDataAccessInterface {
+public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDataAcessInterface, LoginUserDataAccessInterface, SignupUserDataAccessInterface, ViewStoriesDataAccessInterface {
     private SqlUserDataAccessObject userDAO;
     private SqlBookDataAccessObject bookDAO;
     private SqlPageDataAccessObject pageDAO;
@@ -194,4 +195,8 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
 
     }
 
+    @Override
+    public ArrayList<StoryBook> getStoryBooks(String username) {
+        return bookDAO.getUserBooks(username);
+    }
 }
