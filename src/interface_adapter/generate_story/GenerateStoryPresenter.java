@@ -55,6 +55,14 @@ public class GenerateStoryPresenter implements GenerateOutputBoundary {
 
         pages.forEach((page) -> tempPageTexts.add(page.getTextContents()));
 
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int screenWidth = screenSize.width;
+        int screenHeight = screenSize.height;
+
+        // Calculate proportional size for imageLabel
+        int imageWidth = screenWidth / 2;  // Example: half of the screen width
+        int imageHeight = screenHeight / 2;  // Example: quarter of the screen height
+
         try {
             for (int i = 0; i < pages.size(); i++) {
 
@@ -64,7 +72,7 @@ public class GenerateStoryPresenter implements GenerateOutputBoundary {
                 Image image = ImageIO.read(inputStream);
 
                 ImageIcon pageImgIcon = new ImageIcon(image);
-                pageImgIcon = resizeImageIcon(pageImgIcon, 900, 500);
+                pageImgIcon = resizeImageIcon(pageImgIcon, imageWidth, imageHeight);
                 tempPageImages.add(pageImgIcon);
 
             }
