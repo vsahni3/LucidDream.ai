@@ -4,6 +4,7 @@ import entity.User;
 import java.util.HashMap;
 import java.util.Map;
 import entity.StoryBook;
+import use_case.downloadPDF.DownloadPDFDataAccessInterface;
 import use_case.generate.GenerateUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
  * Usage of this class simplifies interactions with the database for operations involving complex relationships
  * between users, books, and pages.
  */
-public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDataAcessInterface, LoginUserDataAccessInterface, SignupUserDataAccessInterface, ViewStoriesDataAccessInterface {
+public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDataAcessInterface, LoginUserDataAccessInterface, SignupUserDataAccessInterface, ViewStoriesDataAccessInterface, DownloadPDFDataAccessInterface {
     private SqlUserDataAccessObject userDAO;
     private SqlBookDataAccessObject bookDAO;
     private SqlPageDataAccessObject pageDAO;
