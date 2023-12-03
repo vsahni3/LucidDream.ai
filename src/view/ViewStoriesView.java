@@ -1,8 +1,11 @@
 package view;
 
+import entity.Page;
 import entity.StoryBook;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.logged_in.LoggedInState;
+import interface_adapter.read_story.ReadStoryState;
+import interface_adapter.read_story.ReadStoryViewModel;
 import interface_adapter.view_stories.ViewStoriesController;
 import interface_adapter.view_stories.ViewStoriesState;
 import interface_adapter.view_stories.ViewStoriesViewModel;
@@ -38,11 +41,14 @@ public class ViewStoriesView extends JPanel implements ActionListener, PropertyC
 
     private final ViewManagerModel viewManagerModel;
 
-    public ViewStoriesView(ViewStoriesViewModel viewStoriesViewModel, ViewStoriesController viewStoriesController, ViewManagerModel viewManagerModel) {
+    private final ReadStoryViewModel readStoryViewModel;
+
+    public ViewStoriesView(ViewStoriesViewModel viewStoriesViewModel, ViewStoriesController viewStoriesController, ViewManagerModel viewManagerModel, ReadStoryViewModel readStoryViewModel) {
 
         this.viewStoriesViewModel = viewStoriesViewModel;
         this.viewStoriesController = viewStoriesController;
         this.viewManagerModel = viewManagerModel;
+        this.readStoryViewModel = readStoryViewModel;
 
         viewStoriesViewModel.addPropertyChangeListener(this);
 
@@ -107,7 +113,60 @@ public class ViewStoriesView extends JPanel implements ActionListener, PropertyC
                     public void actionPerformed(ActionEvent e) {
                         if (e.getSource().equals(viewStory)) {
                             ViewStoriesState currentState = viewStoriesViewModel.getState();
-                            // Call the read story controller here
+                            StoryBook selectedStoryBook = currentState.getSelected();
+
+                            String title = selectedStoryBook.getTitle();
+                            ArrayList<Page> pages = selectedStoryBook.getPages();
+                            ArrayList<String> tempPageTexts = new ArrayList<>();
+                            ArrayList<ImageIcon> tempPageImages = new ArrayList<>();
+
+                            pages.forEach((page) -> tempPageTexts.add(page.getTextContents()));
+
+                            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+                            int screenWidth = screenSize.width;
+                            int screenHeight = screenSize.height;
+
+                            // Calculate proportional size for imageLabel
+                            int imageWidth = screenWidth / 2;  // Example: half of the screen width
+                            int imageHeight = screenHeight / 2;  // Example: quarter of the screen height
+
+                            try {
+                                for (int i = 0; i < pages.size(); i++) {
+
+                                    // Converting byte[] to ImageIcon
+                                    byte[] pageImage = pages.get(i).getImage();
+                                    ByteArrayInputStream inputStream = new ByteArrayInputStream(pageImage);
+                                    Image image = ImageIO.read(inputStream);
+
+                                    ImageIcon pageImgIcon = new ImageIcon(image);
+                                    pageImgIcon = resizeImageIcon(pageImgIcon, imageWidth, imageHeight);
+                                    tempPageImages.add(pageImgIcon);
+
+                                }
+
+                            } catch (Exception error) {
+                                System.out.println(error);
+                            }
+
+                            // Converting the ArrayList<String> to a String[]
+                            String[] pageTexts = new String[tempPageTexts.size()];
+                            pageTexts = tempPageTexts.toArray(pageTexts);
+
+
+                            // Converting the ArrayList<ImageIcon> to ImageIcon[]
+                            ImageIcon[] pageImages = new ImageIcon[tempPageImages.size()];
+                            pageImages = tempPageImages.toArray(pageImages);
+
+                            // Update state
+                            ReadStoryState readStoryState = readStoryViewModel.getState();
+                            readStoryState.setTitle(title);
+                            readStoryState.setPageTexts(pageTexts);
+                            readStoryState.setPageImages(pageImages);
+
+                            readStoryViewModel.setState(readStoryState); // CHANGE THIS
+                            readStoryViewModel.firePropertyChanged();
+                            viewManagerModel.setActiveView(readStoryViewModel.getViewName());
+                            viewManagerModel.firePropertyChanged();
                         }
                     }
                 }

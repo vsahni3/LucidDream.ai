@@ -91,7 +91,7 @@ public class Main {
         views.add(readStoryView, readStoryView.viewName);
 
 
-        ViewStoriesView viewStoriesView = ViewStoriesUseCaseFactory.create(viewManagerModel, viewStoriesViewModel, mainDAO);
+        ViewStoriesView viewStoriesView = ViewStoriesUseCaseFactory.create(viewManagerModel, viewStoriesViewModel, readStoryViewModel, mainDAO);
         views.add(viewStoriesView, viewStoriesView.viewName);
 
 

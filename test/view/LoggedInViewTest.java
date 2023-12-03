@@ -4,6 +4,7 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.generate_story.GenerateStoryController;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
+import interface_adapter.read_story.ReadStoryViewModel;
 import interface_adapter.signup.SignupViewModel;
 import interface_adapter.view_stories.ViewStoriesController;
 import interface_adapter.view_stories.ViewStoriesViewModel;
@@ -213,12 +214,13 @@ class LoggedInViewTest {
         ViewStoriesInputBoundary vib = null;
         ViewStoriesController viewStoriesController = new ViewStoriesController(vib);
         ViewStoriesViewModel viewStoriesViewModel = new ViewStoriesViewModel();
+        ReadStoryViewModel readStoryViewModel = new ReadStoryViewModel();
 
         new ViewManager(views, cardLayout, viewManagerModel);
 
         LandingView landingView = new LandingView(new SignupViewModel(), loginViewModel, viewManagerModel);
         LoggedInView loggedInView = new LoggedInView(loggedInViewModel,viewManagerModel, generateStoryController, viewStoriesController);
-        ViewStoriesView viewStoriesView = new ViewStoriesView(viewStoriesViewModel, viewStoriesController, viewManagerModel);
+        ViewStoriesView viewStoriesView = new ViewStoriesView(viewStoriesViewModel, viewStoriesController, viewManagerModel, readStoryViewModel);
 
         views.add(landingView, landingView.viewName);
         views.add(loggedInView, loggedInView.viewName);
@@ -247,6 +249,7 @@ class LoggedInViewTest {
         LoginViewModel loginViewModel = new LoginViewModel();
         LoggedInViewModel loggedInViewModel = new LoggedInViewModel();
         ViewManagerModel viewManagerModel = new ViewManagerModel();
+        ReadStoryViewModel readStoryViewModel = new ReadStoryViewModel();
         GenerateInputBoundary gib = null;
         GenerateStoryController generateStoryController = new GenerateStoryController(gib);
         ViewStoriesInputBoundary vib = null;
@@ -257,7 +260,7 @@ class LoggedInViewTest {
 
         LandingView landingView = new LandingView(new SignupViewModel(), loginViewModel, viewManagerModel);
         LoggedInView loggedInView = new LoggedInView(loggedInViewModel,viewManagerModel, generateStoryController, viewStoriesController);
-        ViewStoriesView viewStoriesView = new ViewStoriesView(viewStoriesViewModel, viewStoriesController, viewManagerModel);
+        ViewStoriesView viewStoriesView = new ViewStoriesView(viewStoriesViewModel, viewStoriesController, viewManagerModel, readStoryViewModel);
 
         views.add(landingView, landingView.viewName);
         views.add(loggedInView, loggedInView.viewName);
