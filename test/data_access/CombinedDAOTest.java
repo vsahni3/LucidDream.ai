@@ -25,21 +25,18 @@ class CombinedDAOTest {
         SqlUserDataAccessObject userDAO;
         SqlPageDataAccessObject pageDAO;
         SqlBookDataAccessObject bookDAO;
-        SQLiteJDBC connector;
+
 
         try {
-            connector = new SQLiteJDBC("jdbc:sqlite:test.db");
-            userDAO = new SqlUserDataAccessObject(connector, userFactory);
-            bookDAO = new SqlBookDataAccessObject(connector, storyBookFactory);
-            pageDAO = new SqlPageDataAccessObject(connector, pageFactory);
+            userDAO = new SqlUserDataAccessObject(userFactory);
+            bookDAO = new SqlBookDataAccessObject(storyBookFactory);
+            pageDAO = new SqlPageDataAccessObject(pageFactory);
             combinedDAO = new CombinedDAO(userDAO, bookDAO, pageDAO);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         // Create the necessary tables for the test.
-        connector.createUserTable();
-        connector.createBookTable();
-        connector.createPageTable();
+
     }
 
 

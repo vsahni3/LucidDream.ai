@@ -1,9 +1,7 @@
 package app;
 
 import data_access.*;
-import entity.CommonUserFactory;
-import entity.PageFactory;
-import entity.StoryBookFactory;
+import entity.*;
 import interface_adapter.downloadPDF.DownloadPDFViewModel;
 import interface_adapter.download_story.DownloadController;
 import interface_adapter.login.LoginViewModel;
@@ -23,6 +21,8 @@ import view.*;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.sql.Connection;
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
@@ -60,17 +60,19 @@ public class Main {
         CombinedDAO mainDAO;
         SqlPageDataAccessObject pageDAO;
         SqlBookDataAccessObject bookDAO;
-        SQLiteJDBC connector;
+
 
         try {
-            connector = new SQLiteJDBC("jdbc:sqlite:dream.db");
-            userDAO = new SqlUserDataAccessObject(connector, new CommonUserFactory());
-            bookDAO = new SqlBookDataAccessObject(connector, new StoryBookFactory());
-            pageDAO = new SqlPageDataAccessObject(connector, new PageFactory());
+
+            userDAO = new SqlUserDataAccessObject(new CommonUserFactory());
+            bookDAO = new SqlBookDataAccessObject(new StoryBookFactory());
+            pageDAO = new SqlPageDataAccessObject(new PageFactory());
             mainDAO = new CombinedDAO(userDAO, bookDAO, pageDAO);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+
 
         LandingView landingView = new LandingView(signupViewModel, loginViewModel, viewManagerModel);
         views.add(landingView, landingView.viewName);

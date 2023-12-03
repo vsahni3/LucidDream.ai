@@ -27,7 +27,6 @@ import java.util.Map;
  */
 public class SqlBookDataAccessObject {
 
-    private Connection c;
 
     private final Map<String, Integer> headers = new LinkedHashMap<>();
 
@@ -38,20 +37,25 @@ public class SqlBookDataAccessObject {
 
     /**
      * Constructs a new SqlBookDataAccessObject with a given SQLiteJDBC connector and StoryBookFactory.
-     * @param connector the SQLiteJDBC connector to establish a connection with the database.
      * @param storyBookFactory the factory to create StoryBook objects.
      * @throws IOException if an I/O error occurs.
      */
-    public SqlBookDataAccessObject(SQLiteJDBC connector, StoryBookFactory storyBookFactory) throws IOException {
+    public SqlBookDataAccessObject(StoryBookFactory storyBookFactory) throws IOException {
         this.storyBookFactory = storyBookFactory;
-        this.c = connector.getConnection();
-        connector.createBookTable();
+        SQLiteJDBC connector = new SQLiteJDBC("jdbc:sqlite:dream.db");
+        Connection c = connector.getConnection();
 
-        loadData(storyBooks);
+
+        loadData(c, storyBooks);
+        try {
+            c.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
-    private void loadData(Map<String, StoryBook> map) {
+    private void loadData(Connection c, Map<String, StoryBook> map) {
         String sql = "SELECT title FROM BOOK";
 
         try (Statement stmt = c.createStatement();
@@ -69,7 +73,7 @@ public class SqlBookDataAccessObject {
 
     }
 
-    public void deleteAll() {
+    public void deleteAll(Connection c) {
         String sql = "DELETE FROM BOOK";
         try (PreparedStatement pstmt = c.prepareStatement(sql)) {
 
@@ -86,7 +90,7 @@ public class SqlBookDataAccessObject {
      * @param userName the username for which the books are to be retrieved.
      * @return an ArrayList of StoryBook objects belonging to the specified user.
      */
-    public ArrayList<StoryBook> getUserBooks(String userName) {
+    public ArrayList<StoryBook> getUserBooks(Connection c, String userName) {
         ArrayList<StoryBook> books = new ArrayList<>();
         String sql = "SELECT title FROM Book WHERE userId = ?";
         try (PreparedStatement pstmt = c.prepareStatement(sql)) {
@@ -115,7 +119,7 @@ public class SqlBookDataAccessObject {
      * @param userName the username to associate with the story book.
      * @param tempMap a temporary map to be updated with the new story book data.
      */
-    public void saveStoryBook(StoryBook storyBook, String userName, Map<String, StoryBook> tempMap) {
+    public void saveStoryBook(Connection c, StoryBook storyBook, String userName, Map<String, StoryBook> tempMap) {
         if (tempMap.containsKey(storyBook.getTitle())) {
             String sql = "UPDATE BOOK SET userID = ? WHERE title = ?";
             try (PreparedStatement pstmt = c.prepareStatement(sql)) {
@@ -147,14 +151,14 @@ public class SqlBookDataAccessObject {
      * @param books the ArrayList of StoryBook objects to be saved.
      * @param userName the username to associate with the story books.
      */
-    public void saveStoryBooks(ArrayList<StoryBook> books, String userName) {
+    public void saveStoryBooks(Connection c, ArrayList<StoryBook> books, String userName) {
 
         for (StoryBook storyBook : books) {
 
-            saveStoryBook(storyBook, userName, this.storyBooks);
+            saveStoryBook(c, storyBook, userName, this.storyBooks);
         }
         this.storyBooks = new HashMap<String, StoryBook>();
-        loadData(this.storyBooks);
+        loadData(c, this.storyBooks);
 
 
     }

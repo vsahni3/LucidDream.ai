@@ -24,6 +24,9 @@ public class SQLiteJDBC {
             throw new RuntimeException(e);
 
         }
+        this.createPageTable();
+        this.createBookTable();
+        this.createUserTable();
         System.out.println("Opened database successfully");
     }
 
