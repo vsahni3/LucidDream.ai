@@ -95,7 +95,7 @@ public class ViewStoriesView extends JPanel {
 
         // Set the scroll bar policy
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        scrollPane.setPreferredSize(new Dimension(1000, 600));
+        scrollPane.setPreferredSize(new Dimension(1000, 550));
 
         JPanel selectionPanel = new JPanel();
         selectionPanel.setLayout(new BoxLayout(selectionPanel, BoxLayout.X_AXIS));
@@ -112,7 +112,7 @@ public class ViewStoriesView extends JPanel {
         selectionPanel.add(Box.createHorizontalStrut(20));
         selectionPanel.add(viewStory);
 
-        wrapper.add(Box.createVerticalStrut(60));
+        wrapper.add(Box.createVerticalStrut(20));
         wrapper.add(title);
         wrapper.add(Box.createVerticalStrut(20));
         wrapper.add(scrollPane);
