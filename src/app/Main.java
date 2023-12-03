@@ -8,12 +8,14 @@ import interface_adapter.download_story.DownloadController;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.lookup.LookupController;
+import interface_adapter.lookup.LookupViewModel;
 import interface_adapter.narrate.NarrateController;
 import interface_adapter.narrate.NarrateViewModel;
 import interface_adapter.read_story.ReadStoryViewModel;
 import interface_adapter.signup.SignupViewModel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.view_stories.ViewStoriesViewModel;
+import jdk.dynalink.linker.support.Lookup;
 import use_case.generate.GenerateUserDataAccessInterface;
 import view.*;
 
@@ -50,6 +52,7 @@ public class Main {
         ViewStoriesViewModel viewStoriesViewModel = new ViewStoriesViewModel();
         ReadStoryViewModel readStoryViewModel = new ReadStoryViewModel();
         NarrateViewModel narrateViewModel = new NarrateViewModel();
+        LookupViewModel lookupViewModel = new LookupViewModel();
 
         SqlUserDataAccessObject userDAO;
         CombinedDAO mainDAO;
@@ -79,7 +82,7 @@ public class Main {
         LoggedInView loggedInView = GenerateStoryUseCaseFactory.create(viewManagerModel, readStoryViewModel, loggedInViewModel, viewStoriesViewModel, mainDAO, mainDAO);
         views.add(loggedInView, loggedInView.viewName);
 
-        ReadStoryView readStoryView = ReadStoryUseCaseFactory.create(viewManagerModel, readStoryViewModel, narrateViewModel);
+        ReadStoryView readStoryView = ReadStoryUseCaseFactory.create(viewManagerModel, readStoryViewModel, narrateViewModel, lookupViewModel);
 
         views.add(readStoryView, readStoryView.viewName);
 

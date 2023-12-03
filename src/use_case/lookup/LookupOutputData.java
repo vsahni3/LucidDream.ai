@@ -14,13 +14,15 @@ package use_case.lookup;
 public class LookupOutputData {
 
     private final String definition;
+    private final String word;
 
     /**
      * Constructs a new LookupOutputData object with the specified definition.
      * @param definition the definition of the word as a result of the lookup operation.
      */
-    public LookupOutputData(String definition) {
+    public LookupOutputData(String definition, String word) {
         this.definition = definition;
+        this.word = word;
     }
 
     /**
@@ -30,4 +32,6 @@ public class LookupOutputData {
     public String getDefinition() {
         return this.definition;
     }
+
+    public String getWord() { return this.word; }
 }

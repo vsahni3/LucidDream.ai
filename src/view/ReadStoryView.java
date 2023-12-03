@@ -3,6 +3,7 @@ package view;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.download_story.DownloadController;
 import interface_adapter.lookup.LookupController;
+import interface_adapter.lookup.LookupViewModel;
 import interface_adapter.narrate.NarrateController;
 import interface_adapter.narrate.NarrateViewModel;
 import interface_adapter.read_story.ReadStoryViewModel;
@@ -34,6 +35,7 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
     private final NarrateController narrateController;
     private final LookupController lookupController;
     private final DownloadController downloadController;
+    private final LookupViewModel lookupViewModel;
 
     /**
      * Constructs a ReadStory View.
@@ -43,8 +45,9 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
      * @param narrateController
      * @param downloadController
      * @param lookupController
+     * @param lookupViewModel
      */
-    public ReadStoryView(ViewManagerModel viewManagerModel, ReadStoryViewModel readStoryViewModel, NarrateViewModel narrateViewModel, NarrateController narrateController, LookupController lookupController, DownloadController downloadController) {
+    public ReadStoryView(ViewManagerModel viewManagerModel, ReadStoryViewModel readStoryViewModel, NarrateViewModel narrateViewModel, NarrateController narrateController, LookupController lookupController, DownloadController downloadController, LookupViewModel lookupViewModel) {
 
         this.viewManagerModel = viewManagerModel;
         this.readStoryViewModel = readStoryViewModel;
@@ -52,10 +55,12 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
         this.narrateController = narrateController;
         this.lookupController = lookupController;
         this.downloadController = downloadController;
+        this.lookupViewModel = lookupViewModel;
 
 
         readStoryViewModel.addPropertyChangeListener(this);
         narrateViewModel.addPropertyChangeListener(this);
+        lookupViewModel.addPropertyChangeListener(this);
         ImageIcon placeholderImage = new ImageIcon("narrate_icon.png");
 
         // Set up the page image display
@@ -229,10 +234,10 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
                                 // Extract the first word from the highlighted text
                                 String firstWord = selectedText.contains(" ") ? selectedText.split(" ")[0] : selectedText;
 
-                                System.out.println(firstWord);
+                                lookupController.execute(firstWord);
 
                             } else {
-                                System.out.println("No text selected!");
+                                lookupController.execute(null);
                             }
                         }
                     }
@@ -256,6 +261,7 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+
         if (evt.getPropertyName().equals("state")) {
             if (readStoryViewModel.getState().isActive()) {
                 imageLabel.setIcon(readStoryViewModel.getState().getPageImage(currentIndex));
@@ -264,6 +270,10 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
             }
         } else if (evt.getPropertyName().equals("narrate")) {
             JOptionPane.showMessageDialog(this, "Narrating page text.");
+
+        } else if (evt.getPropertyName().equals("lookup")) {
+            JOptionPane.showMessageDialog(this, "Definition for: " + lookupViewModel.getState().getWord() + "\n" + lookupViewModel.getState().getDefinition());
+
         }
 
 
