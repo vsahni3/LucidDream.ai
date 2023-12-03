@@ -21,6 +21,13 @@ public class NarrateInteractor implements NarrateInputBoundary{
         this.narratePresenter = narratePresenter;
     }
 
+
+    /**
+     * Executes the narration operation with the provided input data.
+     * This method initiates text-to-speech conversion and updates the view through the presenter.
+     *
+     * @param narrateInputData The input data containing the text to be narrated.
+     */
     @Override
     public void execute(NarrateInputData narrateInputData) {
         String text = narrateInputData.getText();
@@ -34,6 +41,14 @@ public class NarrateInteractor implements NarrateInputBoundary{
 
     }
 
+    /**
+     * Retrieves a singleton instance of the Synthesizer.
+     * This method initializes the Synthesizer on its first call and returns the same instance for subsequent calls.
+     * It uses double-checked locking to ensure that the Synthesizer is initialized only once in a thread-safe manner.
+     *
+     * @return The singleton Synthesizer instance.
+     * @throws EngineException If there is an error initializing the speech synthesis engine.
+     */
     private static Synthesizer getInstance() throws EngineException {
         if (currentSynthesizer == null) {
             synchronized (lock) {
@@ -48,7 +63,16 @@ public class NarrateInteractor implements NarrateInputBoundary{
         }
         return currentSynthesizer;
     }
-
+    /**
+     * Converts the given text to speech using a text-to-speech synthesizer.
+     * Throws an exception if the input text is empty or if any speech synthesis error occurs.
+     *
+     * @param text The text to be converted to speech.
+     * @throws EngineException if there is a problem with the speech engine.
+     * @throws AudioException if there is an audio error during speech synthesis.
+     * @throws InterruptedException if the speech synthesis thread is interrupted.
+     * @throws IllegalArgumentException if the input text is empty.
+     */
     private void speak(String text) throws EngineException, AudioException, InterruptedException, IllegalArgumentException {
 
         if (text.isEmpty()) {
