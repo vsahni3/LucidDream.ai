@@ -3,6 +3,8 @@ package view;
 import data_access.InMemoryUserDataAccessObject;
 import entity.*;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.downloadPDF.DownloadPDFViewModel;
+import interface_adapter.lookup.LookupViewModel;
 import interface_adapter.narrate.NarrateController;
 import interface_adapter.narrate.NarratePresenter;
 import interface_adapter.narrate.NarrateViewModel;
@@ -48,8 +50,10 @@ class NarrateViewTest {
         NarrateOutputBoundary narratePresenter = new NarratePresenter(narrateViewModel);
         NarrateInputBoundary narrateInteractor = new NarrateInteractor(narratePresenter);
         NarrateController narrateController = new NarrateController(narrateInteractor);
+        LookupViewModel lookupViewModel = new LookupViewModel();
+        DownloadPDFViewModel downloadPDFViewModel = new DownloadPDFViewModel();
 
-        ReadStoryView readStoryView = new ReadStoryView(viewManagerModel, readStoryViewModel, narrateViewModel, narrateController, null, null);
+        ReadStoryView readStoryView = new ReadStoryView(viewManagerModel, readStoryViewModel, narrateViewModel, narrateController, null, null, lookupViewModel, downloadPDFViewModel);
 
         JFrame app = new JFrame();
         CardLayout cardLayout = new CardLayout();
