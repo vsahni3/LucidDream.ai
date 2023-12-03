@@ -17,9 +17,11 @@ import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-public class ViewStoriesView extends JPanel {
+public class ViewStoriesView extends JPanel implements ActionListener {
 
     public final String viewName = "view stories";
+
+    private JButton backButton;
 
     private final ViewStoriesViewModel viewStoriesViewModel;
 
@@ -100,6 +102,12 @@ public class ViewStoriesView extends JPanel {
         JPanel selectionPanel = new JPanel();
         selectionPanel.setLayout(new BoxLayout(selectionPanel, BoxLayout.X_AXIS));
         String selectedStoryTitle = viewStoriesViewModel.getState().getSelected() == null ? "" : viewStoriesViewModel.getState().getSelected().getTitle();
+
+        // Create back button
+        ImageIcon backIcon = new ImageIcon("back_icon.png");
+        this.backButton = new JButton(resizeImageIcon(backIcon, 40, 40));
+        backButton.addActionListener(this);
+
         JLabel selected = new JLabel("CURRENTLY SELECTED: " + selectedStoryTitle);
         selected.setFont(new Font("SansSerif", Font.PLAIN, 20));
 
@@ -108,6 +116,8 @@ public class ViewStoriesView extends JPanel {
         viewStory.setBackground(new Color(0xDDAF37));
         viewStory.setForeground(Color.WHITE);
 
+        selectionPanel.add(backButton);
+        selectionPanel.add(Box.createHorizontalStrut(20));
         selectionPanel.add(selected);
         selectionPanel.add(Box.createHorizontalStrut(20));
         selectionPanel.add(viewStory);
@@ -134,6 +144,12 @@ public class ViewStoriesView extends JPanel {
                 }
         );
 
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        viewManagerModel.setActiveView("logged in");
+        viewManagerModel.firePropertyChanged();
     }
 
     // Given an ImageIcon and desired width and height, the function rescales the image to the desired resolution.
