@@ -1,12 +1,9 @@
 package use_case.generate;
 
-import entity.PageFactory;
-import entity.StoryBook;
-import entity.StoryBookFactory;
-import entity.User;
+import entity.*;
 
 import java.util.List;
-
+import java.util.ArrayList;
 /**
  * GenerateInteractor is responsible for handling the generation of new storybooks based on user inputs.
  * It interacts with data access objects, storybook and page factories, and a presenter to accomplish this task.
@@ -51,17 +48,21 @@ public class GenerateInteractor implements GenerateInputBoundary {
 
 
         User user = userDataAccessObject.getUser(username);
-        StoryBook outputStoryBook;
-
-        outputStoryBook = storyBookFactory.create(prompt, pageFactory);
 
 
-        List<StoryBook> userStories = user.getStoryBooks();
+            StoryBook outputStoryBook = storyBookFactory.create(prompt, pageFactory);
 
-//        add the storybook to the user
-        userStories.add(outputStoryBook);
-        userDataAccessObject.save(user);
+            user.getStoryBooks().add(outputStoryBook);
+            ArrayList<Page> pages = outputStoryBook.getPages();
 
+
+            outputStoryBook.setPages(pages);
+            userDataAccessObject.save(user);
+
+
+
+
+//
         GenerateOutputData generateOutputData = new GenerateOutputData(outputStoryBook);
         generatePresenter.prepareSuccessView(generateOutputData);
 
