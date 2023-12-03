@@ -37,7 +37,16 @@ public class ViewStoriesPresenter implements ViewStoriesOutputBoundary {
 
         ViewStoriesState viewStoriesState = viewStoriesViewModel.getState();
         viewStoriesState.setStoryBooks(storybooks.getStoryBooks());
+        // DEBUGGING CODE
+//        for (int i=0; i<viewStoriesState.getStoryBooks().size(); i++) {
+//            System.out.println(viewStoriesState.getStoryBooks().get(i).getTitle());
+//        }
         this.viewStoriesViewModel.setState(viewStoriesState);
+        // DEBUGGING CODE
+//        System.out.println("View Stories Presenter:");
+//        for (int i=0; i<this.viewStoriesViewModel.getState().getStoryBooks().size(); i++){
+//            System.out.println(this.viewStoriesViewModel.getState().getStoryBooks().get(i).getTitle());
+//        }
         this.viewStoriesViewModel.firePropertyChanged();
         this.viewManagerModel.setActiveView(viewStoriesViewModel.getViewName());
         this.viewManagerModel.firePropertyChanged();
