@@ -20,4 +20,5 @@ public interface LookupOutputBoundary {
      * @param lookupOutputData The LookupOutputData object containing the result of the word lookup operation.
      */
     void prepareSuccessView(LookupOutputData lookupOutputData);
+    void prepareFailView(String errorMessage);
 }

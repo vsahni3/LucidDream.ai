@@ -51,10 +51,11 @@ public class LookupInteractor implements LookupInputBoundary {
     @Override
     public void execute(LookupInputData lookupInputData) {
 
-
         String word = lookupInputData.getWord();
-
-
+        if (word.equals("null") || word.isEmpty()) {
+            lookupPresenter.prepareFailView("Null value highlighted");
+            return;
+        }
 
         String apiURL = "https://api.dictionaryapi.dev/api/v2/entries/en/" + word;
 
@@ -70,6 +71,7 @@ public class LookupInteractor implements LookupInputBoundary {
 
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
+                lookupPresenter.prepareFailView("Internal issue with retrieving definition");
                 return;
             }
 
@@ -81,7 +83,7 @@ public class LookupInteractor implements LookupInputBoundary {
             lookupPresenter.prepareSuccessView(lookupOutputData);
 
         } catch (Exception e) {
-            System.err.println("Error during request: " + e.getMessage());
+            lookupPresenter.prepareFailView("Internal issue with retrieving definition");
         }
 
 
