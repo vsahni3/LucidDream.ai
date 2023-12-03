@@ -23,9 +23,6 @@ import java.util.Map;
  */
 public class SqlUserDataAccessObject {
 
-    private final Connection c;
-
-
 
     private final Map<String, User> accounts = new HashMap<>();
 
@@ -34,20 +31,24 @@ public class SqlUserDataAccessObject {
 
     /**
      * Constructs a new SqlUserDataAccessObject with a given SQLiteJDBC connector and UserFactory.
-     * @param connector the SQLiteJDBC connector to establish a connection with the database.
      * @param userFactory the factory to create User objects.
      * @throws IOException if an I/O error occurs.
      */
-    public SqlUserDataAccessObject(SQLiteJDBC connector, UserFactory userFactory) throws IOException {
+    public SqlUserDataAccessObject(UserFactory userFactory) throws IOException {
         this.userFactory = userFactory;
-        this.c = connector.getConnection();
-        connector.createUserTable();
+        SQLiteJDBC connector = new SQLiteJDBC("jdbc:sqlite:dream.db");
+        Connection c = connector.getConnection();
 
-        loadData(accounts);
+        loadData(c, accounts);
+        try {
+            c.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
-    private void loadData(Map<String, User> map) {
+    private void loadData(Connection c, Map<String, User> map) {
         String sql = "SELECT userName, password FROM USER";
 
         try (Statement stmt = c.createStatement();
@@ -79,12 +80,12 @@ public class SqlUserDataAccessObject {
      * Saves a user to the database. If the user already exists, updates their information.
      * @param user the User object to be saved or updated.
      */
-    public void saveUser(User user) {
+    public void saveUser(Connection c, User user) {
         accounts.put(user.getUserName(), user);
-        this.saveUser();
+        this.saveUser(c);
     }
 
-    public void deleteAll() {
+    public void deleteAll(Connection c) {
         String sql = "DELETE FROM USER";
         try (PreparedStatement pstmt = c.prepareStatement(sql)) {
 
@@ -99,9 +100,9 @@ public class SqlUserDataAccessObject {
 
 
 
-    private void saveUser() {
+    private void saveUser(Connection c) {
         Map<String, User> tempMap = new HashMap<>();
-        loadData(tempMap);
+        loadData(c, tempMap);
 
         for (String userName : accounts.keySet()) {
             User user = accounts.get(userName);

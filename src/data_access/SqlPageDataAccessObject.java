@@ -26,7 +26,6 @@ import java.util.Map;
  */
 public class SqlPageDataAccessObject {
 
-    private final Connection c;
 
     private Map<Integer, Page> pages = new HashMap<>();
 
@@ -35,20 +34,26 @@ public class SqlPageDataAccessObject {
 
     /**
      * Constructs a new SqlPageDataAccessObject with a given SQLiteJDBC connector and PageFactory.
-     * @param connector the SQLiteJDBC connector to establish a connection with the database.
+
      * @param pageFactory the factory to create Page objects.
      * @throws IOException if an I/O error occurs.
      */
-    public SqlPageDataAccessObject(SQLiteJDBC connector, PageFactory pageFactory) throws IOException {
+    public SqlPageDataAccessObject(PageFactory pageFactory) throws IOException {
         this.pageFactory = pageFactory;
-        this.c = connector.getConnection();
-        connector.createPageTable();
+        SQLiteJDBC connector = new SQLiteJDBC("jdbc:sqlite:dream.db");
+        Connection c = connector.getConnection();
 
-        loadData(pages);
+
+        loadData(c, pages);
+        try {
+            c.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
-    private void loadData(Map<Integer, Page> map) {
+    private void loadData(Connection c, Map<Integer, Page> map) {
         String sql = "SELECT pageContents, pageNumber, image, pageID FROM PAGE";
 
         try (Statement stmt = c.createStatement();
@@ -77,7 +82,7 @@ public class SqlPageDataAccessObject {
      * @param title the title of the book for which the pages are to be retrieved.
      * @return an ArrayList of Page objects for the specified book.
      */
-    public ArrayList<Page> getBookPages(String title) {
+    public ArrayList<Page> getBookPages(Connection c, String title) {
         ArrayList<Page> curPages = new ArrayList<>();
         String sql = "SELECT pageID FROM Page WHERE bookID = ?";
         try (PreparedStatement pstmt = c.prepareStatement(sql)) {
@@ -106,7 +111,7 @@ public class SqlPageDataAccessObject {
      * @param title the title of the book to which the page belongs.
      * @param tempMap a temporary map to be updated with the new page data.
      */
-    public void savePage(Page page, String title, Map<Integer, Page> tempMap) {
+    public void savePage(Connection c, Page page, String title, Map<Integer, Page> tempMap) {
 
         if (tempMap.containsKey(page.getPageID())) {
             String sql = "UPDATE PAGE SET pageContents = ?, pageNumber = ?, image = ?, bookID = ? WHERE pageID = ?";
@@ -146,7 +151,7 @@ public class SqlPageDataAccessObject {
 
     }
 
-    public void deleteAll() {
+    public void deleteAll(Connection c) {
         String sql = "DELETE FROM PAGE";
         try (PreparedStatement pstmt = c.prepareStatement(sql)) {
 
@@ -163,16 +168,16 @@ public class SqlPageDataAccessObject {
      * @param pages the ArrayList of Page objects to be saved.
      * @param title the title of the book to which these pages belong.
      */
-    public void savePages(ArrayList<Page> pages, String title) {
+    public void savePages(Connection c, ArrayList<Page> pages, String title) {
 
 
         for (Page page : pages) {
-            savePage(page, title, this.pages);
+            savePage(c, page, title, this.pages);
 
 
         }
         this.pages = new HashMap<Integer, Page>();
-        loadData(this.pages);
+        loadData(c, this.pages);
 ;
 
 

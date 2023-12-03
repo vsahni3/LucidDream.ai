@@ -1,6 +1,9 @@
 package data_access;
 import entity.Page;
 import entity.User;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import entity.StoryBook;
@@ -51,7 +54,22 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
         return users;
     }
 
+    private Connection createConnection(){
+        SQLiteJDBC connector = new SQLiteJDBC("jdbc:sqlite:dream.db");
+        return connector.getConnection();
+    }
+
+    private void closeConnection(Connection c){
+        try {
+            c.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     private void loadData(Map<String, User> map) {
+        Connection c = createConnection();
 
         Map<String, User> tempUsers = userDAO.loadAll();
 
@@ -59,9 +77,9 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
 
         for (String userName : tempUsers.keySet()) {
             User user = tempUsers.get(userName);
-            ArrayList<StoryBook> userBooks = bookDAO.getUserBooks(userName);
+            ArrayList<StoryBook> userBooks = bookDAO.getUserBooks(c, userName);
             for (StoryBook book : userBooks) {
-                ArrayList<Page> bookPages = pageDAO.getBookPages(book.getTitle());
+                ArrayList<Page> bookPages = pageDAO.getBookPages(c, book.getTitle());
                 book.setPages(bookPages);
             }
             user.setStoryBooks(userBooks);
@@ -69,6 +87,7 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
 
 
         }
+        closeConnection(c);
 
 
     }
@@ -79,18 +98,10 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
      */
     @Override
     public void save(User user) {
+        Connection c = createConnection();
         this.users.put(user.getUserName(), user);
-        if (user.getStoryBooks().size() > 0) {
-            for (String username : users.keySet()) {
-                User user1 = users.get(username);
 
-
-            }
-
-
-        }
-
-        this.save();
+        this.save(c);
     }
 
     /**
@@ -184,13 +195,14 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
     }
 
     public void deleteAll() {
-        userDAO.deleteAll();
-        bookDAO.deleteAll();
-        pageDAO.deleteAll();
+        Connection c = createConnection();
+        userDAO.deleteAll(c);
+        bookDAO.deleteAll(c);
+        pageDAO.deleteAll(c);
         this.users.clear();
     }
 
-    private void save() {
+    private void save(Connection c) {
 
 
 
@@ -198,18 +210,22 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
             User user = users.get(username);
 
 
-            userDAO.saveUser(user);
-            bookDAO.saveStoryBooks(user.getStoryBooks(), username);
+            userDAO.saveUser(c, user);
+            bookDAO.saveStoryBooks(c, user.getStoryBooks(), username);
             for (StoryBook book : user.getStoryBooks()) {
 
-                pageDAO.savePages(book.getPages(), book.getTitle());
+                pageDAO.savePages(c, book.getPages(), book.getTitle());
             }
         }
+        closeConnection(c);
 
     }
 
     @Override
     public ArrayList<StoryBook> getStoryBooks(String username) {
-        return bookDAO.getUserBooks(username);
+        Connection c = createConnection();
+        ArrayList<StoryBook> books = bookDAO.getUserBooks(c, username);
+        closeConnection(c);
+        return books;
     }
 }
