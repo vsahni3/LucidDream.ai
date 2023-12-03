@@ -280,7 +280,7 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
 
         } else if (evt.getPropertyName().equals("lookup")) {
 
-            if (lookupViewModel.getState().getError() != null) {
+            if (lookupViewModel.getState().getError() == null) {
                 JOptionPane.showMessageDialog(this, "Definition for: " + lookupViewModel.getState().getWord() + "\n" + lookupViewModel.getState().getDefinition());
             } else {
                 JOptionPane.showMessageDialog(this,lookupViewModel.getState().getError());
