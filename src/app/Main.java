@@ -79,6 +79,9 @@ public class Main {
         LoggedInView loggedInView = GenerateStoryUseCaseFactory.create(viewManagerModel, readStoryViewModel, loggedInViewModel, viewStoriesViewModel, mainDAO, mainDAO);
         views.add(loggedInView, loggedInView.viewName);
 
+        ViewStoriesView viewStoriesView = ViewStoriesUseCaseFactory.create(viewManagerModel, viewStoriesViewModel, mainDAO);
+        views.add(viewStoriesView, viewStoriesView.viewName);
+
         ReadStoryView readStoryView = ReadStoryUseCaseFactory.create(viewManagerModel, readStoryViewModel, narrateViewModel);
 
         views.add(readStoryView, readStoryView.viewName);
