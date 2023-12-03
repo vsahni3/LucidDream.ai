@@ -117,10 +117,11 @@ public class ViewStoriesView extends JPanel implements ActionListener, PropertyC
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        viewStoriesViewModel.getState().clearState();
         viewManagerModel.setActiveView("logged in");
         viewManagerModel.firePropertyChanged();
         stories.removeAll();
-        selectedStoryPanel.remove(1);
+        selectedStoryPanel.removeAll();
     }
 
     @Override

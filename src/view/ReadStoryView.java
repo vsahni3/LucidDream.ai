@@ -62,6 +62,16 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
         this.lookupViewModel = lookupViewModel;
         this.downloadPDFViewModel = downloadPDFViewModel;
 
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int screenWidth = screenSize.width;
+        int screenHeight = screenSize.height;
+
+        // Calculate proportional size for imageLabel
+        int imageWidth = screenWidth / 2;  // Example: half of the screen width
+        int imageHeight = screenHeight / 2;  // Example: quarter of the screen height
+
+
+
         readStoryViewModel.addPropertyChangeListener(this);
         narrateViewModel.addPropertyChangeListener(this);
         lookupViewModel.addPropertyChangeListener(this);
@@ -72,17 +82,17 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
         // Set up the page image display
         imageLabel = new JLabel(placeholderImage);
         imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        imageLabel.setMaximumSize(new Dimension(500, 500));
+        imageLabel.setMaximumSize(new Dimension(imageWidth, imageHeight));
 
 
         // Create and style the arrow buttons
         leftButton = new JButton("<");
-        leftButton.setMaximumSize(new Dimension(100, 100));
+        leftButton.setMaximumSize(new Dimension(100, imageHeight));
         leftButton.setBackground(Color.LIGHT_GRAY);
         leftButton.setForeground(Color.WHITE);
 
         rightButton = new JButton(">");
-        rightButton.setMaximumSize(new Dimension(100, 100));
+        rightButton.setMaximumSize(new Dimension(100, imageHeight));
         rightButton.setBackground(Color.LIGHT_GRAY);
         rightButton.setForeground(Color.WHITE);
 
@@ -116,7 +126,7 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
         pageText.setLineWrap(true);
         pageText.setWrapStyleWord(true);
         pageText.setEditable(false);
-        pageText.setMaximumSize(new Dimension(1000, 200));
+        pageText.setMaximumSize(new Dimension(imageWidth, 200));
 
 
         // Create container for use case actions
@@ -153,7 +163,7 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
         book.add(imageLabel, BorderLayout.CENTER);
         book.add(leftButton, BorderLayout.WEST);
         book.add(rightButton, BorderLayout.EAST);
-        book.setMaximumSize(new Dimension(1000, 500));
+        book.setMaximumSize(new Dimension(imageWidth + 200, imageHeight));
 
 
         // Layout for ReadStoryView
