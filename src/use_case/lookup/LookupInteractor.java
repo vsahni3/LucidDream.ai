@@ -52,7 +52,7 @@ public class LookupInteractor implements LookupInputBoundary {
     public void execute(LookupInputData lookupInputData) {
 
         String word = lookupInputData.getWord();
-        if (word.equals("null") || word.isEmpty()) {
+        if (word == null || word.isEmpty()) {
             lookupPresenter.prepareFailView("Null value highlighted");
             return;
         }
