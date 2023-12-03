@@ -23,6 +23,10 @@ class LookupInteractorTest {
 
             }
 
+            @Override
+            public void prepareFailView(String errorMessage) {
+            }
+
         };
 
         LookupInputBoundary interactor = new LookupInteractor(lookupPresenter);
