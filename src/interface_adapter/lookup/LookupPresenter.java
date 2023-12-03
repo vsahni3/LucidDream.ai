@@ -22,4 +22,12 @@ public class LookupPresenter implements LookupOutputBoundary {
         lookupViewModel.firePropertyChanged();
 
     }
+
+    @Override
+    public void prepareFailView(String errorMessage) {
+        LookupState lookupState = lookupViewModel.getState();
+        lookupState.setError(errorMessage);
+        lookupViewModel.setState(lookupState);
+        lookupViewModel.firePropertyChanged();
+    }
 }
