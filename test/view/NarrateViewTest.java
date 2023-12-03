@@ -52,8 +52,6 @@ class NarrateViewTest {
         NarrateOutputBoundary narratePresenter = new NarratePresenter(narrateViewModel);
         NarrateInputBoundary narrateInteractor = new NarrateInteractor(narratePresenter);
         NarrateController narrateController = new NarrateController(narrateInteractor);
-        LookupViewModel lookupViewModel = new LookupViewModel();
-        DownloadPDFViewModel downloadPDFViewModel = new DownloadPDFViewModel();
 
 
         // Create the ReadStoryView which is to be tested
