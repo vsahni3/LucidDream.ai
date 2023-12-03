@@ -53,7 +53,7 @@ public class DownloadPDFInteractor implements DownloadPDFInputBoundary {
                 addPageNumber(document, pdfPage, i + 1);
             }
 
-            document.save("src/use_case/exportPDF/test.pdf");
+            document.save("src/use_case/downloadPDF/test.pdf");
         }
     }
 
@@ -126,8 +126,8 @@ public class DownloadPDFInteractor implements DownloadPDFInputBoundary {
     @Override
     public void execute(DownloadPDFInputData inputData) {
         StoryBook storybook = dataAccess.getBook(inputData.getTitle());
-        if (storybook == null) {
-            // Handle failure (e.g., logging or error handling)
+        if (storybook == null || storybook.getPages().isEmpty()) {
+            downloadPDFPresenter.prepareFailureView();
             return;
         }
 
@@ -135,13 +135,11 @@ public class DownloadPDFInteractor implements DownloadPDFInputBoundary {
         Page[] pagesArray = pages.toArray(new Page[0]);
 
         try {
-            createPdfFromPages(pagesArray); // Adapted for ArrayList<Page>
-            // Handle success (e.g., logging or updating status)
+            createPdfFromPages(pagesArray);
             downloadPDFPresenter.prepareSuccessView();
         } catch (Exception e) {
-            // Handle failure (e.g., logging or error handling)
             downloadPDFPresenter.prepareFailureView();
         }
-
     }
+
 }
