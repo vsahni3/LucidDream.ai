@@ -13,6 +13,7 @@ import interface_adapter.narrate.NarrateViewModel;
 import interface_adapter.read_story.ReadStoryViewModel;
 import interface_adapter.signup.SignupViewModel;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.view_stories.ViewStoriesViewModel;
 import use_case.generate.GenerateUserDataAccessInterface;
 import view.*;
 
@@ -46,6 +47,7 @@ public class Main {
         LoginViewModel loginViewModel = new LoginViewModel();
         LoggedInViewModel loggedInViewModel = new LoggedInViewModel();
         SignupViewModel signupViewModel = new SignupViewModel();
+        ViewStoriesViewModel viewStoriesViewModel = new ViewStoriesViewModel();
         ReadStoryViewModel readStoryViewModel = new ReadStoryViewModel();
         NarrateViewModel narrateViewModel = new NarrateViewModel();
 
@@ -74,10 +76,11 @@ public class Main {
         LoginView loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, loggedInViewModel, mainDAO);
         views.add(loginView, loginView.viewName);
 
-        LoggedInView loggedInView = GenerateStoryUseCaseFactory.create(viewManagerModel, readStoryViewModel, loggedInViewModel, mainDAO);
+        LoggedInView loggedInView = GenerateStoryUseCaseFactory.create(viewManagerModel, readStoryViewModel, loggedInViewModel, viewStoriesViewModel, mainDAO, mainDAO);
         views.add(loggedInView, loggedInView.viewName);
 
         ReadStoryView readStoryView = ReadStoryUseCaseFactory.create(viewManagerModel, readStoryViewModel, narrateViewModel);
+
         views.add(readStoryView, readStoryView.viewName);
 
 

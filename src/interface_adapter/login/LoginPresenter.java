@@ -34,10 +34,7 @@ public class LoginPresenter implements LoginOutputBoundary {
         this.loginViewModel = loginViewModel;
     }
 
-    /**
-     * Unpacks the login details and logs the user in by progressing to the LoggedIn view.
-     * @param response
-     */
+
     @Override
     public void prepareSuccessView(LoginOutputData response) {
         // On success, switch to the logged in view.
