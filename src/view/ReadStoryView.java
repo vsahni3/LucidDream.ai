@@ -1,6 +1,8 @@
 package view;
 
 import interface_adapter.ViewManagerModel;
+import interface_adapter.downloadPDF.DownloadPDFController;
+import interface_adapter.downloadPDF.DownloadPDFViewModel;
 import interface_adapter.download_story.DownloadController;
 import interface_adapter.lookup.LookupController;
 import interface_adapter.lookup.LookupViewModel;
@@ -34,8 +36,10 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
 
     private final NarrateController narrateController;
     private final LookupController lookupController;
-    private final DownloadController downloadController;
+    private final DownloadPDFController downloadController;
     private final LookupViewModel lookupViewModel;
+
+    private final DownloadPDFViewModel downloadPDFViewModel;
 
     /**
      * Constructs a ReadStory View.
@@ -46,8 +50,9 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
      * @param downloadController
      * @param lookupController
      * @param lookupViewModel
+     * @param downloadPDFViewModel
      */
-    public ReadStoryView(ViewManagerModel viewManagerModel, ReadStoryViewModel readStoryViewModel, NarrateViewModel narrateViewModel, NarrateController narrateController, LookupController lookupController, DownloadController downloadController, LookupViewModel lookupViewModel) {
+    public ReadStoryView(ViewManagerModel viewManagerModel, ReadStoryViewModel readStoryViewModel, NarrateViewModel narrateViewModel, NarrateController narrateController, LookupController lookupController, DownloadPDFController downloadController, LookupViewModel lookupViewModel, DownloadPDFViewModel downloadPDFViewModel) {
 
         this.viewManagerModel = viewManagerModel;
         this.readStoryViewModel = readStoryViewModel;
@@ -56,11 +61,13 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
         this.lookupController = lookupController;
         this.downloadController = downloadController;
         this.lookupViewModel = lookupViewModel;
-
+        this.downloadPDFViewModel = downloadPDFViewModel;
 
         readStoryViewModel.addPropertyChangeListener(this);
         narrateViewModel.addPropertyChangeListener(this);
         lookupViewModel.addPropertyChangeListener(this);
+        downloadPDFViewModel.addPropertyChangeListener(this);
+
         ImageIcon placeholderImage = new ImageIcon("narrate_icon.png");
 
         // Set up the page image display
@@ -196,7 +203,7 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
                 new ActionListener() {
                     public void actionPerformed(ActionEvent evt) {
                         if (evt.getSource().equals(downloadButton)) {
-                            System.out.println("Clicked download");
+                            downloadController.execute(title.getText());
                         }
                     }
                 }
@@ -273,6 +280,10 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
 
         } else if (evt.getPropertyName().equals("lookup")) {
             JOptionPane.showMessageDialog(this, "Definition for: " + lookupViewModel.getState().getWord() + "\n" + lookupViewModel.getState().getDefinition());
+
+        } else if (evt.getPropertyName().equals("download")) {
+            String responseMsg = downloadPDFViewModel.getState().isSuccess() ? "Sucessfully downloaded story!" : "Failed to download story.";
+            JOptionPane.showMessageDialog(this, responseMsg);
 
         }
 

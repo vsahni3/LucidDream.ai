@@ -4,6 +4,7 @@ import data_access.*;
 import entity.CommonUserFactory;
 import entity.PageFactory;
 import entity.StoryBookFactory;
+import interface_adapter.downloadPDF.DownloadPDFViewModel;
 import interface_adapter.download_story.DownloadController;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.logged_in.LoggedInViewModel;
@@ -53,6 +54,7 @@ public class Main {
         ReadStoryViewModel readStoryViewModel = new ReadStoryViewModel();
         NarrateViewModel narrateViewModel = new NarrateViewModel();
         LookupViewModel lookupViewModel = new LookupViewModel();
+        DownloadPDFViewModel downloadPDFViewModel = new DownloadPDFViewModel();
 
         SqlUserDataAccessObject userDAO;
         CombinedDAO mainDAO;
@@ -83,14 +85,12 @@ public class Main {
         views.add(loggedInView, loggedInView.viewName);
 
 
-        ReadStoryView readStoryView = ReadStoryUseCaseFactory.create(viewManagerModel, readStoryViewModel, narrateViewModel, lookupViewModel);
+        ReadStoryView readStoryView = ReadStoryUseCaseFactory.create(viewManagerModel, readStoryViewModel, narrateViewModel, lookupViewModel, downloadPDFViewModel, mainDAO);
+        views.add(readStoryView, readStoryView.viewName);
+
 
         ViewStoriesView viewStoriesView = ViewStoriesUseCaseFactory.create(viewManagerModel, viewStoriesViewModel, mainDAO);
         views.add(viewStoriesView, viewStoriesView.viewName);
-
-
-
-        views.add(readStoryView, readStoryView.viewName);
 
 
         viewManagerModel.setActiveView(landingView.viewName);
