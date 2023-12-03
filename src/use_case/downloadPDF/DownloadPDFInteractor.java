@@ -33,7 +33,7 @@ public class DownloadPDFInteractor implements DownloadPDFInputBoundary {
 
 
     // Create PDF document from array of Page2 objects
-    public static void createPdfFromPages(Page[] pages) throws IOException {
+    public static void createPdfFromPages(Page[] pages, String title) throws IOException {
         try (PDDocument document = new PDDocument()) {
             for (int i = 0; i < pages.length; i++) {
                 Page page2 = pages[i];
@@ -53,9 +53,28 @@ public class DownloadPDFInteractor implements DownloadPDFInputBoundary {
                 addPageNumber(document, pdfPage, i + 1);
             }
 
-            document.save("src/use_case/downloadPDF/test.pdf");
+            String fileName = toPdfFileName(title);
+
+            document.save("stories/" + fileName);
         }
     }
+
+    private static String toPdfFileName(String title) {
+        if (title == null || title.isEmpty()) {
+            return "default.pdf";
+        }
+
+        // Replace invalid characters and spaces
+        String safeTitle = title.replaceAll("[\\\\/:*?\"<>|]", "").replaceAll("\\s+", "_");
+
+        // Ensure it ends with .pdf
+        if (!safeTitle.toLowerCase().endsWith(".pdf")) {
+            safeTitle += ".pdf";
+        }
+
+        return safeTitle;
+    }
+
 
     // Configure a new PDF page with specified size
     private static PDPage configurePage(PDDocument document, PDRectangle pageSize) {
@@ -69,6 +88,8 @@ public class DownloadPDFInteractor implements DownloadPDFInputBoundary {
         PDRectangle mediaBox = page.getMediaBox();
         float pageWidth = mediaBox.getWidth();
         float pageHeight = mediaBox.getHeight();
+        text = text.replace("\n", "").replace("\r", "");
+
 
         float startX = (pageWidth - imageWidth) / 2;
         float startY = (pageHeight - imageHeight) / 2;
@@ -84,7 +105,7 @@ public class DownloadPDFInteractor implements DownloadPDFInputBoundary {
 
     // Add formatted text to the page
     private static void addFormattedText(PDPageContentStream contentStream, String text, float fontSize, float margin, float x, float y, PDPage page) throws IOException {
-        PDFont font = PDType1Font.TIMES_ROMAN;
+        PDFont font = PDType1Font.HELVETICA;
         contentStream.beginText();
         contentStream.setFont(font, fontSize);
         contentStream.newLineAtOffset(x, y);
@@ -126,7 +147,10 @@ public class DownloadPDFInteractor implements DownloadPDFInputBoundary {
     @Override
     public void execute(DownloadPDFInputData inputData) {
         StoryBook storybook = dataAccess.getBook(inputData.getTitle());
+        System.out.println(inputData.getTitle());
+
         if (storybook == null || storybook.getPages().isEmpty()) {
+            System.out.println("Couldnt find the book");
             downloadPDFPresenter.prepareFailureView();
             return;
         }
@@ -135,9 +159,12 @@ public class DownloadPDFInteractor implements DownloadPDFInputBoundary {
         Page[] pagesArray = pages.toArray(new Page[0]);
 
         try {
-            createPdfFromPages(pagesArray);
+            createPdfFromPages(pagesArray, inputData.getTitle());
+            System.out.println("success download");
             downloadPDFPresenter.prepareSuccessView();
         } catch (Exception e) {
+            System.out.println(e);
+            System.out.println("FAILURE");
             downloadPDFPresenter.prepareFailureView();
         }
     }

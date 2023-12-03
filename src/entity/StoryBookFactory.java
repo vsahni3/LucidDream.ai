@@ -44,6 +44,10 @@ public class StoryBookFactory {
 //        Exclude the 'Title:' and 'Story:' strings
         String title = entireText.substring(6, split - 6).strip();
 
+        // Removes any unncecessary quotes
+        title = (title != null && title.startsWith("\"") && title.endsWith("\"")) ?
+                title.substring(1, title.length() - 1) : title;
+
         String storyText = entireText.substring(split).strip();
 
         List<String> pagesText = getPagesText(storyText);

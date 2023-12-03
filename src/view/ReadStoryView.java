@@ -27,7 +27,6 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
     private JButton leftButton, rightButton, downloadButton, narrateButton, backButton, dictionaryButton;
     private JTextArea pageText;
 
-    private int numLoaded = 0;
     private int currentIndex = 0;
     private final ViewManagerModel viewManagerModel;
     private final ReadStoryViewModel readStoryViewModel;
@@ -174,12 +173,14 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
             public void actionPerformed(ActionEvent e) {
 
                 int storyLength = readStoryViewModel.getState().getStoryLength();
-                currentIndex = (currentIndex - 1 + storyLength) % storyLength;
-                ImageIcon pageImage = readStoryViewModel.getState().getPageImage(currentIndex);
-                String text = readStoryViewModel.getState().getPageText(currentIndex);
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    ImageIcon pageImage = readStoryViewModel.getState().getPageImage(currentIndex);
+                    String text = readStoryViewModel.getState().getPageText(currentIndex);
 
-                imageLabel.setIcon(pageImage);
-                pageText.setText(text);
+                    imageLabel.setIcon(pageImage);
+                    pageText.setText(text);
+                }
 
             }
         });
@@ -187,13 +188,18 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
 
         rightButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int storyLength = readStoryViewModel.getState().getStoryLength();
-                currentIndex = (currentIndex + 1) % storyLength;
-                ImageIcon pageImage = readStoryViewModel.getState().getPageImage(currentIndex);
-                String text = readStoryViewModel.getState().getPageText(currentIndex);
 
-                imageLabel.setIcon(pageImage);
-                pageText.setText(text);
+                int storyLength = readStoryViewModel.getState().getStoryLength();
+
+                if (currentIndex < storyLength - 1) {
+                    currentIndex++;
+                    ImageIcon pageImage = readStoryViewModel.getState().getPageImage(currentIndex);
+                    String text = readStoryViewModel.getState().getPageText(currentIndex);
+
+                    imageLabel.setIcon(pageImage);
+                    pageText.setText(text);
+                }
+
             }
         });
 
@@ -235,11 +241,18 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
 
                             // If the user has highlighted text
                             if (selectedText != null) {
+
+                                // Removes all leading or trailing punctuation from the initial selected text
+                                selectedText = selectedText.replaceAll("^\\p{Punct}+|\\p{Punct}+$", "");
+
                                 // Remove white space
                                 selectedText = selectedText.strip();
 
                                 // Extract the first word from the highlighted text
                                 String firstWord = selectedText.contains(" ") ? selectedText.split(" ")[0] : selectedText;
+
+                                // Removes all leading or trailing punctuation from the word
+                                firstWord = firstWord.replaceAll("^\\p{Punct}+|\\p{Punct}+$", "");
 
                                 lookupController.execute(firstWord);
 
@@ -264,6 +277,7 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
         readStoryViewModel.getState().clearState();
         viewManagerModel.setActiveView("logged in");
         viewManagerModel.firePropertyChanged();
+        currentIndex = 0;
     }
 
     @Override
@@ -276,7 +290,8 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
                 title.setText(readStoryViewModel.getState().getTitle());
             }
         } else if (evt.getPropertyName().equals("narrate")) {
-            JOptionPane.showMessageDialog(this, "Narrating page text.");
+//            JOptionPane.showMessageDialog(this, "Narrating page text.");
+            System.out.println("narrating...");
 
         } else if (evt.getPropertyName().equals("lookup")) {
 
