@@ -79,15 +79,12 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
      */
     @Override
     public void save(User user) {
-        System.out.println("main save");
         this.users.put(user.getUserName(), user);
         if (user.getStoryBooks().size() > 0) {
             for (String username : users.keySet()) {
                 User user1 = users.get(username);
 
-                System.out.println(user1.getStoryBooks().size());
 
-                System.out.println(user1.getUserName() + "2");
             }
 
 
@@ -195,16 +192,10 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
 
     private void save() {
 
-        System.out.println("combined save");
 
 
         for (String username : users.keySet()) {
-            System.out.println("iter start");
             User user = users.get(username);
-
-            System.out.println(user.getStoryBooks().size());
-
-            System.out.println(user.getUserName() + "2");
 
 
             userDAO.saveUser(user);
