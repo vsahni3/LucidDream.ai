@@ -3,29 +3,27 @@ package view;
 import data_access.InMemoryUserDataAccessObject;
 import entity.*;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.generate_story.GenerateStoryController;
-import interface_adapter.logged_in.LoggedInViewModel;
-import interface_adapter.login.LoginController;
-import interface_adapter.login.LoginPresenter;
-import interface_adapter.login.LoginState;
-import interface_adapter.login.LoginViewModel;
-import interface_adapter.signup.SignupViewModel;
+import interface_adapter.narrate.NarrateController;
+import interface_adapter.narrate.NarratePresenter;
+import interface_adapter.narrate.NarrateViewModel;
+import interface_adapter.read_story.ReadStoryState;
+import interface_adapter.read_story.ReadStoryViewModel;
 import org.junit.jupiter.api.Test;
-import use_case.generate.GenerateInputBoundary;
-import use_case.login.LoginInputBoundary;
-import use_case.login.LoginInteractor;
-import use_case.login.LoginOutputBoundary;
 import use_case.login.LoginUserDataAccessInterface;
+import use_case.narrate.NarrateInputBoundary;
+import use_case.narrate.NarrateInteractor;
+import use_case.narrate.NarrateOutputBoundary;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-import static java.lang.Thread.sleep;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 class NarrateViewTest {
+
+    static boolean popUpDiscovered = false;
+
     @Test
     public void testOpensNarrateDialog() {
 
@@ -41,19 +39,17 @@ class NarrateViewTest {
         userRepository.save(user);
 
 
-        LoggedInViewModel loggedInViewModel = new LoggedInViewModel();
-        LoginViewModel loginViewModel = new LoginViewModel();
+
         ViewManagerModel viewManagerModel = new ViewManagerModel();
-
-        LoginOutputBoundary loginPresenter = new LoginPresenter(viewManagerModel, loggedInViewModel, loginViewModel);
-        LoginInputBoundary lib = new LoginInteractor(userRepository, loginPresenter);
-        LoginController loginController = new LoginController(lib);
-        LoginView loginView = new LoginView(loginViewModel, loginController, viewManagerModel);
+        ReadStoryViewModel readStoryViewModel = new ReadStoryViewModel();
+        NarrateViewModel narrateViewModel = new NarrateViewModel();
 
 
-        GenerateInputBoundary gib = null;
-        GenerateStoryController generateStoryController = new GenerateStoryController(gib);
-        LoggedInView loggedInView = new LoggedInView(loggedInViewModel, viewManagerModel, generateStoryController);
+        NarrateOutputBoundary narratePresenter = new NarratePresenter(narrateViewModel);
+        NarrateInputBoundary narrateInteractor = new NarrateInteractor(narratePresenter);
+        NarrateController narrateController = new NarrateController(narrateInteractor);
+
+        ReadStoryView readStoryView = new ReadStoryView(viewManagerModel, readStoryViewModel, narrateViewModel, narrateController, null, null);
 
         JFrame app = new JFrame();
         CardLayout cardLayout = new CardLayout();
@@ -62,26 +58,67 @@ class NarrateViewTest {
 
         new ViewManager(views, cardLayout, viewManagerModel);
 
-        views.add(loginView, loginView.viewName);
-        views.add(loggedInView, loggedInView.viewName);
+        views.add(readStoryView, readStoryView.viewName);
 
-        viewManagerModel.setActiveView(loginView.viewName);
+        ReadStoryState readStoryState = readStoryViewModel.getState();
+        readStoryState.setPageTexts(new String[]{"abc", "def"});
+        readStoryViewModel.setState(readStoryState);
+
+        viewManagerModel.setActiveView(readStoryView.viewName);
         viewManagerModel.firePropertyChanged();
+
         app.pack();
 
-        LoginState loginState = loginViewModel.getState();
-        loginState.setUsername("bob");
-        loginState.setPassword("password");
+        app.setVisible(true);
 
-        JPanel buttons = (JPanel) loginView.getComponent(5);
-        JButton loginButton = (JButton) buttons.getComponent(0);
+        JPanel buttons = (JPanel) readStoryView.getComponent(6);
 
-        loginButton.doClick();
-        assertEquals(viewManagerModel.getActiveView(), "logged in");
-        assertEquals(loginViewModel.getState().getUsername(), "");
-        assertEquals(loginViewModel.getState().getPassword(), "");
-        assertEquals(loggedInViewModel.getState().getUsername(), "bob");
+        JButton narrateButton = (JButton) buttons.getComponent(2);
 
+        createCloseTimer().start();
+
+        narrateButton.doClick();
+
+        assert(popUpDiscovered);
+
+
+
+    }
+
+    private Timer createCloseTimer() {
+        ActionListener close = new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                Window[] windows = Window.getWindows();
+                for (Window window : windows) {
+
+                    if (window instanceof JDialog) {
+
+                        JDialog dialog = (JDialog)window;
+
+                        // this ignores old dialogs
+                        if (dialog.isVisible()) {
+                            String s = ((JOptionPane) ((BorderLayout) dialog.getRootPane()
+                                    .getContentPane().getLayout()).getLayoutComponent(BorderLayout.CENTER)).getMessage().toString();
+                            System.out.println("message = " + s);
+
+                            // store the information we got from the JDialog
+                            NarrateViewTest.popUpDiscovered = true;
+
+                            System.out.println("disposing of..." + window.getClass());
+                            window.dispose();
+                        }
+                    }
+                }
+            }
+
+        };
+
+        Timer t = new Timer(3000, close);
+        t.setRepeats(false);
+        return t;
     }
 
 
