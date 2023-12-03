@@ -66,6 +66,13 @@ public class StoryBookFactory {
         return new StoryBook(title, pages);
     }
 
+    /**
+     * Splits a given story text into pages, each with a character limit.
+     * The method breaks the story text into smaller parts, ensuring each part ends with a complete sentence.
+     *
+     * @param storyText The complete story text to be split into pages.
+     * @return A List of strings, each representing the text for a single page.
+     */
     private static List<String> getPagesText(String storyText) {
         int charLimit = 250;
         int storyChars = storyText.length();
@@ -91,6 +98,15 @@ public class StoryBookFactory {
         return pagesText;
     }
 
+    /**
+     * Generates story text based on a given prompt using an AI model.
+     * This method sends a request to an AI service to generate story text based on the provided prompt.
+     *
+     * @param prompt The prompt to be used for generating the story.
+     * @return The generated story text.
+     * @throws JSONException If there is an error in parsing the JSON response.
+     * @throws IOException If there is an IO error during the HTTP request.
+     */
     private static String generateText(String prompt) throws JSONException, IOException {
         String apiURL = "https://api.openai.com/v1/chat/completions";
         String apiToken = System.getenv("openai_key");
@@ -139,6 +155,14 @@ public class StoryBookFactory {
         return completions.getJSONObject(0).getJSONObject("message").getString("content");
     }
 
+    /**
+     * Generates an image based on the provided page text.
+     * This method sends a request to an image generation service to create an image relevant to the page text.
+     *
+     * @param pageText The text for which the image needs to be generated.
+     * @return A byte array representing the generated image.
+     * @throws IOException If there is an IO error during the image retrieval.
+     */
     private static byte[] generateImage(String pageText) throws IOException {
         String imageLink = generateImageLink(pageText);
         URL url = new URL(imageLink);
@@ -155,6 +179,14 @@ public class StoryBookFactory {
         return baos.toByteArray();
     }
 
+    /**
+     * Generates a link to an image based on the provided page text.
+     * This method communicates with an image generation service to get a link for an image corresponding to the page text.
+     *
+     * @param pageText The text for which the image link needs to be generated.
+     * @return The link to the generated image.
+     * @throws IOException If there is an IO error during the image link generation.
+     */
     private static String generateImageLink(String pageText) throws IOException {
         String apiKey = System.getenv("openai_key");
         int imageNumber = 1;

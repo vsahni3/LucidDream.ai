@@ -27,6 +27,7 @@ class LookupInteractorTest {
             @Override
             public void prepareFailView(String errorMessage) {
                 fail("Use case failure is unexpected.");
+
             }
 
         };

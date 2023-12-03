@@ -47,6 +47,10 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
 
     }
 
+    public Map<String, User> getAll(){
+        return users;
+    }
+
     private void loadData(Map<String, User> map) {
 
         Map<String, User> tempUsers = userDAO.loadAll();
@@ -75,7 +79,20 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
      */
     @Override
     public void save(User user) {
-        users.put(user.getUserName(), user);
+        System.out.println("main save");
+        this.users.put(user.getUserName(), user);
+        if (user.getStoryBooks().size() > 0) {
+            for (String username : users.keySet()) {
+                User user1 = users.get(username);
+
+                System.out.println(user1.getStoryBooks().size());
+
+                System.out.println(user1.getUserName() + "2");
+            }
+
+
+        }
+
         this.save();
     }
 
@@ -177,11 +194,17 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
     }
 
     private void save() {
-        Map<String, User> tempMap = new HashMap<>();
-        loadData(tempMap);
+
+        System.out.println("combined save");
+
 
         for (String username : users.keySet()) {
+            System.out.println("iter start");
             User user = users.get(username);
+
+            System.out.println(user.getStoryBooks().size());
+
+            System.out.println(user.getUserName() + "2");
 
 
             userDAO.saveUser(user);
