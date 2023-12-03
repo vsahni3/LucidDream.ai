@@ -224,7 +224,7 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
     @Override
     public ArrayList<StoryBook> getStoryBooks(String username) {
         Connection c = createConnection();
-        ArrayList<StoryBook> books = bookDAO.getUserBooks(c, username);
+        ArrayList<StoryBook> books = users.get(username).getStoryBooks();
         closeConnection(c);
         return books;
     }
