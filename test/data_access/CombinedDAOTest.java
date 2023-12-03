@@ -134,6 +134,25 @@ class CombinedDAOTest {
     }
 
     @Test
+    void testBooksRetrieval() {
+        User newUser = userFactory.create("testUser3", "testPass3");
+        StoryBook newBook = storyBookFactory.create("testBook2", new ArrayList<Page>());
+        Page newPage = pageFactory.create("testPage1", 1, new byte[0], 1);
+        ArrayList<StoryBook> books = new ArrayList<>();
+        ArrayList<Page> pages = new ArrayList<>();
+        books.add(newBook);
+        pages.add(newPage);
+        newBook.setPages(pages);
+        newUser.setStoryBooks(books);
+        combinedDAO.save(newUser);
+        ArrayList<StoryBook> userBooks = combinedDAO.getStoryBooks("testUser3");
+        assertEquals(userBooks.size(), books.size());
+
+
+
+    }
+
+    @Test
     void testBookCreationAndRetrieval() {
         // Create a new user and a book and save them to the database.
         User newUser = userFactory.create("testUser2", "testPass2");
