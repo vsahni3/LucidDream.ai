@@ -19,6 +19,12 @@ public class ViewStoriesState {
     // Because of the previous copy constructor, the default constructor must be explicit.
     public ViewStoriesState() {}
 
+
+    public void clearState() {
+        storyBooks = new ArrayList<>();
+        selected = null;
+    }
+
     /**
      * Return the ArrayList of Storybooks
      */
