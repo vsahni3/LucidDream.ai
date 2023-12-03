@@ -13,7 +13,6 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
-import use_case.exportPDF.dynamicExport;
 import use_case.generate.GenerateOutputBoundary;
 import use_case.generate.GenerateUserDataAccessInterface;
 
@@ -32,7 +31,6 @@ public class DownloadPDFInteractor implements DownloadPDFInputBoundary {
         this.downloadPDFPresenter = downloadPDFOutputBoundary;
     }
 
-    private static final Log log = LogFactory.getLog(dynamicExport.class);
 
     // Create PDF document from array of Page2 objects
     public static void createPdfFromPages(Page[] pages) throws IOException {
@@ -56,7 +54,6 @@ public class DownloadPDFInteractor implements DownloadPDFInputBoundary {
             }
 
             document.save("src/use_case/exportPDF/test.pdf");
-            log.info("PDF created successfully.");
         }
     }
 
