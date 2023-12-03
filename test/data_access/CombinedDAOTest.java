@@ -67,7 +67,7 @@ class CombinedDAOTest {
     @Test
     public void testTableCreationExceptions() {
         // Create an instance with a valid path
-        SQLiteJDBC sqliteJDBC = new SQLiteJDBC("jdbc:sqlite:memory:");
+        SQLiteJDBC sqliteJDBC = new SQLiteJDBC("jdbc:sqlite:memory.db");
         RuntimeException thrown = assertThrows(RuntimeException.class, () -> {
             sqliteJDBC.getConnection().close();
 
