@@ -77,8 +77,9 @@ public class LookupInteractor implements LookupInputBoundary {
             JSONArray jsonArray = new JSONArray(response.body().string());
 
             String definition = jsonArray.getJSONObject(0).getJSONArray("meanings").getJSONObject(0).getJSONArray("definitions").getJSONObject(0).getString("definition");
-            LookupOutputData lookupOutputData = new LookupOutputData(definition);
+            LookupOutputData lookupOutputData = new LookupOutputData(definition, word);
             lookupPresenter.prepareSuccessView(lookupOutputData);
+
         } catch (Exception e) {
             System.err.println("Error during request: " + e.getMessage());
         }

@@ -4,6 +4,7 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.download_story.DownloadController;
 import interface_adapter.lookup.LookupController;
 import interface_adapter.lookup.LookupPresenter;
+import interface_adapter.lookup.LookupViewModel;
 import interface_adapter.narrate.NarrateController;
 import interface_adapter.narrate.NarratePresenter;
 import interface_adapter.narrate.NarrateViewModel;
@@ -17,23 +18,23 @@ import use_case.narrate.NarrateOutputBoundary;
 import view.ReadStoryView;
 
 public class ReadStoryUseCaseFactory {
-    public static ReadStoryView create(ViewManagerModel viewManagerModel, ReadStoryViewModel readStoryViewModel, NarrateViewModel narrateViewModel) {
+    public static ReadStoryView create(ViewManagerModel viewManagerModel, ReadStoryViewModel readStoryViewModel, NarrateViewModel narrateViewModel, LookupViewModel lookupViewModel) {
 
         NarrateController narrateController = createNarrateUseCase(narrateViewModel);
 
-        LookupController lookupController = createLookupUseCase();
+        LookupController lookupController = createLookupUseCase(lookupViewModel);
 
         DownloadController downloadController = createDownloadUseCase();
 
-        return new ReadStoryView(viewManagerModel, readStoryViewModel, narrateViewModel, narrateController, lookupController, downloadController);
+        return new ReadStoryView(viewManagerModel, readStoryViewModel, narrateViewModel, narrateController, lookupController, downloadController, lookupViewModel);
     }
 
     private static DownloadController createDownloadUseCase() {
         return null;
     }
 
-    private static LookupController createLookupUseCase() {
-        LookupOutputBoundary lookupPresenter = new LookupPresenter();
+    private static LookupController createLookupUseCase(LookupViewModel lookupViewModel) {
+        LookupOutputBoundary lookupPresenter = new LookupPresenter(lookupViewModel);
         LookupInputBoundary lookupInteractor = new LookupInteractor(lookupPresenter);
         return new LookupController(lookupInteractor);
 
@@ -41,9 +42,7 @@ public class ReadStoryUseCaseFactory {
 
     private static NarrateController createNarrateUseCase(NarrateViewModel narrateViewModel) {
         NarrateOutputBoundary narratePresenter = new NarratePresenter(narrateViewModel);
-
         NarrateInputBoundary narrateInteractor = new NarrateInteractor(narratePresenter);
-
         return new NarrateController(narrateInteractor);
     }
 }
