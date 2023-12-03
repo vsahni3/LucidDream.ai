@@ -41,11 +41,14 @@ public class ViewStoriesInteractor implements ViewStoriesInputBoundary{
 
         String username = viewStoriesInputData.getUsername();
 
+        System.out.println("Current user: " + username);
+
         ArrayList<StoryBook> storyBooks = storybookDataAccessObject.getStoryBooks(username);
 
         System.out.println("View Stories Interactor called");
 
         ViewStoriesOutputData viewStoriesOutputData = new ViewStoriesOutputData(storyBooks);
+
         viewStoriesPresenter.prepareSuccessView(viewStoriesOutputData);
     }
 }
