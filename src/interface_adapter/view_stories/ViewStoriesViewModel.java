@@ -15,8 +15,6 @@ public class ViewStoriesViewModel extends ViewModel {
     public final String SELECT_BUTTON_LABEL = "SELECT";
     public final String READ_BUTTON_LABEL = "READ STORY";
 
-    private ArrayList<StoryBook> storyBooks = new ArrayList<>();
-    private StoryBook selectedStoryBook;
 
     private ViewStoriesState state = new ViewStoriesState();
 
@@ -28,11 +26,6 @@ public class ViewStoriesViewModel extends ViewModel {
     public void setState(ViewStoriesState state) {
         this.state = state;
     }
-
-    public void setStoryBooks(ArrayList<StoryBook> newStoryBooks) { this.storyBooks = newStoryBooks; }
-
-    public StoryBook getSelectedStoryBook() { return selectedStoryBook; }
-    public void setSelectedStoryBook(StoryBook newSelected) { this.selectedStoryBook = newSelected; }
 
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
 

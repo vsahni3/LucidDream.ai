@@ -1,6 +1,6 @@
 package use_case.generate;
 
-import data_access.InMemoryUserDataAccessObject;
+import data_access.InMemoryDAO;
 import entity.*;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +23,7 @@ class GenerateInteractorTest {
         GenerateInputData inputData = new GenerateInputData("magical forest", "bob");
 
         // Setting up a user repository with an in-memory implementation
-        GenerateUserDataAccessInterface userRepository = new InMemoryUserDataAccessObject();
+        GenerateUserDataAccessInterface userRepository = new InMemoryDAO();
 
         // Creating a user and saving it to the repository for the test
         UserFactory factory = new CommonUserFactory();

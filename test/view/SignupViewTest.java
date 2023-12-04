@@ -1,7 +1,7 @@
 package view;
 
 import app.SignupUseCaseFactory;
-import data_access.InMemoryUserDataAccessObject;
+import data_access.InMemoryDAO;
 import entity.CommonUserFactory;
 import entity.User;
 import entity.UserFactory;
@@ -165,7 +165,7 @@ class SignupViewTest {
     @Test
     public void testOpensLoggedInView() {
 
-        SignupUserDataAccessInterface userRepository = new InMemoryUserDataAccessObject();
+        SignupUserDataAccessInterface userRepository = new InMemoryDAO();
         UserFactory factory = new CommonUserFactory();
 
         LoggedInViewModel loggedInViewModel = new LoggedInViewModel();

@@ -2,7 +2,7 @@ package view;
 
 import app.LoginUseCaseFactory;
 import app.SignupUseCaseFactory;
-import data_access.InMemoryUserDataAccessObject;
+import data_access.InMemoryDAO;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
@@ -139,7 +139,7 @@ class LandingViewTest {
         SignupViewModel signupViewModel = new SignupViewModel();
         LoginViewModel loginViewModel = new LoginViewModel();
         LoggedInViewModel loggedInViewModel = new LoggedInViewModel();
-        LoginUserDataAccessInterface loginUserDataAccessInterface = new InMemoryUserDataAccessObject();
+        LoginUserDataAccessInterface loginUserDataAccessInterface = new InMemoryDAO();
         new ViewManager(views, cardLayout, viewManagerModel);
 
         LandingView landingView = new LandingView(signupViewModel, loginViewModel, viewManagerModel);
@@ -171,7 +171,7 @@ class LandingViewTest {
         SignupViewModel signupViewModel = new SignupViewModel();
         LoginViewModel loginViewModel = new LoginViewModel();
         LoggedInViewModel loggedInViewModel = new LoggedInViewModel();
-        SignupUserDataAccessInterface signupUserDataAccessInterface = new InMemoryUserDataAccessObject();
+        SignupUserDataAccessInterface signupUserDataAccessInterface = new InMemoryDAO();
         new ViewManager(views, cardLayout, viewManagerModel);
 
         LandingView landingView = new LandingView(signupViewModel, loginViewModel, viewManagerModel);
