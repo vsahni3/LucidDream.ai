@@ -3,7 +3,6 @@ package view;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.downloadPDF.DownloadPDFController;
 import interface_adapter.downloadPDF.DownloadPDFViewModel;
-import interface_adapter.download_story.DownloadController;
 import interface_adapter.lookup.LookupController;
 import interface_adapter.lookup.LookupViewModel;
 import interface_adapter.narrate.NarrateController;
@@ -68,7 +67,7 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
 
         // Calculate proportional size for imageLabel
         int imageWidth = screenWidth / 2;  // Example: half of the screen width
-        int imageHeight = screenHeight / 2;  // Example: quarter of the screen height
+        int imageHeight = screenHeight / 3;  // Example: quarter of the screen height
 
 
 
@@ -121,7 +120,7 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
         // Page text
         this.pageText = new JTextArea("place holder text");
         pageText.setMargin(new Insets(30,40,30,40));
-        pageText.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        pageText.setFont(new Font("SansSerif", Font.PLAIN, 17));
         pageText.setAlignmentX(Component.CENTER_ALIGNMENT);
         pageText.setLineWrap(true);
         pageText.setWrapStyleWord(true);
@@ -300,7 +299,7 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
                 title.setText(readStoryViewModel.getState().getTitle());
             }
         } else if (evt.getPropertyName().equals("narrate")) {
-//            JOptionPane.showMessageDialog(this, "Narrating page text.");
+            JOptionPane.showMessageDialog(this, "Narrating page text.");
             System.out.println("narrating...");
 
         } else if (evt.getPropertyName().equals("lookup")) {

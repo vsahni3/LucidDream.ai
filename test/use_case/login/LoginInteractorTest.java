@@ -1,6 +1,6 @@
 package use_case.login;
 
-import data_access.InMemoryUserDataAccessObject;
+import data_access.InMemoryDAO;
 import entity.CommonUserFactory;
 import entity.User;
 import entity.UserFactory;
@@ -13,7 +13,7 @@ class LoginInteractorTest {
     @Test
     void successTest() {
         LoginInputData inputData = new LoginInputData("bob", "password");
-        LoginUserDataAccessInterface userRepository = new InMemoryUserDataAccessObject();
+        LoginUserDataAccessInterface userRepository = new InMemoryDAO();
 
         UserFactory factory = new CommonUserFactory();
         User user = factory.create("bob", "password");
@@ -41,7 +41,7 @@ class LoginInteractorTest {
     @Test
     void failureInvalidPasswordTest() {
         LoginInputData inputData = new LoginInputData("bob", "password");
-        LoginUserDataAccessInterface userRepository = new InMemoryUserDataAccessObject();
+        LoginUserDataAccessInterface userRepository = new InMemoryDAO();
 
         UserFactory factory = new CommonUserFactory();
         User user = factory.create("bob", "pwd");
@@ -67,7 +67,7 @@ class LoginInteractorTest {
     @Test
     void failureUserDoesNotExistTest() {
         LoginInputData inputData = new LoginInputData("bob", "password");
-        LoginUserDataAccessInterface userRepository = new InMemoryUserDataAccessObject();
+        LoginUserDataAccessInterface userRepository = new InMemoryDAO();
 
         LoginOutputBoundary failurePresenter = new LoginOutputBoundary() {
 

@@ -1,5 +1,9 @@
 package view;
 
+import data_access.InMemoryDAO;
+import entity.CommonUserFactory;
+import entity.User;
+import entity.UserFactory;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.generate_story.GenerateStoryController;
 import interface_adapter.logged_in.LoggedInViewModel;
@@ -7,10 +11,11 @@ import interface_adapter.login.LoginViewModel;
 import interface_adapter.read_story.ReadStoryViewModel;
 import interface_adapter.signup.SignupViewModel;
 import interface_adapter.view_stories.ViewStoriesController;
+import interface_adapter.view_stories.ViewStoriesPresenter;
 import interface_adapter.view_stories.ViewStoriesViewModel;
 import org.junit.jupiter.api.Test;
 import use_case.generate.GenerateInputBoundary;
-import use_case.view_stories.ViewStoriesInputBoundary;
+import use_case.view_stories.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,7 +48,6 @@ class LoggedInViewTest {
         viewManagerModel.firePropertyChanged();
 
         app.pack();
-        app.setVisible(true);
         assertEquals(viewManagerModel.getActiveView(), "logged in");
     };
 
@@ -109,7 +113,6 @@ class LoggedInViewTest {
         viewManagerModel.firePropertyChanged();
 
         app.pack();
-        app.setVisible(true);
 
         JButton button = getViewStoriesButton();
         assert(button.getText().equals("MY STORIES"));
@@ -137,7 +140,6 @@ class LoggedInViewTest {
         viewManagerModel.firePropertyChanged();
 
         app.pack();
-        app.setVisible(true);
 
         JButton button = getLogOutButton();
         assert(button.getText().equals("LOG OUT"));
@@ -163,41 +165,51 @@ class LoggedInViewTest {
         return (JButton) buttons.getComponent(1);
     }
 
-//    @Test
-//    public void testOpensViewStoriesView() {
-//        JFrame app = new JFrame();
-//        CardLayout cardLayout = new CardLayout();
-//        JPanel views = new JPanel(cardLayout);
-//        app.add(views);
-//
-//        LoggedInViewModel loggedInViewModel = new LoggedInViewModel();
-//        ViewManagerModel viewManagerModel = new ViewManagerModel();
-//        GenerateInputBoundary gib = null;
-//        GenerateStoryController generateStoryController = new GenerateStoryController(gib);
-//        ViewStoriesInputBoundary vib = null;
-//        ViewStoriesController viewStoriesController = new ViewStoriesController(vib);
-//        ViewStoriesViewModel viewStoriesViewModel = new ViewStoriesViewModel();
-//
-//        new ViewManager(views, cardLayout, viewManagerModel);
-//
-//        LoggedInView loggedInView = new LoggedInView(loggedInViewModel,viewManagerModel, generateStoryController, viewStoriesController);
-//        ViewStoriesView viewStoriesView = new ViewStoriesView(viewStoriesViewModel, viewStoriesController, viewManagerModel);
-//
-//        views.add(loggedInView, loggedInView.viewName);
-//        views.add(viewStoriesView, viewStoriesView.viewName);
-//
-//        viewManagerModel.setActiveView(loggedInView.viewName);
-//        viewManagerModel.firePropertyChanged();
-//
-//        app.pack();
-//        app.setVisible(true);
-//
-//        JPanel buttons = (JPanel) loggedInView.getComponent(4);
-//        JButton viewStoriesButton = (JButton) buttons.getComponent(0);
-//        viewStoriesButton.doClick();
-//
-//        assertEquals(viewManagerModel.getActiveView(), "view stories");
-//    }
+    @Test
+    public void testOpensViewStoriesView() {
+        JFrame app = new JFrame();
+        CardLayout cardLayout = new CardLayout();
+        JPanel views = new JPanel(cardLayout);
+        app.add(views);
+
+        LoggedInViewModel loggedInViewModel = new LoggedInViewModel();
+        ViewManagerModel viewManagerModel = new ViewManagerModel();
+        GenerateInputBoundary gib = null;
+        GenerateStoryController generateStoryController = new GenerateStoryController(gib);
+
+        ViewStoriesDataAccessInterface userRepo = new InMemoryDAO();
+
+        UserFactory factory = new CommonUserFactory();
+        User user = factory.create("bob", "password");
+        ((InMemoryDAO) userRepo).save(user);
+
+        ViewStoriesViewModel viewStoriesViewModel = new ViewStoriesViewModel();
+        ReadStoryViewModel readStoryViewModel = new ReadStoryViewModel();
+
+        ViewStoriesOutputBoundary viewStoriesPresenter = new ViewStoriesPresenter(viewManagerModel, viewStoriesViewModel);
+        ViewStoriesInputBoundary vib = new ViewStoriesInteractor(userRepo, viewStoriesPresenter);
+        ViewStoriesController viewStoriesController = new ViewStoriesController(vib);
+
+        loggedInViewModel.getState().setUsername("bob");
+
+        new ViewManager(views, cardLayout, viewManagerModel);
+
+        LoggedInView loggedInView = new LoggedInView(loggedInViewModel,viewManagerModel, generateStoryController, viewStoriesController);
+        ViewStoriesView viewStoriesView = new ViewStoriesView(viewStoriesViewModel, viewStoriesController, viewManagerModel, readStoryViewModel);
+
+        views.add(loggedInView, loggedInView.viewName);
+        views.add(viewStoriesView, viewStoriesView.viewName);
+
+        viewManagerModel.setActiveView(loggedInView.viewName);
+        viewManagerModel.firePropertyChanged();
+
+        app.pack();
+        JPanel buttons = (JPanel) loggedInView.getComponent(4);
+        JButton viewStoriesButton = (JButton) buttons.getComponent(0);
+        viewStoriesButton.doClick();
+
+        assertEquals(viewManagerModel.getActiveView(), "view stories");
+    }
 
     @Test
     public void testOpensLandingPageView() {
@@ -230,7 +242,6 @@ class LoggedInViewTest {
         viewManagerModel.firePropertyChanged();
 
         app.pack();
-        app.setVisible(true);
 
         JPanel buttons = (JPanel) loggedInView.getComponent(4);
         JButton logOutButton = (JButton) buttons.getComponent(1);

@@ -1,6 +1,6 @@
 package use_case.signup;
 
-import data_access.InMemoryUserDataAccessObject;
+import data_access.InMemoryDAO;
 import entity.CommonUserFactory;
 import entity.User;
 import entity.UserFactory;
@@ -13,7 +13,7 @@ class SignupInteractorTest {
     @Test
     void successTest() {
         SignupInputData inputData = new SignupInputData("bob", "password", "password");
-        SignupUserDataAccessInterface userRepository = new InMemoryUserDataAccessObject();
+        SignupUserDataAccessInterface userRepository = new InMemoryDAO();
 
         SignupOutputBoundary successPresenter = new SignupOutputBoundary() {
             @Override
@@ -35,7 +35,7 @@ class SignupInteractorTest {
     @Test
     void failurePasswordMismatchTest() {
         SignupInputData inputData = new SignupInputData("bob", "password", "wrong");
-        SignupUserDataAccessInterface userRepository = new InMemoryUserDataAccessObject();
+        SignupUserDataAccessInterface userRepository = new InMemoryDAO();
 
         SignupOutputBoundary failurePresenter = new SignupOutputBoundary() {
             @Override
@@ -56,7 +56,7 @@ class SignupInteractorTest {
     @Test
     void failureUserExistsTest() {
         SignupInputData inputData = new SignupInputData("bob", "password", "wrong");
-        SignupUserDataAccessInterface userRepository = new InMemoryUserDataAccessObject();
+        SignupUserDataAccessInterface userRepository = new InMemoryDAO();
 
         UserFactory factory = new CommonUserFactory();
         User user = factory.create("bob", "pwd");
