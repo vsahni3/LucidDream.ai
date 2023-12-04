@@ -6,11 +6,8 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 public class ReadStoryViewModel extends ViewModel {
-    public final String TITLE_LABEL = "Read Story View";
 
     private ReadStoryState state = new ReadStoryState();
-
-    private String loggedInUser;
 
     public ReadStoryViewModel() {
         super("read story");
@@ -36,12 +33,4 @@ public class ReadStoryViewModel extends ViewModel {
         return state;
     }
 
-
-    public String getLoggedInUser() {
-        return loggedInUser;
-    }
-
-    public void setLoggedInUser(String loggedInUser) {
-        this.loggedInUser = loggedInUser;
-    }
 }

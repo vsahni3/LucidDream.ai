@@ -60,9 +60,6 @@ public class DownloadPDFInteractor implements DownloadPDFInputBoundary {
     }
 
     private static String toPdfFileName(String title) {
-        if (title == null || title.isEmpty()) {
-            return "default.pdf";
-        }
 
         // Replace invalid characters and spaces
         String safeTitle = title.replaceAll("[\\\\/:*?\"<>|]", "").replaceAll("\\s+", "_");

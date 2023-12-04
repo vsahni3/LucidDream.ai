@@ -2,12 +2,6 @@ package interface_adapter.generate_story;
 
 public class GenerateStoryState {
 
-    // TO EUGENE:
-    // I BELIEVE WE ARE MISSING A USER INSTANCE HERE
-    // BUT I RAN OUT OF TIME TO SORT IT OUT
-    // WE NEED TO PASS IT INTO GENERATE STORY CONTROLLER
-
-    // WE NEED A GETUSER GETTER
 
     private String prompt = "";
     private String promptError = null;

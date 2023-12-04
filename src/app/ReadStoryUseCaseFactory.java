@@ -4,7 +4,6 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.downloadPDF.DownloadPDFController;
 import interface_adapter.downloadPDF.DownloadPDFPresenter;
 import interface_adapter.downloadPDF.DownloadPDFViewModel;
-import interface_adapter.download_story.DownloadController;
 import interface_adapter.lookup.LookupController;
 import interface_adapter.lookup.LookupPresenter;
 import interface_adapter.lookup.LookupViewModel;
