@@ -6,6 +6,10 @@ import interface_adapter.logged_in.LoggedInState;
 
 import java.util.ArrayList;
 
+
+/**
+ * Represents the state of the view stories module, including a list of story books and the currently selected story book.
+ */
 public class ViewStoriesState {
 
     private ArrayList<StoryBook> storyBooks = new ArrayList<>();
@@ -20,6 +24,9 @@ public class ViewStoriesState {
     public ViewStoriesState() {}
 
 
+    /**
+     * Reset state values
+     */
     public void clearState() {
         storyBooks = new ArrayList<>();
         selected = null;
