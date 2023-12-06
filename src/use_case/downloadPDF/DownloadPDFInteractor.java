@@ -157,11 +157,8 @@ public class DownloadPDFInteractor implements DownloadPDFInputBoundary {
 
         try {
             createPdfFromPages(pagesArray, inputData.getTitle());
-            System.out.println("success download");
             downloadPDFPresenter.prepareSuccessView();
         } catch (Exception e) {
-            System.out.println(e);
-            System.out.println("FAILURE");
             downloadPDFPresenter.prepareFailureView();
         }
     }

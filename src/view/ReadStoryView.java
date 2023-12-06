@@ -67,7 +67,7 @@ public class ReadStoryView extends JPanel implements ActionListener, PropertyCha
 
         // Calculate proportional size for imageLabel
         int imageWidth = screenWidth / 2;  // Example: half of the screen width
-        int imageHeight = screenHeight / 3;  // Example: quarter of the screen height
+        int imageHeight = screenHeight / 2;  // Example: quarter of the screen height
 
 
 

@@ -1,11 +1,23 @@
 package interface_adapter.login;
 
+/**
+ * Represents the state of the login form.
+ * This class holds the current state of the login input fields, such as username and password,
+ * as well as any error messages associated with them. It is used to manage and track the state of user inputs
+ * and validations during the login process.
+ */
 public class LoginState {
     private String username = "";
     private String usernameError = null;
     private String password = "";
     private String passwordError = null;
 
+    /**
+     * Copy constructor for creating a new LoginState instance based on an existing one.
+     * This is useful for duplicating the state, for instance, when transitioning between views.
+     *
+     * @param copy The LoginState instance to copy data from.
+     */
     public LoginState(LoginState copy) {
         username = copy.username;
         usernameError = copy.usernameError;
@@ -13,11 +25,15 @@ public class LoginState {
         passwordError = copy.passwordError;
     }
 
-    // Because of the previous copy constructor, the default constructor must be explicit.
+    /**
+     * Default constructor for creating a new, empty LoginState instance.
+     * Initializes a LoginState with default values.
+     */
     public LoginState() {}
 
     /**
-     * Reset all state values
+     * Resets all fields of the login state to their default values.
+     * This includes clearing the username, password, and any associated error messages.
      */
     public void clearState() {
         username = "";
@@ -27,56 +43,72 @@ public class LoginState {
     }
 
     /**
-     * Return the String username value
+     * Retrieves the current username.
+     *
+     * @return The username as a String.
      */
     public String getUsername() {
         return username;
     }
 
     /**
-     * Return the String username error value
+     * Retrieves the current username error message.
+     *
+     * @return The username error message as a String, or null if no error.
      */
     public String getUsernameError() {
         return usernameError;
     }
 
     /**
-     * Return the String password value
+     * Retrieves the current password.
+     *
+     * @return The password as a String.
      */
     public String getPassword() {
         return password;
     }
 
     /**
-     * Return the String password error value
+     * Retrieves the current password error message.
+     *
+     * @return The password error message as a String, or null if no error.
      */
     public String getPasswordError() {
         return passwordError;
     }
 
     /**
-     * Set a new username
+     * Sets or updates the username.
+     *
+     * @param username The new username to be set.
      */
     public void setUsername(String username) {
         this.username = username;
     }
 
     /**
-     *  Set a new username error value
+     * Sets or updates the username error message.
+     *
+     * @param usernameError The new username error message to be set.
      */
     public void setUsernameError(String usernameError) {
         this.usernameError = usernameError;
     }
 
     /**
-     *  Set a new password value
+     * Sets or updates the password.
+     *
+     * @param password The new password to be set.
      */
     public void setPassword(String password) {
         this.password = password;
     }
 
     /**
-     *  Set a new password error value
+     * Sets or updates the password error message.
+     *
+     * @param passwordError The new password error message to be set.
      */
     public void setPasswordError(String passwordError) {
         this.passwordError = passwordError;
