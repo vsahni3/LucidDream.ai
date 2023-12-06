@@ -9,6 +9,9 @@ import javax.speech.synthesis.SynthesizerModeDesc;
 import java.util.Locale;
 
 
+/**
+ *
+ */
 public class NarrateInteractor implements NarrateInputBoundary{
 
     final NarrateOutputBoundary narratePresenter;
@@ -17,6 +20,10 @@ public class NarrateInteractor implements NarrateInputBoundary{
 
     private static Synthesizer currentSynthesizer = null;
 
+    /**
+     *
+     * @param narratePresenter
+     */
     public NarrateInteractor(NarrateOutputBoundary narratePresenter) {
         this.narratePresenter = narratePresenter;
     }

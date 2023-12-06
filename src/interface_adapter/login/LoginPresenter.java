@@ -12,7 +12,6 @@ import use_case.signup.SignupOutputData;
 /**
  * LoginPresenter is responsible for handling the output data provided by the LoginInteractor
  * and logs the user in or notifies the user if they've inputted invalid information.
- * @author Eugene Cho
  */
 public class LoginPresenter implements LoginOutputBoundary {
 
@@ -34,7 +33,10 @@ public class LoginPresenter implements LoginOutputBoundary {
         this.loginViewModel = loginViewModel;
     }
 
-
+    /**
+     *
+     * @param response
+     */
     @Override
     public void prepareSuccessView(LoginOutputData response) {
         // On success, switch to the logged in view.
