@@ -23,6 +23,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Represents the View for the View Stories module, responsible for displaying a
+ * list of story books and handling user interactions.
+ */
 public class ViewStoriesView extends JPanel implements ActionListener, PropertyChangeListener {
 
     public final String viewName = "view stories";
@@ -43,6 +47,14 @@ public class ViewStoriesView extends JPanel implements ActionListener, PropertyC
 
     private final ReadStoryViewModel readStoryViewModel;
 
+    /**
+     * Constructs a new ViewStoriesView with the specified ViewModels and Controller.
+     *
+     * @param viewStoriesViewModel The ViewModel for the View Stories module.
+     * @param viewStoriesController The Controller for the View Stories module.
+     * @param viewManagerModel The View Manager Model for controlling view transitions.
+     * @param readStoryViewModel The ViewModel for the Read Story module.
+     */
     public ViewStoriesView(ViewStoriesViewModel viewStoriesViewModel, ViewStoriesController viewStoriesController, ViewManagerModel viewManagerModel, ReadStoryViewModel readStoryViewModel) {
 
         this.viewStoriesViewModel = viewStoriesViewModel;
