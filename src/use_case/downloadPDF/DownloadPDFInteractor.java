@@ -22,10 +22,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * The DownloadPDFInteractor class is responsible for the business logic associated with downloading PDFs.
+ * It interacts with data access interfaces and output boundaries to perform its operations.
+ */
 public class DownloadPDFInteractor implements DownloadPDFInputBoundary {
     final DownloadPDFDataAccessInterface dataAccess;
     final DownloadPDFOutputBoundary downloadPDFPresenter;
 
+    /**
+     * Constructs a new DownloadPDFInteractor with the specified data access and output boundary.
+     *
+     * @param dataAccess The data access interface for retrieving book data.
+     * @param downloadPDFOutputBoundary The output boundary for presenting the results of the download process.
+     */
     public DownloadPDFInteractor(DownloadPDFDataAccessInterface dataAccess, DownloadPDFOutputBoundary downloadPDFOutputBoundary) {
         this.dataAccess = dataAccess;
         this.downloadPDFPresenter = downloadPDFOutputBoundary;
@@ -141,6 +151,11 @@ public class DownloadPDFInteractor implements DownloadPDFInputBoundary {
         }
     }
 
+    /**
+     * Executes the PDF download process using the given input data.
+     *
+     * @param inputData The input data for the PDF download.
+     */
     @Override
     public void execute(DownloadPDFInputData inputData) {
         StoryBook storybook = dataAccess.getBook(inputData.getTitle());
