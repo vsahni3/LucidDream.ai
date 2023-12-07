@@ -150,7 +150,9 @@ public class SqlPageDataAccessObject {
         }
 
     }
-
+    /**
+     * Delete all pages
+     */
     public void deleteAll(Connection c) {
         String sql = "DELETE FROM PAGE";
         try (PreparedStatement pstmt = c.prepareStatement(sql)) {
@@ -184,6 +186,11 @@ public class SqlPageDataAccessObject {
 
 
     }
+    /**
+     * Check the existence of a page
+     * @param identifier the id of the page
+     * @return whether the page exists
+     */
     public boolean existsPage(Integer identifier) {
         return this.pages.containsKey(identifier);
     }

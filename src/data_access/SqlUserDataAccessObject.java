@@ -84,7 +84,9 @@ public class SqlUserDataAccessObject {
         accounts.put(user.getUserName(), user);
         this.saveUser(c);
     }
-
+    /**
+     * Delete all pages
+     */
     public void deleteAll(Connection c) {
         String sql = "DELETE FROM USER";
         try (PreparedStatement pstmt = c.prepareStatement(sql)) {
