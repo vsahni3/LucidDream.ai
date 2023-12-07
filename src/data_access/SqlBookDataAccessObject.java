@@ -72,7 +72,9 @@ public class SqlBookDataAccessObject {
         }
 
     }
-
+    /**
+     * Delete all pages
+     */
     public void deleteAll(Connection c) {
         String sql = "DELETE FROM BOOK";
         try (PreparedStatement pstmt = c.prepareStatement(sql)) {
@@ -162,7 +164,11 @@ public class SqlBookDataAccessObject {
 
 
     }
-
+    /**
+     * Check the existence of a book
+     * @param identifier the title of the book
+     * @return whether the book exists
+     */
     public boolean existsBook(String identifier) {
         return this.storyBooks.containsKey(identifier);
     }

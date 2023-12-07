@@ -29,7 +29,7 @@ import java.util.ArrayList;
  * Usage of this class simplifies interactions with the database for operations involving complex relationships
  * between users, books, and pages.
  */
-public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDataAcessInterface, LoginUserDataAccessInterface, SignupUserDataAccessInterface, ViewStoriesDataAccessInterface, DownloadPDFDataAccessInterface {
+public class CombinedDAO implements GenerateUserDataAccessInterface, LoginUserDataAccessInterface, SignupUserDataAccessInterface, ViewStoriesDataAccessInterface, DownloadPDFDataAccessInterface {
     private SqlUserDataAccessObject userDAO;
     private SqlBookDataAccessObject bookDAO;
     private SqlPageDataAccessObject pageDAO;
@@ -49,7 +49,10 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
         loadData(users);
 
     }
-
+    /**
+     * Give a map of all the user entities.
+     * @return all users
+     */
     public Map<String, User> getAll(){
         return users;
     }
@@ -142,7 +145,7 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
      * @param id the ID of the page to search for.
      * @return the Page object associated with the given ID.
      */
-    @Override
+
     public Page getPage(Integer id) {
         Page chosenPage = null;
 
@@ -178,7 +181,7 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
      * @param identifier the book title to check for existence.
      * @return true if the book exists, false otherwise.
      */
-    @Override
+
     public boolean existsBook(String identifier) {
         return bookDAO.existsBook(identifier);
     }
@@ -189,11 +192,12 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
      * @param identifier the page ID to check for existence.
      * @return true if the page exists, false otherwise.
      */
-    @Override
     public boolean existsPage(Integer identifier) {
         return pageDAO.existsPage(identifier);
     }
-
+    /**
+     * Delete all entities from all tables.
+     */
     public void deleteAll() {
         Connection c = createConnection();
         userDAO.deleteAll(c);
@@ -220,7 +224,11 @@ public class CombinedDAO implements GenerateUserDataAccessInterface, CombinedDat
         closeConnection(c);
 
     }
-
+    /**
+     * Return the storybooks associated with a user
+     * @param username the username of the user
+     * @return the matching storybooks
+     */
     @Override
     public ArrayList<StoryBook> getStoryBooks(String username) {
         Connection c = createConnection();
